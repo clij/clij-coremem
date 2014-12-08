@@ -1,4 +1,4 @@
-package coremem.memory.map.test;
+package coremem.memmap.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,9 +9,9 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
-import coremem.memory.NativeMemoryAccess;
-import coremem.memory.map.MemoryMappedFile;
-import coremem.memory.map.MemoryMappedFileUtils;
+import coremem.memmap.MemoryMappedFile;
+import coremem.memmap.MemoryMappedFileUtils;
+import coremem.offheap.NativeMemoryAccess;
 
 public class MemoryMappedFileTest
 {

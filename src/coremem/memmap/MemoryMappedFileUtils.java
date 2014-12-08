@@ -1,4 +1,4 @@
-package coremem.memory.map;
+package coremem.memmap;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -7,7 +7,7 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import coremem.memory.NativeMemoryAccess;
+import coremem.offheap.NativeMemoryAccess;
 
 public final class MemoryMappedFileUtils
 {

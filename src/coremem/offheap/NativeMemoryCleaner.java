@@ -1,4 +1,4 @@
-package coremem.memory;
+package coremem.offheap;
 
 import coremem.rgc.Cleaner;
 

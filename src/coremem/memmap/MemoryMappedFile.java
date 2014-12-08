@@ -1,9 +1,9 @@
-package coremem.memory.map;
+package coremem.memmap;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import coremem.memory.NativeMemoryAccess;
+import coremem.offheap.NativeMemoryAccess;
 import coremem.rgc.Cleanable;
 import coremem.rgc.Cleaner;
 

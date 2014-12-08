@@ -1,6 +1,6 @@
 package coremem.recycling;
 
-import coremem.memory.SizedInBytes;
+import coremem.interfaces.SizedInBytes;
 import coremem.rgc.Freeable;
 
 public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequest<O>> extends

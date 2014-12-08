@@ -1,4 +1,4 @@
-package coremem.memory;
+package coremem.util;
 
 public class TypeId
 {

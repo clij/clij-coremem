@@ -1,4 +1,4 @@
-package coremem.memory.map;
+package coremem.memmap;
 
 public enum MemoryMappedFileAccessMode
 {

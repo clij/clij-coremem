@@ -1,4 +1,4 @@
-package coremem.memory;
+package coremem.exceptions;
 
 public class InvalidNativeMemoryAccessException	extends
 																								RuntimeException

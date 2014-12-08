@@ -1,10 +1,11 @@
-package coremem.memory;
+package coremem.offheap;
 
 import java.lang.reflect.Field;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
+import coremem.exceptions.InvalidNativeMemoryAccessException;
 import sun.misc.Unsafe;
 
 public final class NativeMemoryAccess
