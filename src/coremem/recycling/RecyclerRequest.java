@@ -1,4 +1,4 @@
-package rtlib.core.recycling;
+package coremem.recycling;
 
 public interface RecyclerRequest<O>
 {

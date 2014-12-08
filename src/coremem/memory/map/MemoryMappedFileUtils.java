@@ -1,4 +1,4 @@
-package rtlib.core.memory.map;
+package coremem.memory.map;
 
 import java.io.IOException;
 import java.lang.reflect.Method;
@@ -7,28 +7,25 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import rtlib.core.log.Loggable;
-import rtlib.core.memory.NativeMemoryAccess;
+import coremem.memory.NativeMemoryAccess;
 
-public final class MemoryMappedFileUtils implements Loggable
+public final class MemoryMappedFileUtils
 {
-	
+
 	public static final long cPageSize = 4096;
 	public static final long cAllocationGranularity = 65536;
-	
+
 	private static final ByteBuffer cZeroBuffer = ByteBuffer.allocateDirect(1);
 
 	public static final MemoryMappedFileAccessMode ReadOnly = MemoryMappedFileAccessMode.ReadOnly;
 	public static final MemoryMappedFileAccessMode ReadWrite = MemoryMappedFileAccessMode.ReadWrite;
 	public static final MemoryMappedFileAccessMode Private = MemoryMappedFileAccessMode.Private;
 
-	
-
 	public static final long map(	FileChannel pFileChannel,
-																		MemoryMappedFileAccessMode pAccessMode,
-																		final long pFilePosition,
-																		final long pMappedRegionLength,
-																		final boolean pExtendIfNeeded) throws MemoryMappedFileException
+																MemoryMappedFileAccessMode pAccessMode,
+																final long pFilePosition,
+																final long pMappedRegionLength,
+																final boolean pExtendIfNeeded) throws MemoryMappedFileException
 	{
 		Method lMemoryMapMethod;
 		long lMappedAddress;
@@ -84,7 +81,6 @@ public final class MemoryMappedFileUtils implements Loggable
 																							pMappedRegionLength);
 
 			lMappedAddress = lAddressAsLong;
-
 
 		}
 		catch (Throwable e)
@@ -211,6 +207,12 @@ public final class MemoryMappedFileUtils implements Loggable
 			return MemoryMappedFileAccessMode.ReadOnly;
 
 		return MemoryMappedFileAccessMode.ReadWrite;
+	}
+
+	private void error(String string, String lErrorMessage)
+	{
+		// TODO Auto-generated method stub
+
 	}
 
 }

@@ -1,4 +1,4 @@
-package rtlib.core.rgc;
+package coremem.rgc;
 
 public class FreedException extends RuntimeException
 {

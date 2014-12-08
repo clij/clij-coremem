@@ -1,4 +1,4 @@
-package rtlib.core.rgc;
+package coremem.rgc;
 
 public interface Freeable
 {
@@ -6,13 +6,6 @@ public interface Freeable
 
 	public boolean isFree();
 
-	public default void complainIfFreed() throws FreedException
-	{
-		if (isFree())
-		{
-			final String lErrorMessage = "Underlying ressource has been freed!";
-			throw new FreedException(lErrorMessage);
-		}
-	}
+	public void complainIfFreed() throws FreedException;
 
 }

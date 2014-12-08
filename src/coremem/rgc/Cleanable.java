@@ -1,4 +1,4 @@
-package rtlib.core.rgc;
+package coremem.rgc;
 
 public interface Cleanable
 {

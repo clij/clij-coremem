@@ -1,8 +1,7 @@
-package rtlib.core.memory;
+package coremem.memory;
 
 public class TypeId
 {
-
 
 	public static int classToId(Class<?> pClass)
 	{
@@ -51,7 +50,7 @@ public class TypeId
 		case 6:
 			return double.class;
 		}
-			throw new RuntimeException("Invalid Class!");
+		throw new RuntimeException("Invalid Class!");
 
 	}
 

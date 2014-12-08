@@ -1,4 +1,4 @@
-package rtlib.core.memory.map.test;
+package coremem.memory.map.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -9,9 +9,9 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
-import rtlib.core.memory.NativeMemoryAccess;
-import rtlib.core.memory.map.MemoryMappedFile;
-import rtlib.core.memory.map.MemoryMappedFileUtils;
+import coremem.memory.NativeMemoryAccess;
+import coremem.memory.map.MemoryMappedFile;
+import coremem.memory.map.MemoryMappedFileUtils;
 
 public class MemoryMappedFileTest
 {
@@ -120,8 +120,7 @@ public class MemoryMappedFileTest
 			{
 				NativeMemoryAccess.setByte(lBaseAddress + i, (byte) i);
 			}
-			assertEquals((byte) 0,
-										NativeMemoryAccess.getByte(lBaseAddress));
+			assertEquals((byte) 0, NativeMemoryAccess.getByte(lBaseAddress));
 			assertEquals(	(byte) (lFileLength - 1),
 										NativeMemoryAccess.getByte(lBaseAddress + lFileLength
 																								- 1));
@@ -156,6 +155,5 @@ public class MemoryMappedFileTest
 		lFileChannel.close();
 
 	}
-
 
 }

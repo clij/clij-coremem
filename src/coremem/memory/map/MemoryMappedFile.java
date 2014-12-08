@@ -1,16 +1,15 @@
-package rtlib.core.memory.map;
+package coremem.memory.map;
 
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import rtlib.core.memory.NativeMemoryAccess;
-import rtlib.core.rgc.Cleanable;
-import rtlib.core.rgc.Cleaner;
+import coremem.memory.NativeMemoryAccess;
+import coremem.rgc.Cleanable;
+import coremem.rgc.Cleaner;
 
 public class MemoryMappedFile implements AutoCloseable, Cleanable
 {
 
-	
 	private FileChannel mFileChannel;
 	private MemoryMappedFileAccessMode mAccessMode;
 	private boolean mExtendIfNeeded;
@@ -22,8 +21,6 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 	private long mActualMappingRegionLength;
 
 	private long mMappingPointerAddress;
-
-
 
 	public MemoryMappedFile(FileChannel pFileChannel,
 													MemoryMappedFileAccessMode pAccessMode,
@@ -40,14 +37,13 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 		mActualMappingFilePosition = mRequestedFilePosition - (mRequestedFilePosition % MemoryMappedFileUtils.cAllocationGranularity);
 		mActualMappingRegionLength = (mRequestedFilePosition % MemoryMappedFileUtils.cAllocationGranularity) + mRequestedMappedRegionLength;
-		
+
 		mMappingPointerAddress = MemoryMappedFileUtils.map(	mFileChannel,
 																												mAccessMode,
 																												mActualMappingFilePosition,
 																												mActualMappingRegionLength,
 																												mExtendIfNeeded);
 	}
-
 
 	public long getAddressAtFilePosition(long pFilePosition)
 	{
@@ -56,10 +52,9 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 		if (mRequestedFilePosition + mRequestedMappedRegionLength <= pFilePosition)
 			throw new IndexOutOfBoundsException("File position index invalid: accessing after the mapped file region");
-		
+
 		return mMappingPointerAddress + (pFilePosition - mActualMappingFilePosition);
 	}
-
 
 	@Override
 	public void close() throws IOException
@@ -76,9 +71,9 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 		private FileChannel mFileChannelToClean;
 		private long mMappedRegionLength;
 
-		public MemoryMappedFileCleaner(FileChannel pFileChannel,
-													final long pMemoryMapAddress,
-													final long pMappedRegionLength)
+		public MemoryMappedFileCleaner(	FileChannel pFileChannel,
+																		final long pMemoryMapAddress,
+																		final long pMappedRegionLength)
 		{
 			mFileChannelToClean = pFileChannel;
 			mAddressToClean = pMemoryMapAddress;
@@ -99,9 +94,9 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 	@Override
 	public Cleaner getCleaner()
 	{
-		return new MemoryMappedFileCleaner(mFileChannel,
-															mMappingPointerAddress,
-															mActualMappingRegionLength);
+		return new MemoryMappedFileCleaner(	mFileChannel,
+																				mMappingPointerAddress,
+																				mActualMappingRegionLength);
 	}
 
 }

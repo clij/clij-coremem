@@ -1,6 +1,5 @@
-package rtlib.core.rgc;
+package coremem.rgc;
 
-@FunctionalInterface
 public interface Cleaner extends Runnable
 {
 	@Override

@@ -1,4 +1,4 @@
-package rtlib.core.memory.test;
+package coremem.memory.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -7,8 +7,8 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-import rtlib.core.memory.InvalidNativeMemoryAccessException;
-import rtlib.core.memory.NativeMemoryAccess;
+import coremem.memory.InvalidNativeMemoryAccessException;
+import coremem.memory.NativeMemoryAccess;
 
 public class NativeMemoryAccessTests
 {

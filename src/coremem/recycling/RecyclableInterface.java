@@ -1,11 +1,11 @@
-package rtlib.core.recycling;
+package coremem.recycling;
 
-import rtlib.core.memory.SizedInBytes;
-import rtlib.core.rgc.Freeable;
+import coremem.memory.SizedInBytes;
+import coremem.rgc.Freeable;
 
 public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequest<O>> extends
-																																							SizedInBytes,
-																																							Freeable
+																																																				SizedInBytes,
+																																																				Freeable
 {
 
 	@SuppressWarnings("unchecked")

@@ -1,4 +1,4 @@
-package rtlib.core.rgc;
+package coremem.rgc;
 
 import java.lang.ref.PhantomReference;
 import java.lang.ref.ReferenceQueue;

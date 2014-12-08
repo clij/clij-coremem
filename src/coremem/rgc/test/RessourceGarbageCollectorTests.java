@@ -1,4 +1,4 @@
-package rtlib.core.rgc.test;
+package coremem.rgc.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,11 +8,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
-import rtlib.core.concurrent.thread.ThreadUtils;
-import rtlib.core.rgc.Cleanable;
-import rtlib.core.rgc.Cleaner;
-import rtlib.core.rgc.Freeable;
-import rtlib.core.rgc.RessourceGarbageCollector;
+import coremem.rgc.Cleanable;
+import coremem.rgc.Cleaner;
+import coremem.rgc.Freeable;
+import coremem.rgc.FreeableBase;
+import coremem.rgc.FreedException;
+import coremem.rgc.RessourceGarbageCollector;
 
 public class RessourceGarbageCollectorTests
 {
@@ -24,9 +25,9 @@ public class RessourceGarbageCollectorTests
 		// System.out.println("freeing: " + pResourceId);
 	}
 
-	private static class ClassWithRessource	implements
-																					Freeable,
-																					Cleanable
+	private static class ClassWithRessource extends FreeableBase implements
+																															Freeable,
+																															Cleanable
 	{
 		long mSomeRessource = (long) (1000 * Math.random());
 		AtomicBoolean mFree = new AtomicBoolean(false);
@@ -85,12 +86,12 @@ public class RessourceGarbageCollectorTests
 		{
 			ClassWithRessource a = new ClassWithRessource();
 			RessourceGarbageCollector.collectNow();
-			ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+			sleep(1);
 		}
 
 		for (int i = 0; i < 1000; i++)
 		{
-			ThreadUtils.sleep(1, TimeUnit.MILLISECONDS);
+			sleep(1);
 			System.gc();
 			RessourceGarbageCollector.collectNow();
 			// System.out.println(i);
@@ -103,5 +104,18 @@ public class RessourceGarbageCollectorTests
 
 		// System.out.println(sCounter.get());
 		assertEquals(100, sCounter.get());
+	}
+
+	private void sleep(int pMilliseconds)
+	{
+		try
+		{
+			Thread.sleep(pMilliseconds);
+		}
+		catch (InterruptedException e)
+		{
+			e.printStackTrace();
+		}
+		
 	}
 }

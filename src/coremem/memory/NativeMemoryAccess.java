@@ -1,4 +1,4 @@
-package rtlib.core.memory;
+package coremem.memory;
 
 import java.lang.reflect.Field;
 import java.util.Map;
@@ -159,7 +159,7 @@ public final class NativeMemoryAccess
 		cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
 	}
 
-	public static final void storeReorderingFence()
+	/* JAVA8 code: public static final void storeReorderingFence()
 	{
 		cUnsafe.storeFence();
 	}
@@ -172,7 +172,7 @@ public final class NativeMemoryAccess
 	public static final void fullReorderingFence()
 	{
 		cUnsafe.fullFence();
-	}
+	}/**/
 
 	public static final byte getByte(final long pAddress)
 	{

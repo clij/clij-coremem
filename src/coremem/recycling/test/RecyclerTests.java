@@ -1,4 +1,4 @@
-package rtlib.core.recycling.test;
+package coremem.recycling.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -9,8 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 
-import rtlib.core.recycling.Recycler;
-import rtlib.core.units.Magnitudes;
+import coremem.recycling.Recycler;
 
 public class RecyclerTests
 {
@@ -19,7 +18,7 @@ public class RecyclerTests
 	public void testBasics()
 	{
 		Recycler<RecyclableTestClass, LongRequest> lRecycler = new Recycler<RecyclableTestClass, LongRequest>(RecyclableTestClass.class,
-																																														1000);
+																																																					1000);
 
 		assertEquals(	100,
 									lRecycler.ensurePreallocated(	100,
@@ -103,7 +102,7 @@ public class RecyclerTests
 			}
 
 			long lStop = System.nanoTime();
-			long lMilliSecondsElapsed = (long) Magnitudes.nano2milli(lStop - lStart);
+			long lMilliSecondsElapsed = (long) (0.000001)*(lStop - lStart);
 			if (i <= 100)
 			{
 				assertTrue(lMilliSecondsElapsed < 1000);
@@ -139,10 +138,8 @@ public class RecyclerTests
 			assertTrue(lRecyclableObject != null);
 
 			// if (i % 2 == 0)
-				lRecycler.release(lRecyclableObject);
+			lRecycler.release(lRecyclableObject);
 		}
-
-
 
 	}
 

@@ -1,4 +1,4 @@
-package rtlib.core.recycling;
+package coremem.recycling;
 
 import java.lang.ref.SoftReference;
 import java.lang.reflect.Constructor;
@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
-import rtlib.core.log.Loggable;
-import rtlib.core.rgc.Freeable;
+import coremem.rgc.Freeable;
+import coremem.rgc.FreeableBase;
 
-public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest<R>>	implements
-																																											Freeable,
-																																											Loggable
+public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest<R>>	extends
+																																													FreeableBase implements
+																																																			Freeable
 {
 	private final Class<R> mRecyclableClass;
 	private final ArrayBlockingQueue<SoftReference<R>> mAvailableObjectsQueue;
@@ -326,6 +326,16 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 	public boolean isFree()
 	{
 		return mIsFreed.get();
+	}
+
+	private void error(String string, String lErrorString)
+	{
+
+	}
+
+	private void error(String string, String lErrorString, Throwable e)
+	{
+
 	}
 
 }

@@ -1,17 +1,19 @@
-package rtlib.core.rgc;
+package coremem.rgc;
 
 import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import rtlib.core.concurrent.executors.AsynchronousExecutorServiceAccess;
-import rtlib.core.concurrent.executors.AsynchronousSchedulerServiceAccess;
-
-public class RessourceGarbageCollector implements
-																			AsynchronousSchedulerServiceAccess,
-																			AsynchronousExecutorServiceAccess
+public class RessourceGarbageCollector
 {
+
+	private static final Executor sExecutor = Executors.newSingleThreadExecutor();
+	
+	private static final ScheduledExecutorService sScheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
 	private static RessourceGarbageCollector sRessourceGarbageCollector;
 
@@ -52,7 +54,7 @@ public class RessourceGarbageCollector implements
 					return;
 				Cleaner lCleaner = lReference.getCleaner();
 				if (lCleaner != null)
-					executeAsynchronously(lCleaner);
+					sExecutor.execute(lCleaner);
 				sCleaningPhantomReferenceList.remove(lReference);
 			}
 			while (true);
@@ -60,8 +62,15 @@ public class RessourceGarbageCollector implements
 
 	public void collectAtFixedRate(long pPeriod, TimeUnit pUnit)
 	{
-		Runnable lCollector = () -> collect();
-		scheduleAtFixedRate(lCollector, pPeriod, pUnit);
+		Runnable lCollector = new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				collect();
+			}
+		};
+		sScheduledExecutor.scheduleAtFixedRate(lCollector, 0,  pPeriod, pUnit);
 	}
 
 	public static void collectNow()

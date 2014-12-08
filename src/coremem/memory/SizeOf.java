@@ -1,4 +1,4 @@
-package rtlib.core.memory;
+package coremem.memory;
 
 public class SizeOf
 {
@@ -33,37 +33,37 @@ public class SizeOf
 
 	public static int sizeOfDouble()
 	{
-		return Double.BYTES;
+		return 8;
 	}
 
 	public static int sizeOfLong()
 	{
-		return Long.BYTES;
+		return 8;
 	}
 
 	public static int sizeOfFloat()
 	{
-		return Float.BYTES;
+		return 4;
 	}
 
 	public static int sizeOfInt()
 	{
-		return Integer.BYTES;
+		return 4;
 	}
 
 	public static int sizeOfShort()
 	{
-		return Short.BYTES;
+		return 2;
 	}
 
 	public static int sizeOfByte()
 	{
-		return Byte.BYTES;
+		return 1;
 	}
 
 	public static int sizeOfChar()
 	{
-		return Character.BYTES;
+		return 2;
 	}
 
 	public static Class<?> integralTypeFromSize(final int pNumberOfBytes,
@@ -71,16 +71,16 @@ public class SizeOf
 	{
 		switch (pNumberOfBytes)
 		{
-		case Byte.BYTES:
+		case 1:
 			return byte.class;
-		case Short.BYTES:
+		case 2:
 			if (pSigned)
 				return short.class;
 			else
 				return char.class;
-		case Integer.BYTES:
+		case 4:
 			return int.class;
-		case Long.BYTES:
+		case 8:
 			return long.class;
 		}
 		throw new RuntimeException("Invalid number of bytes!");
@@ -90,9 +90,9 @@ public class SizeOf
 	{
 		switch (pNumberOfBytes)
 		{
-		case Float.BYTES:
+		case 4:
 			return float.class;
-		case Double.BYTES:
+		case 8:
 			return double.class;
 		}
 		throw new RuntimeException("Invalid number of bytes!");

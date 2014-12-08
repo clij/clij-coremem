@@ -1,11 +1,12 @@
-package rtlib.core.recycling.test;
+package coremem.recycling.test;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import rtlib.core.recycling.RecyclableInterface;
-import rtlib.core.recycling.Recycler;
+import coremem.recycling.RecyclableInterface;
+import coremem.recycling.Recycler;
+import coremem.rgc.FreeableBase;
 
-public class RecyclableTestClass implements
+public class RecyclableTestClass extends FreeableBase implements
 																RecyclableInterface<RecyclableTestClass, LongRequest>
 {
 	// Proper class fields:
@@ -43,7 +44,7 @@ public class RecyclableTestClass implements
 	@Override
 	public void initialize(LongRequest pRequest)
 	{
-		mArray = new double[Math.toIntExact(pRequest.value)];
+		mArray = new double[(int)(pRequest.value)];
 	}
 
 	@Override

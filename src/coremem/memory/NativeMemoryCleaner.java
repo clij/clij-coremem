@@ -1,6 +1,6 @@
-package rtlib.core.memory;
+package coremem.memory;
 
-import rtlib.core.rgc.Cleaner;
+import coremem.rgc.Cleaner;
 
 public class NativeMemoryCleaner implements Cleaner
 {

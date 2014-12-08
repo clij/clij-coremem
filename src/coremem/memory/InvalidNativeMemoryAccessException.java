@@ -1,4 +1,4 @@
-package rtlib.core.memory;
+package coremem.memory;
 
 public class InvalidNativeMemoryAccessException	extends
 																								RuntimeException

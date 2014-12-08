@@ -1,6 +1,6 @@
-package rtlib.core.recycling.test;
+package coremem.recycling.test;
 
-import rtlib.core.recycling.RecyclerRequest;
+import coremem.recycling.RecyclerRequest;
 
 class LongRequest implements RecyclerRequest<RecyclableTestClass>
 {
