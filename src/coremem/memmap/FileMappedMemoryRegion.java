@@ -2,33 +2,30 @@ package coremem.memmap;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 
-import org.bridj.Pointer;
-import org.bridj.Pointer.Releaser;
-import org.bridj.PointerIO;
-
-import coremem.RAM;
-import coremem.RAMMappedAbstract;
+import coremem.MappedMemoryRegionBase;
+import coremem.MemoryRegionInterface;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
+import coremem.exceptions.MemoryMappedFileException;
 import coremem.exceptions.UnsupportedMemoryResizingException;
 import coremem.interfaces.MappableMemory;
 import coremem.interfaces.MemoryType;
 import coremem.interfaces.Resizable;
 import coremem.interfaces.SizedInBytes;
-import coremem.offheap.RAMDirect;
+import coremem.offheap.OffHeapMemoryRegion;
 import coremem.rgc.Cleaner;
 import coremem.rgc.Freeable;
 
-public class RAMFile extends RAMMappedAbstract implements
-																							MappableMemory,
-																							Resizable,
-																							SizedInBytes,
-																							RAM,
-																							Freeable
+public class FileMappedMemoryRegion<T>	extends
+																				MappedMemoryRegionBase<T>	implements
+																																	MappableMemory,
+																																	Resizable,
+																																	SizedInBytes,
+																																	MemoryRegionInterface<T>,
+																																	Freeable
 
 {
 
@@ -37,73 +34,77 @@ public class RAMFile extends RAMMappedAbstract implements
 	private long mFilePositionInBytes;
 	private MemoryMappedFile mMemoryMappedFile;
 
-	public RAMFile createNewRAMFile(File pFile,
-																	final long pLengthInBytes) throws IOException
+	public FileMappedMemoryRegion<T> createNewFileMappedMemoryRegion(	File pFile,
+																																		final long pLengthInBytes) throws IOException
 	{
-		return new RAMFile(	pFile,
-												0,
-												pLengthInBytes,
-												StandardOpenOption.CREATE_NEW,
-												StandardOpenOption.READ,
-												StandardOpenOption.WRITE);
+		return new FileMappedMemoryRegion<T>(	pFile,
+																					0,
+																					pLengthInBytes,
+																					StandardOpenOption.CREATE_NEW,
+																					StandardOpenOption.READ,
+																					StandardOpenOption.WRITE);
 	}
 
-	public RAMFile createNewSparseRAMFile(File pFile,
-																				final long pLengthInBytes) throws IOException
+	public FileMappedMemoryRegion<T> createNewSparseFileMappedMemoryRegion(	File pFile,
+																																					final long pLengthInBytes) throws IOException
 	{
-		return new RAMFile(	pFile,
-												0,
-												pLengthInBytes,
-												StandardOpenOption.CREATE_NEW,
-												StandardOpenOption.READ,
-												StandardOpenOption.WRITE,
-												StandardOpenOption.SPARSE);
+		return new FileMappedMemoryRegion<T>(	pFile,
+																					0,
+																					pLengthInBytes,
+																					StandardOpenOption.CREATE_NEW,
+																					StandardOpenOption.READ,
+																					StandardOpenOption.WRITE,
+																					StandardOpenOption.SPARSE);
 	}
 
-	public RAMFile openExistingRAMFile(	File pFile,
-																			final long pLengthInBytes) throws IOException
+	public FileMappedMemoryRegion<T> openExistingFileMappedMemoryRegion(File pFile,
+																																			final long pLengthInBytes) throws IOException
 	{
-		return openExistingRAMFile(pFile, 0, pLengthInBytes);
+		return openExistingFileMappedMemoryRegion(pFile,
+																							0,
+																							pLengthInBytes);
 	}
 
-	public RAMFile openExistingRAMFile(	File pFile,
-																			final long pPositionInBytes,
-																			final long pLengthInBytes) throws IOException
+	public FileMappedMemoryRegion<T> openExistingFileMappedMemoryRegion(File pFile,
+																																			final long pPositionInBytes,
+																																			final long pLengthInBytes) throws IOException
 	{
-		return new RAMFile(	pFile,
-												pPositionInBytes,
-												pLengthInBytes,
-												StandardOpenOption.READ,
-												StandardOpenOption.WRITE);
+		return new FileMappedMemoryRegion<T>(	pFile,
+																					pPositionInBytes,
+																					pLengthInBytes,
+																					StandardOpenOption.READ,
+																					StandardOpenOption.WRITE);
 	}
 
-	public RAMFile openReadOnlyExistingRAMFile(	File pFile,
-																							final long pLengthInBytes) throws IOException
+	public FileMappedMemoryRegion<T> openReadOnlyExistingFileMappedMemoryRegion(File pFile,
+																																							final long pLengthInBytes) throws IOException
 	{
-		return openReadOnlyExistingRAMFile(pFile, 0, pLengthInBytes);
+		return openReadOnlyExistingFileMappedMemoryRegion(pFile,
+																											0,
+																											pLengthInBytes);
 	}
 
-	public RAMFile openReadOnlyExistingRAMFile(	File pFile,
-																							final long pPositionInBytes,
-																							final long pLengthInBytes) throws IOException
+	public FileMappedMemoryRegion<T> openReadOnlyExistingFileMappedMemoryRegion(File pFile,
+																																							final long pPositionInBytes,
+																																							final long pLengthInBytes) throws IOException
 	{
-		return new RAMFile(	pFile,
-												pPositionInBytes,
-												pLengthInBytes,
-												StandardOpenOption.READ);
+		return new FileMappedMemoryRegion<T>(	pFile,
+																					pPositionInBytes,
+																					pLengthInBytes,
+																					StandardOpenOption.READ);
 	}
 
-	public RAMFile(	File pFile,
-									final long pLengthInBytes,
-									StandardOpenOption... pStandardOpenOption) throws IOException
+	public FileMappedMemoryRegion(File pFile,
+																final long pLengthInBytes,
+																StandardOpenOption... pStandardOpenOption) throws IOException
 	{
 		this(pFile, 0, pLengthInBytes, pStandardOpenOption);
 	}
 
-	public RAMFile(	File pFile,
-									final long pPositionInBytes,
-									final long pLengthInBytes,
-									StandardOpenOption... pStandardOpenOption) throws IOException
+	public FileMappedMemoryRegion(File pFile,
+																final long pPositionInBytes,
+																final long pLengthInBytes,
+																StandardOpenOption... pStandardOpenOption) throws IOException
 	{
 		this(	FileChannel.open(	pFile.toPath(),
 														obtainStandardOptions(pFile,
@@ -114,10 +115,10 @@ public class RAMFile extends RAMMappedAbstract implements
 
 	}
 
-	public RAMFile(	FileChannel pFileChannel,
-									final long pPositionInBytes,
-									final long pLengthInBytes,
-									StandardOpenOption... pStandardOpenOption) throws IOException
+	public FileMappedMemoryRegion(FileChannel pFileChannel,
+																final long pPositionInBytes,
+																final long pLengthInBytes,
+																StandardOpenOption... pStandardOpenOption) throws IOException
 	{
 		super();
 		mFileChannel = pFileChannel;
@@ -208,16 +209,17 @@ public class RAMFile extends RAMMappedAbstract implements
 	}
 
 	@Override
-	public RAMDirect subRegion(long pOffset, long pLenghInBytes)
+	public OffHeapMemoryRegion<T> subRegion(long pOffset,
+																					long pLenghInBytes)
 	{
 		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes + mLengthInBytes)
-			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate RAMDirect from RAMFile on subregion staring at offset %d and length %d  ",
+			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate OffHeapMemoryRegion from FileMappedMemoryRegion on subregion staring at offset %d and length %d  ",
 																																	pOffset,
 																																	pLenghInBytes));
-		RAMDirect lRAMDirect = new RAMDirect(	this,
-																					mAddressInBytes + pOffset,
-																					pLenghInBytes);
-		return lRAMDirect;
+		OffHeapMemoryRegion<T> lOffHeapMemoryRegion = new OffHeapMemoryRegion<T>(	this,
+																																							mAddressInBytes + pOffset,
+																																							pLenghInBytes);
+		return lOffHeapMemoryRegion;
 	}
 
 	@Override
@@ -251,40 +253,10 @@ public class RAMFile extends RAMMappedAbstract implements
 
 	}
 
-	@SuppressWarnings("rawtypes")
-	@Override
-	public Pointer getBridJPointer(Class pTargetClass)
-	{
-		PointerIO<?> lPointerIO = PointerIO.getInstance(pTargetClass);
-		Releaser lReleaser = new Releaser()
-		{
-			@Override
-			public void release(Pointer<?> pP)
-			{
-				// TODO: should this really be empty?
-			}
-		};
-		Pointer lPointerToAddress = Pointer.pointerToAddress(	getAddress(),
-																														getSizeInBytes(),
-																														lPointerIO,
-																														lReleaser);
-		return lPointerToAddress;
-	}
-
-	@Override
-	public ByteBuffer passNativePointerToByteBuffer(Class<?> pTargetClass)
-	{
-
-		ByteBuffer lByteBuffer = getBridJPointer(pTargetClass).getByteBuffer();
-
-		return lByteBuffer;
-
-	}
-
 	@Override
 	public String toString()
 	{
-		return "RAMFile [mFileChannel=" + mFileChannel
+		return "FileMappedMemoryRegion [mFileChannel=" + mFileChannel
 						+ ", mStandardOpenOption="
 						+ Arrays.toString(mStandardOpenOption)
 						+ ", mFilePositionInBytes="
@@ -311,6 +283,5 @@ public class RAMFile extends RAMMappedAbstract implements
 		// itself.
 		return null;
 	}
-
 
 }

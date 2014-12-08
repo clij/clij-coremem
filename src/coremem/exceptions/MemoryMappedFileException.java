@@ -1,4 +1,4 @@
-package coremem.memmap;
+package coremem.exceptions;
 
 public class MemoryMappedFileException extends RuntimeException
 {

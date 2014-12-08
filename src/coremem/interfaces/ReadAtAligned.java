@@ -1,6 +1,5 @@
 package coremem.interfaces;
 
-
 public interface ReadAtAligned extends MemoryTyped
 {
 	public byte getByteAligned(final long pOffset);

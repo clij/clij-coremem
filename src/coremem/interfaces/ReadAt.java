@@ -1,6 +1,5 @@
 package coremem.interfaces;
 
-
 public interface ReadAt extends MemoryTyped
 {
 	public byte getByte(final long pOffset);

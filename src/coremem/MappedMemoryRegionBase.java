@@ -2,8 +2,9 @@ package coremem;
 
 import coremem.interfaces.MappableMemory;
 
-public abstract class RAMMappedAbstract extends RAMAbstract	implements
-																														MappableMemory
+public abstract class MappedMemoryRegionBase<T> extends
+																						MemoryRegionBase<T>	implements
+																																			MappableMemory
 
 {
 

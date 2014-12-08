@@ -1,6 +1,5 @@
 package coremem.interfaces;
 
-
 public interface WriteAtAligned extends MemoryTyped
 {
 	public void setByteAligned(final long pOffset, final byte pValue);

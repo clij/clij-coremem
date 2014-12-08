@@ -10,9 +10,9 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
-import coremem.RAMTests;
 import coremem.interfaces.MemoryType;
-import coremem.offheap.RAMDirect;
+import coremem.offheap.OffHeapMemoryRegion;
+import coremem.test.RAMTests;
 
 public class RAMDirectTests
 {
@@ -20,46 +20,46 @@ public class RAMDirectTests
 	@Test
 	public void testBasics()
 	{
-		RAMDirect lRAMDirect = new RAMDirect(2L * Integer.MAX_VALUE);
+		OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(2L * Integer.MAX_VALUE);
 
-		RAMTests.testBasics(lRAMDirect, MemoryType.CPURAMDIRECT, true);
+		RAMTests.testBasics(lOffHeapMemoryRegion, MemoryType.CPURAMDIRECT, true);
 
 	}
 
 	@Test
 	public void testCopySameSize()
 	{
-		RAMDirect lRAMDirect1 = new RAMDirect(1L * Integer.MAX_VALUE);
-		RAMDirect lRAMDirect2 = new RAMDirect(1L * Integer.MAX_VALUE);
+		OffHeapMemoryRegion lOffHeapMemoryRegion1 = new OffHeapMemoryRegion(1L * Integer.MAX_VALUE);
+		OffHeapMemoryRegion lOffHeapMemoryRegion2 = new OffHeapMemoryRegion(1L * Integer.MAX_VALUE);
 
-		RAMTests.testCopySameSize(lRAMDirect1, lRAMDirect2);
+		RAMTests.testCopySameSize(lOffHeapMemoryRegion1, lOffHeapMemoryRegion2);
 
 	}
 
 	@Test
 	public void testCopyDifferentSize()
 	{
-		RAMDirect lRAMDirect1 = new RAMDirect(4);
-		RAMDirect lRAMDirect2 = new RAMDirect(8);
+		OffHeapMemoryRegion lOffHeapMemoryRegion1 = new OffHeapMemoryRegion(4);
+		OffHeapMemoryRegion lOffHeapMemoryRegion2 = new OffHeapMemoryRegion(8);
 
-		RAMTests.testCopyDifferentSize(lRAMDirect1, lRAMDirect2);
+		RAMTests.testCopyDifferentSize(lOffHeapMemoryRegion1, lOffHeapMemoryRegion2);
 	}
 
 	@Test
 	public void testCopyChecks()
 	{
-		RAMDirect lRAMDirect1 = new RAMDirect(4);
-		RAMDirect lRAMDirect2 = new RAMDirect(8);
+		OffHeapMemoryRegion lOffHeapMemoryRegion1 = new OffHeapMemoryRegion(4);
+		OffHeapMemoryRegion lOffHeapMemoryRegion2 = new OffHeapMemoryRegion(8);
 
-		RAMTests.testCopyChecks(lRAMDirect1, lRAMDirect2);
+		RAMTests.testCopyChecks(lOffHeapMemoryRegion1, lOffHeapMemoryRegion2);
 	}
 
 	@Test
 	public void testWriteRead()
 	{
-		RAMDirect lRAMDirect = new RAMDirect(4);
+		OffHeapMemoryRegion lOffHeapMemoryRegion = new OffHeapMemoryRegion(4);
 
-		RAMTests.testWriteRead(lRAMDirect);
+		RAMTests.testWriteRead(lOffHeapMemoryRegion);
 	}
 
 	@Test
@@ -76,13 +76,13 @@ public class RAMDirectTests
 																									StandardOpenOption.WRITE,
 																									StandardOpenOption.READ);
 
-		RAMDirect lRAMDirect1 = new RAMDirect(1023);
+		OffHeapMemoryRegion lOffHeapMemoryRegion1 = new OffHeapMemoryRegion(1023);
 
-		for (int i = 0; i < lRAMDirect1.getSizeInBytes(); i++)
-			lRAMDirect1.setByte(i, (byte) i);
+		for (int i = 0; i < lOffHeapMemoryRegion1.getSizeInBytes(); i++)
+			lOffHeapMemoryRegion1.setByte(i, (byte) i);
 
-		lRAMDirect1.writeBytesToFileChannel(lFileChannel1, 512);
-		lRAMDirect1.free();
+		lOffHeapMemoryRegion1.writeBytesToFileChannel(lFileChannel1, 512);
+		lOffHeapMemoryRegion1.free();
 		lFileChannel1.close();
 
 		assertTrue(lTempFile.exists());
@@ -95,15 +95,15 @@ public class RAMDirectTests
 
 		assertEquals(512 + 1023, lFileChannel2.size());
 
-		RAMDirect lRAMDirect2 = new RAMDirect(1023);
-		lRAMDirect2.readBytesFromFileChannel(	lFileChannel2,
+		OffHeapMemoryRegion lOffHeapMemoryRegion2 = new OffHeapMemoryRegion(1023);
+		lOffHeapMemoryRegion2.readBytesFromFileChannel(	lFileChannel2,
 																					512,
-																					lRAMDirect2.getSizeInBytes());
+																					lOffHeapMemoryRegion2.getSizeInBytes());
 
-		for (int i = 0; i < lRAMDirect2.getSizeInBytes(); i++)
-			assertEquals((byte) i, lRAMDirect2.getByte(i));
+		for (int i = 0; i < lOffHeapMemoryRegion2.getSizeInBytes(); i++)
+			assertEquals((byte) i, lOffHeapMemoryRegion2.getByte(i));
 
-		lRAMDirect2.free();
+		lOffHeapMemoryRegion2.free();
 		lFileChannel2.close();
 	}
 }

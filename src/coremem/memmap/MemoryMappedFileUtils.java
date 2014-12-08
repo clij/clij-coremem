@@ -7,6 +7,7 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
+import coremem.exceptions.MemoryMappedFileException;
 import coremem.offheap.NativeMemoryAccess;
 
 public final class MemoryMappedFileUtils

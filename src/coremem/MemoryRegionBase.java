@@ -1,5 +1,13 @@
 package coremem;
 
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.file.StandardOpenOption;
+
+import org.bridj.Pointer;
+import org.bridj.Pointer.Releaser;
+
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.MappableMemoryException;
 import coremem.interfaces.Copyable;
@@ -7,8 +15,9 @@ import coremem.interfaces.MappableMemory;
 import coremem.interfaces.MemoryType;
 import coremem.interfaces.PointerAccessible;
 import coremem.interfaces.RangeCopyable;
-import coremem.interfaces.Resizable;
 import coremem.interfaces.SizedInBytes;
+import coremem.interop.BridJInterop;
+import coremem.memmap.FileMappedMemoryRegion;
 import coremem.offheap.NativeMemoryAccess;
 import coremem.rgc.Cleanable;
 import coremem.rgc.Freeable;
@@ -16,15 +25,14 @@ import coremem.rgc.FreeableBase;
 import coremem.rgc.RessourceGarbageCollector;
 import coremem.util.SizeOf;
 
-public abstract class RAMAbstract extends FreeableBase implements
-																	PointerAccessible,
-																	Resizable,
-																	SizedInBytes,
-																	RAM,
-																	Copyable<RAMAbstract>,
-																	RangeCopyable<RAMAbstract>,
-																	Freeable,
-																	Cleanable
+public abstract class MemoryRegionBase<T> extends FreeableBase implements
+																															PointerAccessible,
+																															SizedInBytes,
+																															MemoryRegionInterface<T>,
+																															Copyable<MemoryRegionBase<?>>,
+																															RangeCopyable<MemoryRegionBase<?>>,
+																															Freeable,
+																															Cleanable
 
 {
 
@@ -32,7 +40,7 @@ public abstract class RAMAbstract extends FreeableBase implements
 	protected long mLengthInBytes = 0;
 	protected boolean mIsFree = false;
 
-	public RAMAbstract()
+	public MemoryRegionBase()
 	{
 		RessourceGarbageCollector.register(this);
 	}
@@ -48,7 +56,13 @@ public abstract class RAMAbstract extends FreeableBase implements
 	}
 
 	@Override
-	public void copyTo(RAMAbstract pTo)
+	public void copyFrom(MemoryRegionBase<?> pFrom)
+	{
+		pFrom.copyTo(this);
+	}
+
+	@Override
+	public void copyTo(MemoryRegionBase<?> pTo)
 	{
 		complainIfFreed();
 		checkMappableMemory(pTo);
@@ -69,7 +83,7 @@ public abstract class RAMAbstract extends FreeableBase implements
 
 	@Override
 	public void copyRangeTo(long pSourceOffset,
-													RAMAbstract pTo,
+													MemoryRegionBase<?> pTo,
 													long pDestinationOffset,
 													long pLengthToCopy)
 	{
@@ -115,7 +129,7 @@ public abstract class RAMAbstract extends FreeableBase implements
 																	pLengthToCopy);
 	}
 
-	void checkMappableMemory(RAMAbstract pTo)
+	void checkMappableMemory(MemoryRegionBase<?> pTo)
 	{
 		if (pTo instanceof MappableMemory)
 		{
@@ -144,9 +158,6 @@ public abstract class RAMAbstract extends FreeableBase implements
 	{
 		return mIsFree;
 	}
-
-	@Override
-	public abstract long resize(long pNewLength);
 
 	@Override
 	public void setByteAligned(long pOffset, byte pValue)
@@ -330,6 +341,103 @@ public abstract class RAMAbstract extends FreeableBase implements
 	public double getDouble(long pOffset)
 	{
 		return NativeMemoryAccess.getDouble(mAddressInBytes + pOffset);
+	}
+
+	@Override
+	public long writeBytesToFileChannel(FileChannel pFileChannel,
+																			long pFilePositionInBytes) throws IOException
+	{
+		return writeBytesToFileChannel(	0,
+																		pFileChannel,
+																		pFilePositionInBytes,
+																		getSizeInBytes());
+	}
+
+	@Override
+	public long writeBytesToFileChannel(long pPositionInBufferInBytes,
+																			FileChannel pFileChannel,
+																			long pFilePositionInBytes,
+																			long pLengthInBytes) throws IOException
+	{
+		FileMappedMemoryRegion<T> lFileMappedMemoryRegion = new FileMappedMemoryRegion<T>(pFileChannel,
+																																											pFilePositionInBytes,
+																																											pLengthInBytes,
+																																											StandardOpenOption.CREATE,
+																																											StandardOpenOption.WRITE);
+		lFileMappedMemoryRegion.map();
+		copyRangeTo(pPositionInBufferInBytes,
+								lFileMappedMemoryRegion,
+								0,
+								pLengthInBytes);
+		lFileMappedMemoryRegion.unmap();
+		lFileMappedMemoryRegion.free();
+		return pFilePositionInBytes + pLengthInBytes;
+	}
+
+	@Override
+	public void readBytesFromFileChannel(	FileChannel pFileChannel,
+																				long pFilePositionInBytes,
+																				long pLengthInBytes) throws IOException
+	{
+		readBytesFromFileChannel(	0,
+															pFileChannel,
+															pFilePositionInBytes,
+															pLengthInBytes);
+	}
+
+	@Override
+	public void readBytesFromFileChannel(	long pPositionInBufferInBytes,
+																				FileChannel pFileChannel,
+																				long pFilePositionInBytes,
+																				long pLengthInBytes) throws IOException
+	{
+		FileMappedMemoryRegion<T> lFileMappedMemoryRegion = new FileMappedMemoryRegion<T>(pFileChannel,
+																																											pFilePositionInBytes,
+																																											pLengthInBytes,
+																																											StandardOpenOption.READ);
+		lFileMappedMemoryRegion.map();
+		lFileMappedMemoryRegion.copyRangeTo(0,
+																				this,
+																				pPositionInBufferInBytes,
+																				pLengthInBytes);
+		lFileMappedMemoryRegion.unmap();
+		lFileMappedMemoryRegion.free();
+	}
+
+	@Override
+	@SuppressWarnings(
+	{ "unchecked", "rawtypes" })
+	public Pointer getBridJPointer(Class pTargetClass)
+	{
+		final MemoryRegionBase mThis = this;
+		Releaser lReleaser = new Releaser()
+		{
+			@SuppressWarnings("unused")
+			volatile MemoryRegionBase mMemoryRegionBase = mThis;
+
+			@Override
+			public void release(Pointer<?> pP)
+			{
+				mMemoryRegionBase = null;
+			}
+		};
+
+		Pointer<?> lPointerToAddress = BridJInterop.getBridJPointer(pTargetClass,
+																																getAddress(),
+																																getSizeInBytes(),
+																																lReleaser);
+
+		return lPointerToAddress;
+
+	}
+
+	@Override
+	public ByteBuffer passNativePointerToByteBuffer()
+	{
+		ByteBuffer lByteBuffer = getBridJPointer(Byte.class).getByteBuffer();
+
+		return lByteBuffer;
+
 	}
 
 }

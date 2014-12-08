@@ -116,6 +116,6 @@ public class RessourceGarbageCollectorTests
 		{
 			e.printStackTrace();
 		}
-		
+
 	}
 }

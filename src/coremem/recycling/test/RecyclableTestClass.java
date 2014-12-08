@@ -6,8 +6,8 @@ import coremem.recycling.RecyclableInterface;
 import coremem.recycling.Recycler;
 import coremem.rgc.FreeableBase;
 
-public class RecyclableTestClass extends FreeableBase implements
-																RecyclableInterface<RecyclableTestClass, LongRequest>
+public class RecyclableTestClass extends FreeableBase	implements
+																											RecyclableInterface<RecyclableTestClass, LongRequest>
 {
 	// Proper class fields:
 	AtomicBoolean mFree = new AtomicBoolean(false);
@@ -44,7 +44,7 @@ public class RecyclableTestClass extends FreeableBase implements
 	@Override
 	public void initialize(LongRequest pRequest)
 	{
-		mArray = new double[(int)(pRequest.value)];
+		mArray = new double[(int) (pRequest.value)];
 	}
 
 	@Override

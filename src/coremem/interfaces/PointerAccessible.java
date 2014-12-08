@@ -1,9 +1,7 @@
 package coremem.interfaces;
 
-public interface PointerAccessible extends
-																	MemoryTyped,
-																	ByteBufferWrappable,
-																	BridJPointerWrappable
+public interface PointerAccessible // extends //MemoryTyped//
+																		// ByteBufferWrappable,BridJPointerWrappable
 {
 	long getAddress();
 

@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import coremem.RAM;
-import coremem.RAMTests;
+import coremem.MemoryRegionInterface;
 import coremem.interfaces.MemoryType;
-import coremem.memmap.RAMFile;
+import coremem.memmap.FileMappedMemoryRegion;
+import coremem.test.RAMTests;
 
 public class RAMFileTests
 {
@@ -18,19 +18,25 @@ public class RAMFileTests
 	@Test
 	public void testLargeMemory() throws IOException
 	{
-		RAM lRAM = new RAMFile(	createTempFile(),
-														1000,
-														(long) (1.1 * Integer.MAX_VALUE));
-		RAMTests.testBasics(lRAM, MemoryType.FILERAM, false);
+		MemoryRegionInterface lMemoryRegionInterface = new FileMappedMemoryRegion(	createTempFile(),
+																																1000,
+																																(long) (1.1 * Integer.MAX_VALUE));
+		RAMTests.testBasics(lMemoryRegionInterface,
+												MemoryType.FILERAM,
+												false);
 
 	}
 
 	@Test
 	public void testBasics() throws IOException
 	{
-		RAM lRAM = new RAMFile(createTempFile(), 1000, cMemoryRegionSize);
+		MemoryRegionInterface lMemoryRegionInterface = new FileMappedMemoryRegion(	createTempFile(),
+																																1000,
+																																cMemoryRegionSize);
 
-		RAMTests.testBasics(lRAM, MemoryType.FILERAM, false);
+		RAMTests.testBasics(lMemoryRegionInterface,
+												MemoryType.FILERAM,
+												false);
 	}
 
 	private File createTempFile() throws IOException
@@ -44,36 +50,53 @@ public class RAMFileTests
 	@Test
 	public void testCopySameSize() throws IOException
 	{
-		RAM lRAM1 = new RAMFile(createTempFile(), 1000, cMemoryRegionSize);
-		RAM lRAM2 = new RAMFile(createTempFile(), 1000, cMemoryRegionSize);
+		MemoryRegionInterface lMemoryRegionInterface1 = new FileMappedMemoryRegion(createTempFile(),
+																																1000,
+																																cMemoryRegionSize);
+		MemoryRegionInterface lMemoryRegionInterface2 = new FileMappedMemoryRegion(createTempFile(),
+																																1000,
+																																cMemoryRegionSize);
 
-		RAMTests.testCopySameSize(lRAM1, lRAM2);
+		RAMTests.testCopySameSize(lMemoryRegionInterface1,
+															lMemoryRegionInterface2);
 
 	}
 
 	@Test
 	public void testCopyDifferentSize() throws IOException
 	{
-		RAM lRAM1 = new RAMFile(createTempFile(), 1, 4);
-		RAM lRAM2 = new RAMFile(createTempFile(), 1, 8);
+		MemoryRegionInterface lMemoryRegionInterface1 = new FileMappedMemoryRegion(createTempFile(),
+																																1,
+																																4);
+		MemoryRegionInterface lMemoryRegionInterface2 = new FileMappedMemoryRegion(createTempFile(),
+																																1,
+																																8);
 
-		RAMTests.testCopyDifferentSize(lRAM1, lRAM2);
+		RAMTests.testCopyDifferentSize(	lMemoryRegionInterface1,
+																		lMemoryRegionInterface2);
 	}
 
 	@Test
 	public void testCopyChecks() throws IOException
 	{
-		RAM lRAM1 = new RAMFile(createTempFile(), 1, 4);
-		RAM lRAM2 = new RAMFile(createTempFile(), 1, 8);
+		MemoryRegionInterface lMemoryRegionInterface1 = new FileMappedMemoryRegion(createTempFile(),
+																																1,
+																																4);
+		MemoryRegionInterface lMemoryRegionInterface2 = new FileMappedMemoryRegion(createTempFile(),
+																																1,
+																																8);
 
-		RAMTests.testCopyChecks(lRAM1, lRAM2);
+		RAMTests.testCopyChecks(lMemoryRegionInterface1,
+														lMemoryRegionInterface2);
 	}
 
 	@Test
 	public void testWriteRead() throws IOException
 	{
-		RAM lRAM = new RAMFile(createTempFile(), 1, 4);
+		MemoryRegionInterface lMemoryRegionInterface = new FileMappedMemoryRegion(	createTempFile(),
+																																1,
+																																4);
 
-		RAMTests.testWriteRead(lRAM);
+		RAMTests.testWriteRead(lMemoryRegionInterface);
 	}
 }

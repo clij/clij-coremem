@@ -12,7 +12,7 @@ public class RessourceGarbageCollector
 {
 
 	private static final Executor sExecutor = Executors.newSingleThreadExecutor();
-	
+
 	private static final ScheduledExecutorService sScheduledExecutor = Executors.newSingleThreadScheduledExecutor();
 
 	private static RessourceGarbageCollector sRessourceGarbageCollector;
@@ -70,7 +70,10 @@ public class RessourceGarbageCollector
 				collect();
 			}
 		};
-		sScheduledExecutor.scheduleAtFixedRate(lCollector, 0,  pPeriod, pUnit);
+		sScheduledExecutor.scheduleAtFixedRate(	lCollector,
+																						0,
+																						pPeriod,
+																						pUnit);
 	}
 
 	public static void collectNow()

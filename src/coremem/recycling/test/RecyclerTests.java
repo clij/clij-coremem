@@ -102,7 +102,7 @@ public class RecyclerTests
 			}
 
 			long lStop = System.nanoTime();
-			long lMilliSecondsElapsed = (long) (0.000001)*(lStop - lStart);
+			long lMilliSecondsElapsed = (long) (0.000001) * (lStop - lStart);
 			if (i <= 100)
 			{
 				assertTrue(lMilliSecondsElapsed < 1000);

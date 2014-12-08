@@ -1,6 +1,5 @@
 package coremem.interfaces;
 
-
 public interface WriteAt extends MemoryTyped
 {
 	public void setByte(final long pOffset, final byte pValue);
