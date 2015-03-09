@@ -131,7 +131,10 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 	@SuppressWarnings("unchecked")
 	public R failOrRequestRecyclableObject(final P pRecyclerRequest)
 	{
-		return requestRecyclableObject(false, 0, null, pRecyclerRequest);
+		return requestRecyclableObject(	false,
+																		0,
+																		TimeUnit.MICROSECONDS,
+																		pRecyclerRequest);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -149,7 +152,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 			lPolledSoftReference = mAvailableObjectsQueue.poll(	pWaitTime,
 																													pTimeUnit);
 		}
-		catch (InterruptedException e1)
+		catch (final InterruptedException e1)
 		{
 		}
 		// System.out.println("requestRecyclableObject.lPolledSoftReference=" +
