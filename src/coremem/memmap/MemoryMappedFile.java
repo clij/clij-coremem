@@ -3,7 +3,7 @@ package coremem.memmap;
 import java.io.IOException;
 import java.nio.channels.FileChannel;
 
-import coremem.offheap.NativeMemoryAccess;
+import coremem.offheap.OffHeapMemoryAccess;
 import coremem.rgc.Cleanable;
 import coremem.rgc.Cleaner;
 
@@ -83,7 +83,7 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 		@Override
 		public void run()
 		{
-			if (NativeMemoryAccess.isAllocatedMemory(mAddressToClean))
+			if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean))
 				MemoryMappedFileUtils.unmap(mFileChannelToClean,
 																		mAddressToClean,
 																		mMappedRegionLength);

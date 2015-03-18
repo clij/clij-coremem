@@ -14,11 +14,11 @@ public interface ReadWriteBytesFileChannel
 																			final long pFilePositionInBytes,
 																			final long pLengthInBytes) throws IOException;
 
-	public void readBytesFromFileChannel(	final FileChannel pFileChannel,
+	public long readBytesFromFileChannel(	final FileChannel pFileChannel,
 																				final long pFilePositionInBytes,
 																				final long pLengthInBytes) throws IOException;
 
-	public void readBytesFromFileChannel(	final long pBufferPositionInBytes,
+	public long readBytesFromFileChannel(	final long pBufferPositionInBytes,
 																				final FileChannel pFileChannel,
 																				final long pFilePositionInBytes,
 																				final long pLengthInBytes) throws IOException;

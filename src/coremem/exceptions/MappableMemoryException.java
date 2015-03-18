@@ -1,6 +1,6 @@
 package coremem.exceptions;
 
-public class MappableMemoryException extends RuntimeException
+public class MappableMemoryException extends CoreMemException
 {
 
 	private static final long serialVersionUID = 1L;

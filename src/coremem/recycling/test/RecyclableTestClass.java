@@ -17,6 +17,11 @@ public class RecyclableTestClass extends FreeableBase	implements
 	private Recycler<RecyclableTestClass, LongRequest> mRecycler;
 	AtomicBoolean mReleased = new AtomicBoolean(false);
 
+	public RecyclableTestClass(LongRequest pParameters)
+	{
+		recycle(pParameters);
+	}
+
 	@Override
 	public long getSizeInBytes()
 	{
@@ -42,7 +47,7 @@ public class RecyclableTestClass extends FreeableBase	implements
 	}
 
 	@Override
-	public void initialize(LongRequest pRequest)
+	public void recycle(LongRequest pRequest)
 	{
 		mArray = new double[(int) (pRequest.value)];
 	}
@@ -54,9 +59,17 @@ public class RecyclableTestClass extends FreeableBase	implements
 	}
 
 	@Override
+	public boolean isReleased()
+	{
+		return mReleased.get();
+	}
+
+	@Override
 	public void setRecycler(Recycler<RecyclableTestClass, LongRequest> pRecycler)
 	{
 		mRecycler = pRecycler;
 	}
+
+
 
 }

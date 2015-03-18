@@ -21,14 +21,15 @@ public class RessourceGarbageCollector
 	{
 		sRessourceGarbageCollector = new RessourceGarbageCollector();
 
-		sRessourceGarbageCollector.collectAtFixedRate(1, TimeUnit.MINUTES);
+		sRessourceGarbageCollector.collectAtFixedRate(100,
+																									TimeUnit.MILLISECONDS);
 	}
 
 	private static ConcurrentLinkedDeque<CleaningPhantomReference> sCleaningPhantomReferenceList = new ConcurrentLinkedDeque<>();
 
 	public static final void register(Cleanable pCleanable)
 	{
-		CleaningPhantomReference lCleaningPhantomReference = new CleaningPhantomReference(pCleanable,
+		final CleaningPhantomReference lCleaningPhantomReference = new CleaningPhantomReference(pCleanable,
 																																											pCleanable.getCleaner(),
 																																											sRessourceGarbageCollector.getReferenceQueue());
 
@@ -49,10 +50,10 @@ public class RessourceGarbageCollector
 		if (mActive.get())
 			do
 			{
-				CleaningPhantomReference lReference = (CleaningPhantomReference) mReferenceQueue.poll();
+				final CleaningPhantomReference lReference = (CleaningPhantomReference) mReferenceQueue.poll();
 				if (lReference == null)
 					return;
-				Cleaner lCleaner = lReference.getCleaner();
+				final Cleaner lCleaner = lReference.getCleaner();
 				if (lCleaner != null)
 					sExecutor.execute(lCleaner);
 				sCleaningPhantomReferenceList.remove(lReference);
@@ -62,7 +63,7 @@ public class RessourceGarbageCollector
 
 	public void collectAtFixedRate(long pPeriod, TimeUnit pUnit)
 	{
-		Runnable lCollector = new Runnable()
+		final Runnable lCollector = new Runnable()
 		{
 			@Override
 			public void run()

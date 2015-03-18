@@ -5,10 +5,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import coremem.exceptions.InvalidNativeMemoryAccessException;
 import sun.misc.Unsafe;
+import coremem.exceptions.InvalidNativeMemoryAccessException;
+import coremem.exceptions.OutOfMemoryException;
 
-public final class NativeMemoryAccess
+public final class OffHeapMemoryAccess
 {
 
 	static private Unsafe cUnsafe;
@@ -34,17 +35,25 @@ public final class NativeMemoryAccess
 	static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointers = new ConcurrentHashMap<Long, Long>();
 	static private final AtomicLong cTotalAllocatedMemory = new AtomicLong(0);
 
+	static private final Object mLock = new OffHeapMemoryAccess();
+
 	public static final void registerMemoryRegion(long pAddress,
 																								long pLength)
 	{
-		cTotalAllocatedMemory.addAndGet(pLength);
-		cAllocatedMemoryPointers.put(pAddress, pLength);
+		synchronized (mLock)
+		{
+			cTotalAllocatedMemory.addAndGet(pLength);
+			cAllocatedMemoryPointers.put(pAddress, pLength);
+		}
 	}
 
 	public static final void deregisterMemoryRegion(long pAddress)
 	{
-		cTotalAllocatedMemory.addAndGet(-cAllocatedMemoryPointers.get(pAddress));
-		cAllocatedMemoryPointers.remove(pAddress);
+		synchronized (mLock)
+		{
+			cTotalAllocatedMemory.addAndGet(-cAllocatedMemoryPointers.get(pAddress));
+			cAllocatedMemoryPointers.remove(pAddress);
+		}
 	}
 
 	public static long getMaximumAllocatableMemory()
@@ -69,17 +78,22 @@ public final class NativeMemoryAccess
 
 	public static final long allocateMemory(final long pLengthInBytes)
 	{
-		checkMaxAllocatableMemory(pLengthInBytes);
+		synchronized (mLock)
+		{
+			checkMaxAllocatableMemory(pLengthInBytes);
 
-		final long lAddress = cUnsafe.allocateMemory(pLengthInBytes);
-		registerMemoryRegion(lAddress, pLengthInBytes);
-		return lAddress;
+			final long lAddress = cUnsafe.allocateMemory(pLengthInBytes);
+			if (lAddress <= 0)
+				throw new OutOfMemoryException("cUnsafe.allocateMemory returned null or negative pointer: " + lAddress);
+			registerMemoryRegion(lAddress, pLengthInBytes);
+			return lAddress;
+		}
 	}
 
 	static void checkMaxAllocatableMemory(final long pLengthInBytes) throws OutOfMemoryError
 	{
 		if (cTotalAllocatedMemory.get() + pLengthInBytes > cMaximumAllocatableMemory.get())
-			throw new OutOfMemoryError(String.format(	"Canot allocate memory region of length: %d without reaching maximum allocatable memory %d (currently %d bytes are allocated )\n",
+			throw new OutOfMemoryError(String.format(	"Cannot allocate memory region of length: %d without reaching maximum allocatable memory %d (currently %d bytes are allocated )\n",
 																								pLengthInBytes,
 																								cMaximumAllocatableMemory.get(),
 																								cTotalAllocatedMemory.get()));
@@ -88,76 +102,110 @@ public final class NativeMemoryAccess
 	public static final long reallocateMemory(final long pAddress,
 																						final long pNewLengthInBytes) throws InvalidNativeMemoryAccessException
 	{
-		if (cAllocatedMemoryPointers.get(pAddress) == null)
-			throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
-
-		Long lCurrentlyAllocatedLength = cAllocatedMemoryPointers.get(pAddress);
-		checkMaxAllocatableMemory(pNewLengthInBytes - lCurrentlyAllocatedLength);
-
-		long lReallocatedMemoryAddress = cUnsafe.reallocateMemory(pAddress,
-																															pNewLengthInBytes);
-		if (lReallocatedMemoryAddress != pAddress)
+		synchronized (mLock)
 		{
-			deregisterMemoryRegion(pAddress);
-			registerMemoryRegion(	lReallocatedMemoryAddress,
-														pNewLengthInBytes);
+			if (cAllocatedMemoryPointers.get(pAddress) == null)
+				throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
+
+			final Long lCurrentlyAllocatedLength = cAllocatedMemoryPointers.get(pAddress);
+			checkMaxAllocatableMemory(pNewLengthInBytes - lCurrentlyAllocatedLength);
+
+			final long lReallocatedMemoryAddress = cUnsafe.reallocateMemory(pAddress,
+																																			pNewLengthInBytes);
+			if (lReallocatedMemoryAddress != pAddress)
+			{
+				deregisterMemoryRegion(pAddress);
+				registerMemoryRegion(	lReallocatedMemoryAddress,
+															pNewLengthInBytes);
+			}
+			return lReallocatedMemoryAddress;
 		}
-		return lReallocatedMemoryAddress;
 	}
 
 	public static final boolean isAllocatedMemory(final long pAddress)
 	{
-		return cAllocatedMemoryPointers.get(pAddress) != null;
+		synchronized (mLock)
+		{
+			return cAllocatedMemoryPointers.get(pAddress) != null;
+		}
 	}
 
 	public static final void freeMemory(final long pAddress) throws InvalidNativeMemoryAccessException
 	{
-		if (cAllocatedMemoryPointers.get(pAddress) == null)
-			throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
-		cUnsafe.freeMemory(pAddress);
-		deregisterMemoryRegion(pAddress);
+		synchronized (mLock)
+		{
+			if (cAllocatedMemoryPointers.get(pAddress) == null)
+				throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
+			cUnsafe.freeMemory(pAddress);
+			deregisterMemoryRegion(pAddress);
+		}
 	}
 
 	public static final void copyMemory(final long pAddressOrg,
 																			final long pAddressDest,
 																			final long pLengthInBytes) throws InvalidNativeMemoryAccessException
 	{
-		/*Long lLengthOrg = cAllocatedMemoryPointers.get(pAddressOrg);
-		if (lLengthOrg == null)
-			throw new InvalidNativeMemoryAccessException("Cannot copy from an unallocated memory region!");
+		synchronized (mLock)
+		{
+			cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
+		}
+	}
 
-		Long lLengthDest = cAllocatedMemoryPointers.get(pAddressDest);
-		if (lLengthDest == null)
-			throw new InvalidNativeMemoryAccessException("Cannot copy to an unallocated memory region!");
+	public static final void copyMemorySafely(final long pAddressOrg,
+																						final long pAddressDest,
+																						final long pLengthInBytes) throws InvalidNativeMemoryAccessException
+	{
+		synchronized (mLock)
+		{
+			final Long lLengthOrg = cAllocatedMemoryPointers.get(pAddressOrg);
+			if (lLengthOrg == null)
+				throw new InvalidNativeMemoryAccessException("Cannot copy from an unallocated memory region!");
 
-		if (pLengthInBytes > lLengthOrg)
-			throw new InvalidNativeMemoryAccessException(String.format("Cannot copy - source too small! %d < %d)",
-																					lLengthOrg,
-																												pLengthInBytes));
+			final Long lLengthDest = cAllocatedMemoryPointers.get(pAddressDest);
+			if (lLengthDest == null)
+				throw new InvalidNativeMemoryAccessException("Cannot copy to an unallocated memory region!");
 
-		if (pLengthInBytes > lLengthDest)
-			throw new InvalidNativeMemoryAccessException(String.format("Cannot copy - destination too small! %d < %d)",
-																												lLengthDest,
-																												pLengthInBytes));/**/
+			if (pLengthInBytes > lLengthOrg)
+				throw new InvalidNativeMemoryAccessException(String.format(	"Cannot copy - source too small! %d < %d)",
+																																		lLengthOrg,
+																																		pLengthInBytes));
 
-		cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
+			if (pLengthInBytes > lLengthDest)
+				throw new InvalidNativeMemoryAccessException(String.format(	"Cannot copy - destination too small! %d < %d)",
+																																		lLengthDest,
+																																		pLengthInBytes));/**/
+
+			cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
+		}
 	}
 
 	public static final void setMemory(	final long pAddress,
 																			final long pLengthInBytes,
 																			final byte pValue) throws InvalidNativeMemoryAccessException
 	{
-		/*
-		Long lLength = cAllocatedMemoryPointers.get(pAddress);
-		if (lLength == null)
-			throw new InvalidNativeMemoryAccessException("Cannot set unallocated memory region!");
+		synchronized (mLock)
+		{
+			cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
+		}
+	}
 
-		if (pLengthInBytes > lLength)
-			throw new InvalidNativeMemoryAccessException(String.format("Cannot set - memory region too small! %d < %d)",
-																												lLength,
-																												pLengthInBytes));/**/
+	public static final void setMemorySafely(	final long pAddress,
+																						final long pLengthInBytes,
+																						final byte pValue) throws InvalidNativeMemoryAccessException
+	{
+		synchronized (mLock)
+		{
+			final Long lLength = cAllocatedMemoryPointers.get(pAddress);
+			if (lLength == null)
+				throw new InvalidNativeMemoryAccessException("Cannot set unallocated memory region!");
 
-		cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
+			if (pLengthInBytes > lLength)
+				throw new InvalidNativeMemoryAccessException(String.format(	"Cannot set - memory region too small! %d < %d)",
+																																		lLength,
+																																		pLengthInBytes));/**/
+
+			cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
+		}
 	}
 
 	/* JAVA8 code: public static final void storeReorderingFence()
@@ -254,7 +302,7 @@ public final class NativeMemoryAccess
 
 	public static void freeAll()
 	{
-		for (Map.Entry<Long, Long> lEntry : cAllocatedMemoryPointers.entrySet())
+		for (final Map.Entry<Long, Long> lEntry : cAllocatedMemoryPointers.entrySet())
 		{
 			final long lAddress = lEntry.getKey();
 			freeMemory(lAddress);

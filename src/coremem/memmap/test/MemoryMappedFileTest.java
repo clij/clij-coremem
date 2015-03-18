@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import coremem.memmap.MemoryMappedFile;
 import coremem.memmap.MemoryMappedFileUtils;
-import coremem.offheap.NativeMemoryAccess;
+import coremem.offheap.OffHeapMemoryAccess;
 
 public class MemoryMappedFileTest
 {
@@ -39,12 +39,12 @@ public class MemoryMappedFileTest
 
 		for (long i = 0; i < lMappingLength; i += 1)
 		{
-			NativeMemoryAccess.setByte(lBaseAddress + i, (byte) 123);
+			OffHeapMemoryAccess.setByte(lBaseAddress + i, (byte) 123);
 		}
 
-		assertEquals((byte) 123, NativeMemoryAccess.getByte(lBaseAddress));
+		assertEquals((byte) 123, OffHeapMemoryAccess.getByte(lBaseAddress));
 		assertEquals(	(byte) 123,
-									NativeMemoryAccess.getByte(lBaseAddress + lMappingLength
+									OffHeapMemoryAccess.getByte(lBaseAddress + lMappingLength
 																							- 1));
 
 		lMemoryMappedFile.close();
@@ -78,12 +78,12 @@ public class MemoryMappedFileTest
 
 		for (long i = 0; i < lMappingLength; i += 1)
 		{
-			NativeMemoryAccess.setByte(lBaseAddress + i, (byte) i);
+			OffHeapMemoryAccess.setByte(lBaseAddress + i, (byte) i);
 		}
 
-		assertEquals((byte) 0, NativeMemoryAccess.getByte(lBaseAddress));
+		assertEquals((byte) 0, OffHeapMemoryAccess.getByte(lBaseAddress));
 		assertEquals(	(byte) (lMappingLength - 1),
-									NativeMemoryAccess.getByte(lBaseAddress + lMappingLength
+									OffHeapMemoryAccess.getByte(lBaseAddress + lMappingLength
 																							- 1));
 
 		lMemoryMappedFile.close();
@@ -118,11 +118,11 @@ public class MemoryMappedFileTest
 
 			for (long i = 0; i < lFileLength; i += 1)
 			{
-				NativeMemoryAccess.setByte(lBaseAddress + i, (byte) i);
+				OffHeapMemoryAccess.setByte(lBaseAddress + i, (byte) i);
 			}
-			assertEquals((byte) 0, NativeMemoryAccess.getByte(lBaseAddress));
+			assertEquals((byte) 0, OffHeapMemoryAccess.getByte(lBaseAddress));
 			assertEquals(	(byte) (lFileLength - 1),
-										NativeMemoryAccess.getByte(lBaseAddress + lFileLength
+										OffHeapMemoryAccess.getByte(lBaseAddress + lFileLength
 																								- 1));
 
 			lMemoryMappedFile.close();
@@ -148,7 +148,7 @@ public class MemoryMappedFileTest
 		for (long i = 0; i < lMappingLength; i++)
 		{
 			assertEquals(	(byte) (lMappingOffset + i),
-										NativeMemoryAccess.getByte(lBaseAddress + i));
+										OffHeapMemoryAccess.getByte(lBaseAddress + i));
 		}
 
 		lMemoryMappedFile.close();

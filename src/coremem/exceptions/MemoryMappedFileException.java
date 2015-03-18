@@ -1,6 +1,6 @@
 package coremem.exceptions;
 
-public class MemoryMappedFileException extends RuntimeException
+public class MemoryMappedFileException extends CoreMemException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -10,9 +10,5 @@ public class MemoryMappedFileException extends RuntimeException
 		super(lErrorMessage, pE);
 	}
 
-	public MemoryMappedFileException(Exception pE)
-	{
-		super(pE);
-	}
 
 }

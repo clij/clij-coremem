@@ -5,10 +5,10 @@ import java.io.IOException;
 
 import org.junit.Test;
 
-import coremem.MemoryRegionInterface;
+import coremem.ContiguousMemoryInterface;
 import coremem.interfaces.MemoryType;
 import coremem.memmap.FileMappedMemoryRegion;
-import coremem.test.RAMTests;
+import coremem.test.ContiguousMemoryTestsHelper;
 
 public class RAMFileTests
 {
@@ -18,10 +18,10 @@ public class RAMFileTests
 	@Test
 	public void testLargeMemory() throws IOException
 	{
-		MemoryRegionInterface lMemoryRegionInterface = new FileMappedMemoryRegion(	createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface = new FileMappedMemoryRegion(	createTempFile(),
 																																1000,
 																																(long) (1.1 * Integer.MAX_VALUE));
-		RAMTests.testBasics(lMemoryRegionInterface,
+		ContiguousMemoryTestsHelper.testBasics(lContiguousMemoryInterface,
 												MemoryType.FILERAM,
 												false);
 
@@ -30,11 +30,11 @@ public class RAMFileTests
 	@Test
 	public void testBasics() throws IOException
 	{
-		MemoryRegionInterface lMemoryRegionInterface = new FileMappedMemoryRegion(	createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface = new FileMappedMemoryRegion(	createTempFile(),
 																																1000,
 																																cMemoryRegionSize);
 
-		RAMTests.testBasics(lMemoryRegionInterface,
+		ContiguousMemoryTestsHelper.testBasics(lContiguousMemoryInterface,
 												MemoryType.FILERAM,
 												false);
 	}
@@ -50,53 +50,53 @@ public class RAMFileTests
 	@Test
 	public void testCopySameSize() throws IOException
 	{
-		MemoryRegionInterface lMemoryRegionInterface1 = new FileMappedMemoryRegion(createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface1 = new FileMappedMemoryRegion(createTempFile(),
 																																1000,
 																																cMemoryRegionSize);
-		MemoryRegionInterface lMemoryRegionInterface2 = new FileMappedMemoryRegion(createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface2 = new FileMappedMemoryRegion(createTempFile(),
 																																1000,
 																																cMemoryRegionSize);
 
-		RAMTests.testCopySameSize(lMemoryRegionInterface1,
-															lMemoryRegionInterface2);
+		ContiguousMemoryTestsHelper.testCopySameSize(lContiguousMemoryInterface1,
+															lContiguousMemoryInterface2);
 
 	}
 
 	@Test
 	public void testCopyDifferentSize() throws IOException
 	{
-		MemoryRegionInterface lMemoryRegionInterface1 = new FileMappedMemoryRegion(createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface1 = new FileMappedMemoryRegion(createTempFile(),
 																																1,
 																																4);
-		MemoryRegionInterface lMemoryRegionInterface2 = new FileMappedMemoryRegion(createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface2 = new FileMappedMemoryRegion(createTempFile(),
 																																1,
 																																8);
 
-		RAMTests.testCopyDifferentSize(	lMemoryRegionInterface1,
-																		lMemoryRegionInterface2);
+		ContiguousMemoryTestsHelper.testCopyDifferentSize(	lContiguousMemoryInterface1,
+																		lContiguousMemoryInterface2);
 	}
 
 	@Test
 	public void testCopyChecks() throws IOException
 	{
-		MemoryRegionInterface lMemoryRegionInterface1 = new FileMappedMemoryRegion(createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface1 = new FileMappedMemoryRegion(createTempFile(),
 																																1,
 																																4);
-		MemoryRegionInterface lMemoryRegionInterface2 = new FileMappedMemoryRegion(createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface2 = new FileMappedMemoryRegion(createTempFile(),
 																																1,
 																																8);
 
-		RAMTests.testCopyChecks(lMemoryRegionInterface1,
-														lMemoryRegionInterface2);
+		ContiguousMemoryTestsHelper.testCopyChecks(lContiguousMemoryInterface1,
+														lContiguousMemoryInterface2);
 	}
 
 	@Test
 	public void testWriteRead() throws IOException
 	{
-		MemoryRegionInterface lMemoryRegionInterface = new FileMappedMemoryRegion(	createTempFile(),
+		ContiguousMemoryInterface lContiguousMemoryInterface = new FileMappedMemoryRegion(	createTempFile(),
 																																1,
 																																4);
 
-		RAMTests.testWriteRead(lMemoryRegionInterface);
+		ContiguousMemoryTestsHelper.testWriteRead(lContiguousMemoryInterface);
 	}
 }

@@ -1,7 +1,6 @@
 package coremem.recycling;
 
 import java.lang.ref.SoftReference;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -12,11 +11,11 @@ import java.util.concurrent.atomic.AtomicLong;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
 
-public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest<R>>	extends
+public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequest> extends
 																																													FreeableBase implements
 																																																			Freeable
 {
-	private final Class<R> mRecyclableClass;
+	private final RecyclableFactory<R, P> mRecyclableFactory;
 	private final ArrayBlockingQueue<SoftReference<R>> mAvailableObjectsQueue;
 	private final ConcurrentLinkedQueue<Long> mAvailableMemoryQueue = new ConcurrentLinkedQueue<Long>();
 
@@ -26,20 +25,20 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 
 	private final AtomicBoolean mIsFreed = new AtomicBoolean(false);
 
-	public Recycler(final Class<?> pRecyclableClass,
+	public Recycler(RecyclableFactory<R, P> pRecyclableFactory,
 									final int pMaximumNumberOfAvailableObjects)
 	{
-		this(	pRecyclableClass,
+		this(	pRecyclableFactory,
 					pMaximumNumberOfAvailableObjects,
 					Long.MAX_VALUE);
 	}
 
-	public Recycler(final Class<?> pRecyclableClass,
+	public Recycler(final RecyclableFactory<R, P> pRecyclableFactory,
 									final int pMaximumNumberOfAvailableObjects,
 									final long pMaximumLiveMemoryInBytes)
 	{
 		mAvailableObjectsQueue = new ArrayBlockingQueue<SoftReference<R>>(pMaximumNumberOfAvailableObjects);
-		mRecyclableClass = (Class<R>) pRecyclableClass;
+		mRecyclableFactory = pRecyclableFactory;
 		if (pMaximumLiveMemoryInBytes < 0)
 		{
 			final String lErrorString = "Maximum live memory must be strictly positive!";
@@ -88,12 +87,8 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 																																	InvocationTargetException
 	{
 		complainIfFreed();
-		final Constructor<R> lDefaultConstructor = mRecyclableClass.getDeclaredConstructor();
-		lDefaultConstructor.setAccessible(true);
-		final R lNewInstance = lDefaultConstructor.newInstance();
-		lDefaultConstructor.setAccessible(false);
-		if (pRecyclerRequest != null)
-			lNewInstance.initialize(pRecyclerRequest);
+
+		final R lNewInstance = mRecyclableFactory.create(pRecyclerRequest);
 
 		if (mLiveMemoryInBytes.get() + lNewInstance.getSizeInBytes() > mMaximumLiveMemoryInBytes)
 		{
@@ -195,7 +190,7 @@ public class Recycler<R extends RecyclableInterface<R, P>, P extends RecyclerReq
 				}
 
 				mLiveMemoryInBytes.addAndGet(-lObtainedReference.getSizeInBytes());
-				lObtainedReference.initialize(pRecyclerRequest);
+				lObtainedReference.recycle(pRecyclerRequest);
 				mLiveMemoryInBytes.addAndGet(lObtainedReference.getSizeInBytes());
 			}
 			return lObtainedReference;

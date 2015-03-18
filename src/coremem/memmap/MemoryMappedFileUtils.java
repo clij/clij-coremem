@@ -8,7 +8,7 @@ import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
 import coremem.exceptions.MemoryMappedFileException;
-import coremem.offheap.NativeMemoryAccess;
+import coremem.offheap.OffHeapMemoryAccess;
 
 public final class MemoryMappedFileUtils
 {
@@ -78,7 +78,7 @@ public final class MemoryMappedFileUtils
 			final Long lAddressAsLong = (Long) lReturnValue;
 
 			long lAddress = lAddressAsLong.longValue();
-			NativeMemoryAccess.registerMemoryRegion(lAddress,
+			OffHeapMemoryAccess.registerMemoryRegion(lAddress,
 																							pMappedRegionLength);
 
 			lMappedAddress = lAddressAsLong;
@@ -117,7 +117,7 @@ public final class MemoryMappedFileUtils
 																											pMemoryMapAddress,
 																											pMappedRegionLength);
 
-			NativeMemoryAccess.deregisterMemoryRegion(pMemoryMapAddress);
+			OffHeapMemoryAccess.deregisterMemoryRegion(pMemoryMapAddress);
 
 			final Integer lReturnAsInteger = (Integer) lReturnValue;
 

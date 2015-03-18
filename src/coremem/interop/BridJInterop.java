@@ -6,7 +6,7 @@ import org.bridj.PointerIO;
 
 public class BridJInterop
 {
-	public static <T> Pointer<T> getBridJPointer(	Class<T> pTargetClass,
+	public static <T> Pointer<T> wrapWithBridJPointer(	Class<T> pTargetClass,
 																				long pAddress,
 																				long pSizeInBytes,
 																				Releaser pReleaser)

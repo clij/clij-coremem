@@ -8,9 +8,9 @@ import static org.junit.Assert.fail;
 import org.junit.Test;
 
 import coremem.exceptions.InvalidNativeMemoryAccessException;
-import coremem.offheap.NativeMemoryAccess;
+import coremem.offheap.OffHeapMemoryAccess;
 
-public class NativeMemoryAccessTests
+public class OffHeapMemoryAccessTests
 {
 	final private static long cBufferSize = 2 * (long) Integer.MAX_VALUE;
 
@@ -20,10 +20,10 @@ public class NativeMemoryAccessTests
 		int i = 0;
 		try
 		{
-			NativeMemoryAccess.setMaximumAllocatableMemory(1000L * 1000L);
+			OffHeapMemoryAccess.setMaximumAllocatableMemory(1000L * 1000L);
 			for (; i < 2000; i++)
 			{
-				NativeMemoryAccess.allocateMemory(1000);
+				OffHeapMemoryAccess.allocateMemory(1000);
 			}
 			fail();
 		}
@@ -36,10 +36,10 @@ public class NativeMemoryAccessTests
 			fail();
 		}
 
-		NativeMemoryAccess.freeAll();
-		assertEquals(0, NativeMemoryAccess.getTotalAllocatedMemory());
+		OffHeapMemoryAccess.freeAll();
+		assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
 
-		NativeMemoryAccess.setMaximumAllocatableMemory(Long.MAX_VALUE);
+		OffHeapMemoryAccess.setMaximumAllocatableMemory(Long.MAX_VALUE);
 	}
 
 	@Test
@@ -48,19 +48,19 @@ public class NativeMemoryAccessTests
 		try
 		{
 			// System.out.println(cBufferSize);
-			long lAddress = NativeMemoryAccess.allocateMemory(cBufferSize);
+			long lAddress = OffHeapMemoryAccess.allocateMemory(cBufferSize);
 
-			NativeMemoryAccess.setByte(lAddress, (byte) 123);
-			assertEquals(NativeMemoryAccess.getByte(lAddress), (byte) 123);
+			OffHeapMemoryAccess.setByte(lAddress, (byte) 123);
+			assertEquals(OffHeapMemoryAccess.getByte(lAddress), (byte) 123);
 
-			long lAddressReallocated = NativeMemoryAccess.reallocateMemory(	lAddress,
+			long lAddressReallocated = OffHeapMemoryAccess.reallocateMemory(	lAddress,
 																																			10);
 
-			NativeMemoryAccess.setByte(lAddressReallocated + 9, (byte) 123);
-			assertEquals(	NativeMemoryAccess.getByte(lAddressReallocated + 9),
+			OffHeapMemoryAccess.setByte(lAddressReallocated + 9, (byte) 123);
+			assertEquals(	OffHeapMemoryAccess.getByte(lAddressReallocated + 9),
 										(byte) 123);
 
-			NativeMemoryAccess.freeMemory(lAddressReallocated);
+			OffHeapMemoryAccess.freeMemory(lAddressReallocated);
 		}
 		catch (InvalidNativeMemoryAccessException e)
 		{
@@ -80,30 +80,30 @@ public class NativeMemoryAccessTests
 			final long lLength = 16L * 1000L * 1000L * 1000L;
 
 			System.out.println("allocateMemory");
-			long lAddress = NativeMemoryAccess.allocateMemory(lLength);
+			long lAddress = OffHeapMemoryAccess.allocateMemory(lLength);
 			System.out.println("lAddress=" + lAddress);
 			assertFalse(lAddress == 0);
 
 			/*System.out.println("setMemory");
-			NativeMemoryAccess.setMemory(lAddress, lLength, (byte) 0);/**/
+			OffHeapMemoryAccess.setMemory(lAddress, lLength, (byte) 0);/**/
 
 			System.out.println("setByte(s)");
 			for (long i = 0; i < lLength; i += 1000L * 1000L)
 			{
-				NativeMemoryAccess.setByte(lAddress + i, (byte) i);
+				OffHeapMemoryAccess.setByte(lAddress + i, (byte) i);
 			}
 
 			System.out.println("getByte(s)");
 			for (long i = 0; i < lLength; i += 1000L * 1000L)
 			{
-				byte lValue = NativeMemoryAccess.getByte(lAddress + i);
+				byte lValue = OffHeapMemoryAccess.getByte(lAddress + i);
 				assertEquals((byte) i, lValue);
 			}
 
 			// Thread.sleep(10000);
 
 			System.out.println("freeMemory");
-			NativeMemoryAccess.freeMemory(lAddress);
+			OffHeapMemoryAccess.freeMemory(lAddress);
 
 			// System.out.println("end");
 		}

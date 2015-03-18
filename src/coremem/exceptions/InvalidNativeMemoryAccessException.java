@@ -1,7 +1,7 @@
 package coremem.exceptions;
 
 public class InvalidNativeMemoryAccessException	extends
-																								RuntimeException
+																								CoreMemException
 {
 
 	private static final long serialVersionUID = 1L;

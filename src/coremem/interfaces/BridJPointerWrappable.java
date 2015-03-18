@@ -2,7 +2,7 @@ package coremem.interfaces;
 
 import org.bridj.Pointer;
 
-public interface BridJPointerWrappable<T>
+public interface BridJPointerWrappable
 {
-	public Pointer<T> getBridJPointer(Class<T> pTargetClass);
+	public <T> Pointer<T> getBridJPointer(Class<T> pTargetClass);
 }

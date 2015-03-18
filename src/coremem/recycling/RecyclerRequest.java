@@ -1,6 +1,6 @@
 package coremem.recycling;
 
-public interface RecyclerRequest<O>
+public interface RecyclerRequest
 {
 
 }
