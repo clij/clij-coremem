@@ -3,7 +3,7 @@ package coremem.recycling.test;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import coremem.recycling.RecyclableInterface;
-import coremem.recycling.Recycler;
+import coremem.recycling.RecyclerInterface;
 import coremem.rgc.FreeableBase;
 
 public class RecyclableTestClass extends FreeableBase	implements
@@ -14,7 +14,7 @@ public class RecyclableTestClass extends FreeableBase	implements
 	double[] mArray;
 
 	// Recycling related fields:
-	private Recycler<RecyclableTestClass, LongRequest> mRecycler;
+	private RecyclerInterface<RecyclableTestClass, LongRequest> mRecycler;
 	AtomicBoolean mReleased = new AtomicBoolean(false);
 
 	public RecyclableTestClass(LongRequest pParameters)
@@ -65,10 +65,17 @@ public class RecyclableTestClass extends FreeableBase	implements
 	}
 
 	@Override
-	public void setRecycler(Recycler<RecyclableTestClass, LongRequest> pRecycler)
+	public void release()
+	{
+		mRecycler.release(this);
+	}
+
+	@Override
+	public void setRecycler(RecyclerInterface<RecyclableTestClass, LongRequest> pRecycler)
 	{
 		mRecycler = pRecycler;
 	}
+
 
 
 

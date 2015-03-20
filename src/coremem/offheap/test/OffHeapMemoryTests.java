@@ -30,12 +30,12 @@ public class OffHeapMemoryTests
 	}
 
 	@Test
-	public void testRGC()
+	public void testRGC() throws InterruptedException
 	{
 
-		for (int i = 0; i < 200; i++)
+		for (int i = 0; i < 100; i++)
 		{
-			final OffHeapMemory lOffHeapMemory = new OffHeapMemory(1024 * 1024 * 128);
+			final OffHeapMemory lOffHeapMemory = new OffHeapMemory(1024);
 			// System.out.println("Allocated: " + lOffHeapMemory.getAddress());
 			lOffHeapMemory.setByte(	i % lOffHeapMemory.getSizeInBytes(),
 															(byte) i);
@@ -44,12 +44,14 @@ public class OffHeapMemoryTests
 			// + OffHeapMemoryAccess.getTotalAllocatedMemory());
 		}
 
-		for (int i = 0; i < 200; i++)
+		for (int i = 0; i < 100; i++)
 		{
 			System.gc();
 			// System.out.println("B * OffHeapMemoryAccess.getTotalAllocatedMemory()="
 			// + OffHeapMemoryAccess.getTotalAllocatedMemory());
+			Thread.sleep(1);
 		}
+
 
 		assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
 

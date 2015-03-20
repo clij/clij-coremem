@@ -25,7 +25,6 @@ import coremem.offheap.OffHeapMemoryAccess;
 import coremem.rgc.Cleanable;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
-import coremem.rgc.RessourceGarbageCollector;
 import coremem.util.Size;
 
 public abstract class MemoryBase extends FreeableBase	implements
@@ -44,14 +43,12 @@ public abstract class MemoryBase extends FreeableBase	implements
 
 	protected MemoryBase()
 	{
-		RessourceGarbageCollector.register(this);
 	}
 
 	public MemoryBase(long pAddressInBytes, long pLengtInBytes)
 	{
 		mAddressInBytes = pAddressInBytes;
 		mLengthInBytes = pLengtInBytes;
-		RessourceGarbageCollector.register(this);
 	}
 
 	@Override

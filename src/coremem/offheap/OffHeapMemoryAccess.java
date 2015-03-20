@@ -33,6 +33,7 @@ public final class OffHeapMemoryAccess
 	static private final AtomicLong cMaximumAllocatableMemory = new AtomicLong(Long.MAX_VALUE);
 
 	static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointers = new ConcurrentHashMap<Long, Long>();
+	static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointersSignatures = new ConcurrentHashMap<Long, Long>();
 	static private final AtomicLong cTotalAllocatedMemory = new AtomicLong(0);
 
 	static private final Object mLock = new OffHeapMemoryAccess();
@@ -44,6 +45,8 @@ public final class OffHeapMemoryAccess
 		{
 			cTotalAllocatedMemory.addAndGet(pLength);
 			cAllocatedMemoryPointers.put(pAddress, pLength);
+			cAllocatedMemoryPointersSignatures.put(	pAddress,
+																							System.nanoTime());
 		}
 	}
 
@@ -53,6 +56,7 @@ public final class OffHeapMemoryAccess
 		{
 			cTotalAllocatedMemory.addAndGet(-cAllocatedMemoryPointers.get(pAddress));
 			cAllocatedMemoryPointers.remove(pAddress);
+			cAllocatedMemoryPointersSignatures.remove(pAddress);
 		}
 	}
 
@@ -122,13 +126,22 @@ public final class OffHeapMemoryAccess
 		}
 	}
 
-	public static final boolean isAllocatedMemory(final long pAddress)
+	public static final boolean isAllocatedMemory(final long pAddress, long pSignature)
 	{
 		synchronized (mLock)
 		{
-			return cAllocatedMemoryPointers.get(pAddress) != null;
+			final Long lLength = cAllocatedMemoryPointers.get(pAddress);
+			final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
+			return (lLength != null) && (lKnownSignature == pSignature);
 		}
 	}
+
+	public static Long getSignature(long pAddress)
+	{
+		final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
+		return lKnownSignature;
+	}
+
 
 	public static final void freeMemory(final long pAddress) throws InvalidNativeMemoryAccessException
 	{
@@ -308,5 +321,6 @@ public final class OffHeapMemoryAccess
 			freeMemory(lAddress);
 		}
 	}
+
 
 }

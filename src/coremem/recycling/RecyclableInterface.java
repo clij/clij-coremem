@@ -12,10 +12,12 @@ public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P exte
 
 	void recycle(P pParameters);
 
-	void setRecycler(Recycler<O, P> pRecycler);
+	void setRecycler(RecyclerInterface<O, P> pRecycler);
 
 	void setReleased(boolean pIsReleased);
 
 	boolean isReleased();
+
+	void release();
 
 }

@@ -38,7 +38,8 @@ public class FragmentedMemory extends FreeableBase implements
 			else
 				lEffectiveFragmentSizeInBytes = lFragmentSizeInBytes;
 
-			lOffHeapMemory = OffHeapMemory.wrapPointer(	pContiguousMemoryInterface,
+			lOffHeapMemory = OffHeapMemory.wrapPointer(	"FragmentOf" + pContiguousMemoryInterface,
+																									pContiguousMemoryInterface,
 																									lAddress,
 																									lEffectiveFragmentSizeInBytes);
 			lAddress += lFragmentSizeInBytes;

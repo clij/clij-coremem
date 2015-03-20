@@ -126,6 +126,48 @@ public class Size
 			throw new RuntimeException("Invalid Class!");
 	}
 
+	public static int of(String pTypeName)
+	{
+		pTypeName = pTypeName.toLowerCase();
+		pTypeName = pTypeName.replaceAll("type", "");
+
+		if (pTypeName.contains("unsignedbyte") || pTypeName.contains("ubyte"))
+			return of(byte.class);
+
+		else if (pTypeName.contains("byte"))
+			return of(byte.class);
+
+		else if (pTypeName.contains("unsignedshort") || pTypeName.contains("ushort"))
+			return of(short.class);
+
+		else if (pTypeName.contains("short"))
+			return of(short.class);
+
+		else if (pTypeName.contains("unsignedint") || pTypeName.contains("uint"))
+			return of(int.class);
+
+		else if (pTypeName.contains("int"))
+			return of(int.class);
+
+		else if (pTypeName.contains("unsignedlong") || pTypeName.contains("ulong"))
+			return of(long.class);
+
+		else if (pTypeName.contains("long"))
+			return of(long.class);
+
+		else if (pTypeName.contains("halffloat"))
+			return of(float.class) / 2;
+
+		else if (pTypeName.contains("float"))
+			return of(float.class);
+
+		else if (pTypeName.contains("double"))
+			return of(double.class);
+
+		else
+			throw new RuntimeException("Invalid type name!");
+	}
+
 	public static Class<?> integralTypeFromSize(final int pNumberOfBytes,
 																							final boolean pSigned)
 	{
@@ -157,5 +199,7 @@ public class Size
 		}
 		throw new RuntimeException("Invalid number of bytes!");
 	}
+
+
 
 }

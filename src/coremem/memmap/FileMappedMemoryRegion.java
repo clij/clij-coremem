@@ -19,13 +19,12 @@ import coremem.offheap.OffHeapMemory;
 import coremem.rgc.Cleaner;
 import coremem.rgc.Freeable;
 
-public class FileMappedMemoryRegion extends
- MappedMemoryBase implements
-																																	MappableMemory,
-																																	Resizable,
-																																	SizedInBytes,
+public class FileMappedMemoryRegion extends MappedMemoryBase implements
+																														MappableMemory,
+																														Resizable,
+																														SizedInBytes,
 																														ContiguousMemoryInterface,
-																																	Freeable
+																														Freeable
 
 {
 
@@ -35,30 +34,30 @@ public class FileMappedMemoryRegion extends
 	private MemoryMappedFile mMemoryMappedFile;
 
 	public FileMappedMemoryRegion createNewFileMappedMemoryRegion(File pFile,
-																																		final long pLengthInBytes) throws IOException
+																																final long pLengthInBytes) throws IOException
 	{
 		return new FileMappedMemoryRegion(pFile,
-																					0,
-																					pLengthInBytes,
-																					StandardOpenOption.CREATE_NEW,
-																					StandardOpenOption.READ,
-																					StandardOpenOption.WRITE);
+																			0,
+																			pLengthInBytes,
+																			StandardOpenOption.CREATE_NEW,
+																			StandardOpenOption.READ,
+																			StandardOpenOption.WRITE);
 	}
 
 	public FileMappedMemoryRegion createNewSparseFileMappedMemoryRegion(File pFile,
-																																					final long pLengthInBytes) throws IOException
+																																			final long pLengthInBytes) throws IOException
 	{
 		return new FileMappedMemoryRegion(pFile,
-																					0,
-																					pLengthInBytes,
-																					StandardOpenOption.CREATE_NEW,
-																					StandardOpenOption.READ,
-																					StandardOpenOption.WRITE,
-																					StandardOpenOption.SPARSE);
+																			0,
+																			pLengthInBytes,
+																			StandardOpenOption.CREATE_NEW,
+																			StandardOpenOption.READ,
+																			StandardOpenOption.WRITE,
+																			StandardOpenOption.SPARSE);
 	}
 
 	public FileMappedMemoryRegion openExistingFileMappedMemoryRegion(	File pFile,
-																																			final long pLengthInBytes) throws IOException
+																																		final long pLengthInBytes) throws IOException
 	{
 		return openExistingFileMappedMemoryRegion(pFile,
 																							0,
@@ -66,18 +65,18 @@ public class FileMappedMemoryRegion extends
 	}
 
 	public FileMappedMemoryRegion openExistingFileMappedMemoryRegion(	File pFile,
-																																			final long pPositionInBytes,
-																																			final long pLengthInBytes) throws IOException
+																																		final long pPositionInBytes,
+																																		final long pLengthInBytes) throws IOException
 	{
 		return new FileMappedMemoryRegion(pFile,
-																					pPositionInBytes,
-																					pLengthInBytes,
-																					StandardOpenOption.READ,
-																					StandardOpenOption.WRITE);
+																			pPositionInBytes,
+																			pLengthInBytes,
+																			StandardOpenOption.READ,
+																			StandardOpenOption.WRITE);
 	}
 
 	public FileMappedMemoryRegion openReadOnlyExistingFileMappedMemoryRegion(	File pFile,
-																																							final long pLengthInBytes) throws IOException
+																																						final long pLengthInBytes) throws IOException
 	{
 		return openReadOnlyExistingFileMappedMemoryRegion(pFile,
 																											0,
@@ -85,13 +84,13 @@ public class FileMappedMemoryRegion extends
 	}
 
 	public FileMappedMemoryRegion openReadOnlyExistingFileMappedMemoryRegion(	File pFile,
-																																							final long pPositionInBytes,
-																																							final long pLengthInBytes) throws IOException
+																																						final long pPositionInBytes,
+																																						final long pLengthInBytes) throws IOException
 	{
 		return new FileMappedMemoryRegion(pFile,
-																					pPositionInBytes,
-																					pLengthInBytes,
-																					StandardOpenOption.READ);
+																			pPositionInBytes,
+																			pLengthInBytes,
+																			StandardOpenOption.READ);
 	}
 
 	public FileMappedMemoryRegion(File pFile,
@@ -210,16 +209,15 @@ public class FileMappedMemoryRegion extends
 	}
 
 	@Override
-	public OffHeapMemory subRegion(	long pOffset,
-																					long pLenghInBytes)
+	public OffHeapMemory subRegion(long pOffset, long pLenghInBytes)
 	{
 		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes + mLengthInBytes)
 			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate OffHeapMemory from FileMappedMemoryRegion on subregion staring at offset %d and length %d  ",
 																																	pOffset,
 																																	pLenghInBytes));
 		final OffHeapMemory lOffHeapMemory = new OffHeapMemory(	this,
-																																							mAddressInBytes + pOffset,
-																																							pLenghInBytes);
+																														mAddressInBytes + pOffset,
+																														pLenghInBytes);
 		return lOffHeapMemory;
 	}
 

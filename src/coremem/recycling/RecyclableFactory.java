@@ -1,9 +1,9 @@
 package coremem.recycling;
 
 
-public interface RecyclableFactory<O extends RecyclableInterface<O, P>, P extends RecyclerRequest>
+public interface RecyclableFactory<R extends RecyclableInterface<R, P>, P extends RecyclerRequest>
 {
 
-	O create(P pParameters);
+	R create(P pParameters);
 
 }

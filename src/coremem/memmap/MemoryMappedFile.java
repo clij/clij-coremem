@@ -10,17 +10,19 @@ import coremem.rgc.Cleaner;
 public class MemoryMappedFile implements AutoCloseable, Cleanable
 {
 
-	private FileChannel mFileChannel;
-	private MemoryMappedFileAccessMode mAccessMode;
-	private boolean mExtendIfNeeded;
+	private final FileChannel mFileChannel;
+	private final MemoryMappedFileAccessMode mAccessMode;
+	private final boolean mExtendIfNeeded;
 
-	private long mRequestedFilePosition;
-	private long mRequestedMappedRegionLength;
+	private final long mRequestedFilePosition;
+	private final long mRequestedMappedRegionLength;
 
-	private long mActualMappingFilePosition;
-	private long mActualMappingRegionLength;
+	private final long mActualMappingFilePosition;
+	private final long mActualMappingRegionLength;
 
-	private long mMappingPointerAddress;
+	private final long mMappingPointerAddress;
+
+	private final Long mSignature;
 
 	public MemoryMappedFile(FileChannel pFileChannel,
 													MemoryMappedFileAccessMode pAccessMode,
@@ -43,6 +45,9 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 																												mActualMappingFilePosition,
 																												mActualMappingRegionLength,
 																												mExtendIfNeeded);
+
+		mSignature = OffHeapMemoryAccess.getSignature(mMappingPointerAddress);
+
 	}
 
 	public long getAddressAtFilePosition(long pFilePosition)
@@ -67,26 +72,48 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 	static class MemoryMappedFileCleaner implements Cleaner
 	{
-		private long mAddressToClean;
-		private FileChannel mFileChannelToClean;
-		private long mMappedRegionLength;
+		private final long mAddressToClean;
+		private final FileChannel mFileChannelToClean;
+		private final long mMappedRegionLength;
+		private final Long mCleanerSignature;
 
 		public MemoryMappedFileCleaner(	FileChannel pFileChannel,
 																		final long pMemoryMapAddress,
-																		final long pMappedRegionLength)
+																		final long pMappedRegionLength,
+																		final Long pSignature)
 		{
 			mFileChannelToClean = pFileChannel;
 			mAddressToClean = pMemoryMapAddress;
 			mMappedRegionLength = pMappedRegionLength;
+			mCleanerSignature = pSignature;
 		}
 
 		@Override
 		public void run()
 		{
-			if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean))
+			if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean,
+																								mCleanerSignature))
+			{
 				MemoryMappedFileUtils.unmap(mFileChannelToClean,
 																		mAddressToClean,
 																		mMappedRegionLength);
+				format(	"Successfully unmaped memory! channel=%s, address=%s, signature=%d \n",
+								mFileChannelToClean,
+								mAddressToClean,
+								mCleanerSignature);/**/
+			}
+			else
+			{
+				format(	"Attempted to unmap already unmapped memory, or memorywith wrong signature! channel=%s, address=%s, signature=%d \n",
+								mFileChannelToClean,
+								mAddressToClean,
+								mCleanerSignature);/**/
+			}
+		}
+
+		public void format(String format, Object... args)
+		{
+			System.out.format(format, args);
 		}
 
 	}
@@ -96,7 +123,8 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 	{
 		return new MemoryMappedFileCleaner(	mFileChannel,
 																				mMappingPointerAddress,
-																				mActualMappingRegionLength);
+																				mActualMappingRegionLength,
+																				mSignature);
 	}
 
 }
