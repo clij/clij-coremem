@@ -56,7 +56,7 @@ public class ContiguousBuffer
 		return lAddress <= mPosition && mPosition < lAddress + lSizeInBytes;
 	}
 
-	public void putByte(byte pByte)
+	public void writeByte(byte pByte)
 	{
 		OffHeapMemoryAccess.setByte(mPosition, pByte);
 		mPosition += 1;

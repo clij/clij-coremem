@@ -54,7 +54,7 @@ public class Size
 							|| pClass == Double.TYPE)
 			return DOUBLE;
 		else
-			throw new RuntimeException("Invalid Class!");
+			return of(pClass.getSimpleName());
 
 	}
 
