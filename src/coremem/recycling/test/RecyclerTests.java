@@ -4,6 +4,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
@@ -19,23 +22,23 @@ public class RecyclerTests
 	public void testBasics()
 	{
 
-		final RecyclableFactory<RecyclableTestClass, LongRequest> lRecyclableFactory = new RecyclableFactory<RecyclableTestClass, LongRequest>()
+		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
 		{
 			@Override
-			public RecyclableTestClass create(LongRequest pParameters)
+			public TestRecyclable create(TestRequest pParameters)
 			{
-				return new RecyclableTestClass(pParameters);
+				return new TestRecyclable(pParameters);
 			}
 		};
 
-		final RecyclerInterface<RecyclableTestClass, LongRequest> lRecycler = new BasicRecycler<RecyclableTestClass, LongRequest>(lRecyclableFactory,
-																																																															200,
-																																																															200,
-																																																															true);
+		final RecyclerInterface<TestRecyclable, TestRequest> lRecycler = new BasicRecycler<TestRecyclable, TestRequest>(lRecyclableFactory,
+																																																										200,
+																																																										200,
+																																																										true);
 
 		assertEquals(	100,
 									lRecycler.ensurePreallocated(	100,
-																								new LongRequest(1L)));
+																								new TestRequest(1L)));
 
 		assertEquals(100, lRecycler.getNumberOfAvailableObjects());
 		assertEquals(0, lRecycler.getNumberOfLiveObjects());
@@ -47,22 +50,22 @@ public class RecyclerTests
 
 		assertEquals(	100,
 									lRecycler.ensurePreallocated(	100,
-																								new LongRequest(1L)));
+																								new TestRequest(1L)));
 
 		assertEquals(100, lRecycler.getNumberOfAvailableObjects());
 		assertEquals(0, lRecycler.getNumberOfLiveObjects());
 
-		final HashSet<RecyclableTestClass> lRecyclableObjectSet = new HashSet<RecyclableTestClass>();
+		final HashSet<TestRecyclable> lRecyclableObjectSet = new HashSet<TestRecyclable>();
 		for (int i = 0; i < 200; i++)
 		{
-			final RecyclableTestClass lRecyclableObject = lRecycler.getOrFail(new LongRequest(1L));
+			final TestRecyclable lRecyclableObject = lRecycler.getOrFail(new TestRequest(1L));
 			assertTrue(lRecyclableObject != null);
 			lRecyclableObjectSet.add(lRecyclableObject);
 		}
 
 		for (int i = 0; i < 10; i++)
 		{
-			final RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.getOrFail(new LongRequest(1L));
+			final TestRecyclable lFailOrRequestRecyclableObject = lRecycler.getOrFail(new TestRequest(1L));
 			// System.out.println(lFailOrRequestRecyclableObject);
 			assertTrue(lFailOrRequestRecyclableObject == null);
 		}
@@ -70,9 +73,25 @@ public class RecyclerTests
 		assertEquals(0, lRecycler.getNumberOfAvailableObjects());
 		assertEquals(200, lRecycler.getNumberOfLiveObjects());
 
-		for (final RecyclableTestClass lRecyclableTestClass : lRecyclableObjectSet)
+		final long lStartTimeNs = System.nanoTime();
+		for (int i = 0; i < 10; i++)
 		{
-			lRecycler.release(lRecyclableTestClass);
+			final TestRecyclable lFailOrRequestRecyclableObject = lRecycler.getOrWait(100,
+																																								TimeUnit.MILLISECONDS,
+																																								new TestRequest(1L));
+			// System.out.println(lFailOrRequestRecyclableObject);
+			assertTrue(lFailOrRequestRecyclableObject == null);
+		}
+		final long lStopTimeNs = System.nanoTime();
+
+		assertTrue(10 * 100 * 1e6 < lStopTimeNs - lStartTimeNs);
+
+		assertEquals(1, lRecycler.getNumberOfAvailableObjects());
+		assertEquals(200, lRecycler.getNumberOfLiveObjects());
+
+		for (final TestRecyclable lTestRecyclable : lRecyclableObjectSet)
+		{
+			lRecycler.release(lTestRecyclable);
 		}
 
 		assertEquals(200, lRecycler.getNumberOfAvailableObjects());
@@ -86,9 +105,9 @@ public class RecyclerTests
 		for (int i = 0; i < 100; i++)
 		{
 			// System.out.println(i);
-			final RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.getOrWait(	1,
-																																											TimeUnit.MICROSECONDS,
-																																											new LongRequest(1L));
+			final TestRecyclable lFailOrRequestRecyclableObject = lRecycler.getOrWait(1,
+																																								TimeUnit.MICROSECONDS,
+																																								new TestRequest(1L));
 			assertTrue(lFailOrRequestRecyclableObject != null);
 			lRecycler.release(lFailOrRequestRecyclableObject);
 		}
@@ -99,9 +118,9 @@ public class RecyclerTests
 		for (int i = 0; i < 200; i++)
 		{
 			// System.out.println(i);
-			final RecyclableTestClass lRecyclableObject = lRecycler.getOrWait(1,
-																																				TimeUnit.MICROSECONDS,
-																																				new LongRequest(1L));
+			final TestRecyclable lRecyclableObject = lRecycler.getOrWait(	1,
+																																		TimeUnit.MICROSECONDS,
+																																		new TestRequest(1L));
 			assertTrue(lRecyclableObject != null);
 			lRecyclableObjectSet.add(lRecyclableObject);
 		}
@@ -111,7 +130,7 @@ public class RecyclerTests
 
 		for (int i = 0; i < 10; i++)
 		{
-			final RecyclableTestClass lFailOrRequestRecyclableObject = lRecycler.getOrFail(new LongRequest(1L));
+			final TestRecyclable lFailOrRequestRecyclableObject = lRecycler.getOrFail(new TestRequest(1L));
 			// System.out.println(lFailOrRequestRecyclableObject);
 			assertTrue(lFailOrRequestRecyclableObject == null);
 		}
@@ -128,29 +147,213 @@ public class RecyclerTests
 	@Test
 	public void testTightRecycling()
 	{
-		final RecyclableFactory<RecyclableTestClass, LongRequest> lRecyclableFactory = new RecyclableFactory<RecyclableTestClass, LongRequest>()
+		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
 		{
 			@Override
-			public RecyclableTestClass create(LongRequest pParameters)
+			public TestRecyclable create(TestRequest pParameters)
 			{
-				return new RecyclableTestClass(pParameters);
+				return new TestRecyclable(pParameters);
 			}
 		};
 
-		final BasicRecycler<RecyclableTestClass, LongRequest> lRecycler = new BasicRecycler<RecyclableTestClass, LongRequest>(lRecyclableFactory,
-																																																													1000);
+		final BasicRecycler<TestRecyclable, TestRequest> lRecycler = new BasicRecycler<TestRecyclable, TestRequest>(lRecyclableFactory,
+																																																								1000);
 
 		for (int i = 0; i < 100000; i++)
 		{
-			final RecyclableTestClass lRecyclableObject = lRecycler.getOrWait(1,
-																																				TimeUnit.SECONDS,
-																																				new LongRequest(1L));
+			final TestRecyclable lRecyclableObject = lRecycler.getOrWait(	1,
+																																		TimeUnit.SECONDS,
+																																		new TestRequest(1L));
 			assertTrue(lRecyclableObject != null);
 
 			// if (i % 2 == 0)
 			lRecycler.release(lRecyclableObject);
 		}
 
+	}
+
+	@Test
+	public void testTightRecyclingWithRequestChanges()
+	{
+		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
+		{
+			@Override
+			public TestRecyclable create(TestRequest pParameters)
+			{
+				return new TestRecyclable(pParameters);
+			}
+		};
+
+		final BasicRecycler<TestRecyclable, TestRequest> lRecycler = new BasicRecycler<TestRecyclable, TestRequest>(lRecyclableFactory,
+																																																								10,
+																																																								10,
+																																																								true);
+		TestRecyclable lRecyclableObject;
+
+		assertEquals(0, lRecycler.getNumberOfAvailableObjects());
+		assertEquals(0, lRecycler.getNumberOfLiveObjects());
+
+		for (int i = 0; i < 10; i++)
+		{
+			lRecyclableObject = lRecycler.getOrWait(1,
+																							TimeUnit.MICROSECONDS,
+																							new TestRequest(1024L));
+			assertTrue(lRecyclableObject != null);
+			assertEquals(1024L, lRecyclableObject.getSizeInBytes());
+			lRecycler.release(lRecyclableObject);
+		}
+
+		assertEquals(1, lRecycler.getNumberOfAvailableObjects());
+		assertEquals(0, lRecycler.getNumberOfLiveObjects());
+
+		for (int i = 0; i < 10; i++)
+		{
+			lRecyclableObject = lRecycler.getOrWait(1,
+																							TimeUnit.MICROSECONDS,
+																							new TestRequest(2048L));
+			System.out.println(lRecyclableObject);
+			System.out.println("lRecycler.getNumberOfAvailableObjects()" + lRecycler.getNumberOfAvailableObjects());
+			System.out.println("lRecycler.getNumberOfLiveObjects()" + lRecycler.getNumberOfLiveObjects());
+
+			assertTrue(lRecyclableObject != null);
+			assertEquals(2048L, lRecyclableObject.getSizeInBytes());
+		}
+
+		assertEquals(0, lRecycler.getNumberOfAvailableObjects());
+		assertEquals(10, lRecycler.getNumberOfLiveObjects());
+
+		assertEquals(null, lRecycler.getOrWait(	1,
+																						TimeUnit.MICROSECONDS,
+																						new TestRequest(2048L)));
+
+		lRecycler.clearLive();
+
+		for (int i = 0; i < 100000; i++)
+		{
+
+			if ((i % 100) == 0)
+			{
+				lRecyclableObject = lRecycler.getOrWait(1,
+																								TimeUnit.MICROSECONDS,
+																								new TestRequest(1024L));
+				assertEquals(1024L, lRecyclableObject.getSizeInBytes());
+
+			}
+			else
+			{
+				lRecyclableObject = lRecycler.getOrWait(1,
+																								TimeUnit.MICROSECONDS,
+																								new TestRequest(2048L));
+				assertEquals(2048L, lRecyclableObject.getSizeInBytes());
+
+			}
+
+			assertTrue(lRecyclableObject != null);
+
+			// if (i % 2 == 0)
+			lRecycler.release(lRecyclableObject);
+		}
+
+	}
+
+	@Test
+	public void testAsynchronousRecyclingWithRequestChanges() throws InterruptedException
+	{
+		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
+		{
+			@Override
+			public TestRecyclable create(TestRequest pParameters)
+			{
+				return new TestRecyclable(pParameters);
+			}
+		};
+
+		final BasicRecycler<TestRecyclable, TestRequest> lRecycler = new BasicRecycler<TestRecyclable, TestRequest>(lRecyclableFactory,
+																																																								10,
+																																																								10,
+																																																								true);
+
+		final ArrayBlockingQueue<TestRecyclable> lQueue = new ArrayBlockingQueue<TestRecyclable>(10);
+
+		final Runnable lRunnableProducer = new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				for (int i = 0; i < 1000; i++)
+				{
+					// System.out.println("PRODUCER:" + i);
+					final TestRecyclable lRecyclable = lRecycler.getOrWait(	1,
+																																	TimeUnit.MICROSECONDS,
+																																	new TestRequest(1024L));
+
+					// System.out.println("SENDING...");
+					lQueue.offer(lRecyclable);
+					// System.out.println("SENT:" + lRecyclable);
+					try
+					{
+						Thread.sleep(1);
+					}
+					catch (final InterruptedException e)
+					{
+					}
+				}
+			}
+		};
+
+		final Runnable lRunnableConsumer = new Runnable()
+		{
+
+			@Override
+			public void run()
+			{
+				for (int i = 0; i < 1000; i++)
+				{
+					// System.out.println("CONSUMER:" + i);
+					try
+					{
+
+						// System.out.println("RECEIVING...");
+						final TestRecyclable lRecyclable = lQueue.take();
+						// System.out.println("RECEIVED:" + lRecyclable);
+						if (lRecyclable != null)
+						{
+							try
+							{
+								Thread.sleep(1);
+							}
+							catch (final InterruptedException e)
+							{
+							}
+							lRecyclable.release();
+						}
+					}
+					catch (final InterruptedException e)
+					{
+						e.printStackTrace();
+					}
+				}
+			}
+		};
+
+		final ExecutorService lProducerExecutor = Executors.newSingleThreadExecutor();
+		final ExecutorService lConsumerExecutor = Executors.newSingleThreadExecutor();
+
+		lConsumerExecutor.execute(lRunnableConsumer);
+		lProducerExecutor.execute(lRunnableProducer);
+
+		lConsumerExecutor.shutdown();
+		lConsumerExecutor.awaitTermination(100, TimeUnit.SECONDS);
+
+		lProducerExecutor.shutdown();
+		lProducerExecutor.awaitTermination(100, TimeUnit.SECONDS);
+
+		System.out.println("lRecycler.getNumberOfAvailableObjects()=" + lRecycler.getNumberOfAvailableObjects());
+		System.out.println("lRecycler.getNumberOfLiveObjects()=" + lRecycler.getNumberOfLiveObjects());
+
+		// assertEquals(0, lRecycler.getNumberOfAvailableObjects());
+		assertEquals(0, lRecycler.getNumberOfLiveObjects());
 	}
 
 }

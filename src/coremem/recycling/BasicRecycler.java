@@ -19,6 +19,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 	private final AtomicBoolean mIsFreed = new AtomicBoolean(false);
 	private final boolean mAutoFree;
 
+	private volatile long mAvailableQueueWaitTime = 1;
+	private volatile TimeUnit mAvailableQueueTimeUnit = TimeUnit.MICROSECONDS;
+
 	public BasicRecycler(	final RecyclableFactory<R, P> pRecyclableFactory,
 												final int pMaximumNumberOfObjects)
 	{
@@ -87,7 +90,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 	}
 
 	@Override
-	public R request(	final boolean pWait,
+	public R request(	final boolean pWaitForLiveObjectToComeBack,
 										final long pWaitTime,
 										final TimeUnit pTimeUnit,
 										final P pRecyclerRequest)
@@ -96,21 +99,17 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 
 		R lRecyclable;
 
-		if (pWait)
+		try
 		{
-			try
-			{
-				lRecyclable = mAvailableObjectsQueue.poll(pWaitTime,
-																									pTimeUnit);
-			}
-			catch (final InterruptedException e)
-			{
-				return request(pWait, pWaitTime, pTimeUnit, pRecyclerRequest);
-			}
+			lRecyclable = mAvailableObjectsQueue.poll(mAvailableQueueWaitTime,
+																								mAvailableQueueTimeUnit);
 		}
-		else
+		catch (final InterruptedException e)
 		{
-			lRecyclable = mAvailableObjectsQueue.poll();
+			return request(	pWaitForLiveObjectToComeBack,
+											pWaitTime,
+											pTimeUnit,
+											pRecyclerRequest);
 		}
 
 		if (lRecyclable != null)
@@ -118,7 +117,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 			// Recycle existing recyclable:
 			lRecyclable.recycle(pRecyclerRequest);
 			lRecyclable.setReleased(false);
-			return addToLiveObjectQueue(pWait,
+			return addToLiveObjectQueue(pWaitForLiveObjectToComeBack,
 																	pWaitTime,
 																	pTimeUnit,
 																	lRecyclable);
@@ -131,11 +130,11 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 			{
 				// If we are not allowed then give up immediately if we don't have space
 				// in the live object queue.
-				if (!pWait && mLiveObjectsQueue.remainingCapacity() == 0)
+				if (!pWaitForLiveObjectToComeBack && mLiveObjectsQueue.remainingCapacity() == 0)
 					return null;
 
-				// if we can wait then we we wait...
-				if (pWait)
+				// if we can wait then we wait...
+				if (pWaitForLiveObjectToComeBack)
 					waitForFreeSpaceInLiveQueue(pWaitTime, pTimeUnit);
 
 				// There is ~maybe~ enough free capacity in the live object queue, we
@@ -143,7 +142,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 				lRecyclable = mRecyclableFactory.create(pRecyclerRequest);
 				lRecyclable.setRecycler(this);
 				lRecyclable.setReleased(false);
-				return addToLiveObjectQueue(pWait,
+				return addToLiveObjectQueue(pWaitForLiveObjectToComeBack,
 																		pWaitTime,
 																		pTimeUnit,
 																		lRecyclable);
@@ -288,5 +287,24 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 
 	}
 
+	public long getAvailableQueueWaitTime()
+	{
+		return mAvailableQueueWaitTime;
+	}
+
+	public void setAvailableQueueWaitTime(long pAvailableQueueWaitTime)
+	{
+		mAvailableQueueWaitTime = pAvailableQueueWaitTime;
+	}
+
+	public TimeUnit getAvailableQueueTimeUnit()
+	{
+		return mAvailableQueueTimeUnit;
+	}
+
+	public void setAvailableQueueTimeUnit(TimeUnit pAvailableQueueTimeUnit)
+	{
+		mAvailableQueueTimeUnit = pAvailableQueueTimeUnit;
+	}
 
 }
