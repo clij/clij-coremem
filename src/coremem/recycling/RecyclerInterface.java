@@ -16,7 +16,7 @@ public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extend
 															final TimeUnit pTimeUnit,
 															final P pRecyclerRequest);
 
-	public abstract R request(final boolean pWait,
+	public abstract R request(final boolean pWaitForLiveRecyclablesToComeBack,
 														final long pWaitTime,
 														final TimeUnit pTimeUnit,
 														final P pRecyclerRequest);
@@ -33,5 +33,7 @@ public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extend
 	public abstract void clearReleased();
 
 	public abstract void clearLive();
+
+	public abstract void printDebugInfo();
 
 }

@@ -114,13 +114,29 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 
 		if (lRecyclable != null)
 		{
-			// Recycle existing recyclable:
-			lRecyclable.recycle(pRecyclerRequest);
-			lRecyclable.setReleased(false);
-			return addToLiveObjectQueue(pWaitForLiveObjectToComeBack,
-																	pWaitTime,
-																	pTimeUnit,
-																	lRecyclable);
+			// Is this a compatible recyclable?
+			if (lRecyclable.isCompatible(pRecyclerRequest))
+			{
+				// Recycle existing recyclable if compatible:
+				lRecyclable.recycle(pRecyclerRequest);
+				lRecyclable.setReleased(false);
+				return addToLiveObjectQueue(pWaitForLiveObjectToComeBack,
+																		pWaitTime,
+																		pTimeUnit,
+																		lRecyclable);
+			}
+			else
+			{
+				// Got unlucky, first we trash this recyclable:
+				if (mAutoFree)
+					lRecyclable.free();
+				// Got unlucky, we try again (eventualy we might find a compatible one
+				// or just allocate a new one)
+				return request(	pWaitForLiveObjectToComeBack,
+												pWaitTime,
+												pTimeUnit,
+												pRecyclerRequest);
+			}
 
 		}
 		else
@@ -305,6 +321,13 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 	public void setAvailableQueueTimeUnit(TimeUnit pAvailableQueueTimeUnit)
 	{
 		mAvailableQueueTimeUnit = pAvailableQueueTimeUnit;
+	}
+
+	@Override
+	public void printDebugInfo()
+	{
+		System.out.println("getNumberOfAvailableObjects()=" + getNumberOfAvailableObjects());
+		System.out.println("getNumberOfLiveObjects()=" + getNumberOfLiveObjects());
 	}
 
 }

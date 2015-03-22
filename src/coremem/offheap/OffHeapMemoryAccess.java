@@ -6,6 +6,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
 import sun.misc.Unsafe;
+import coremem.exceptions.InvalidAllocationParameterException;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.OutOfMemoryException;
 
@@ -86,6 +87,8 @@ public final class OffHeapMemoryAccess
 		{
 			checkMaxAllocatableMemory(pLengthInBytes);
 
+			if (pLengthInBytes <= 0)
+				throw new InvalidAllocationParameterException("cUnsafe.allocateMemory requires a strictly positive allocation length: " + pLengthInBytes);
 			final long lAddress = cUnsafe.allocateMemory(pLengthInBytes);
 			if (lAddress <= 0)
 				throw new OutOfMemoryException("cUnsafe.allocateMemory returned null or negative pointer: " + lAddress);

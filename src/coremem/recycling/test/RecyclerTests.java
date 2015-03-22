@@ -196,7 +196,7 @@ public class RecyclerTests
 		for (int i = 0; i < 10; i++)
 		{
 			lRecyclableObject = lRecycler.getOrWait(1,
-																							TimeUnit.MICROSECONDS,
+																							TimeUnit.SECONDS,
 																							new TestRequest(1024L));
 			assertTrue(lRecyclableObject != null);
 			assertEquals(1024L, lRecyclableObject.getSizeInBytes());
@@ -209,7 +209,7 @@ public class RecyclerTests
 		for (int i = 0; i < 10; i++)
 		{
 			lRecyclableObject = lRecycler.getOrWait(1,
-																							TimeUnit.MICROSECONDS,
+																							TimeUnit.SECONDS,
 																							new TestRequest(2048L));
 			System.out.println(lRecyclableObject);
 			System.out.println("lRecycler.getNumberOfAvailableObjects()" + lRecycler.getNumberOfAvailableObjects());
@@ -223,7 +223,7 @@ public class RecyclerTests
 		assertEquals(10, lRecycler.getNumberOfLiveObjects());
 
 		assertEquals(null, lRecycler.getOrWait(	1,
-																						TimeUnit.MICROSECONDS,
+																						TimeUnit.SECONDS,
 																						new TestRequest(2048L)));
 
 		lRecycler.clearLive();
@@ -234,7 +234,7 @@ public class RecyclerTests
 			if ((i % 100) == 0)
 			{
 				lRecyclableObject = lRecycler.getOrWait(1,
-																								TimeUnit.MICROSECONDS,
+																								TimeUnit.SECONDS,
 																								new TestRequest(1024L));
 				assertEquals(1024L, lRecyclableObject.getSizeInBytes());
 
@@ -242,7 +242,7 @@ public class RecyclerTests
 			else
 			{
 				lRecyclableObject = lRecycler.getOrWait(1,
-																								TimeUnit.MICROSECONDS,
+																								TimeUnit.SECONDS,
 																								new TestRequest(2048L));
 				assertEquals(2048L, lRecyclableObject.getSizeInBytes());
 
@@ -284,9 +284,19 @@ public class RecyclerTests
 				for (int i = 0; i < 1000; i++)
 				{
 					// System.out.println("PRODUCER:" + i);
-					final TestRecyclable lRecyclable = lRecycler.getOrWait(	1,
-																																	TimeUnit.MICROSECONDS,
-																																	new TestRequest(1024L));
+					TestRecyclable lRecyclable;
+					if (i % 10 == 0)
+					{
+						lRecyclable = lRecycler.getOrWait(1,
+																							TimeUnit.SECONDS,
+																							new TestRequest(1024L));
+					}
+					else
+					{
+						lRecyclable = lRecycler.getOrWait(1,
+																							TimeUnit.SECONDS,
+																							new TestRequest(2048L));
+					}
 
 					// System.out.println("SENDING...");
 					lQueue.offer(lRecyclable);
@@ -321,7 +331,7 @@ public class RecyclerTests
 						{
 							try
 							{
-								Thread.sleep(1);
+								Thread.sleep(3);
 							}
 							catch (final InterruptedException e)
 							{
@@ -355,5 +365,4 @@ public class RecyclerTests
 		// assertEquals(0, lRecycler.getNumberOfAvailableObjects());
 		assertEquals(0, lRecycler.getNumberOfLiveObjects());
 	}
-
 }

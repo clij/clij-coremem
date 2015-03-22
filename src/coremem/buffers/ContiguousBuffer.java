@@ -8,15 +8,20 @@ import coremem.offheap.OffHeapMemoryAccess;
 public class ContiguousBuffer
 {
 	private final ContiguousMemoryInterface mContiguousMemoryInterface;
+	private final long mFirstValidPosition;
+	private final long mLastValidPosition;
 	private long mPosition;
 
 	ArrayDeque<Long> mStack = new ArrayDeque<Long>();
+
 
 	public ContiguousBuffer(ContiguousMemoryInterface pContiguousMemoryInterface)
 	{
 		super();
 		mContiguousMemoryInterface = pContiguousMemoryInterface;
-		mPosition = pContiguousMemoryInterface.getAddress();
+		mFirstValidPosition = pContiguousMemoryInterface.getAddress();
+		mPosition = mFirstValidPosition;
+		mLastValidPosition = mFirstValidPosition + pContiguousMemoryInterface.getSizeInBytes();
 	}
 
 	public long getCapacity()
@@ -26,12 +31,12 @@ public class ContiguousBuffer
 
 	public void setPosition(long pOffset)
 	{
-		mPosition = mContiguousMemoryInterface.getAddress() + pOffset;
+		mPosition = mFirstValidPosition + pOffset;
 	}
 
 	public void rewind()
 	{
-		mPosition = mContiguousMemoryInterface.getAddress();
+		mPosition = mFirstValidPosition;
 	}
 
 	public void clearStack()
@@ -54,6 +59,11 @@ public class ContiguousBuffer
 		final long lAddress = mContiguousMemoryInterface.getAddress();
 		final long lSizeInBytes = mContiguousMemoryInterface.getSizeInBytes();
 		return lAddress <= mPosition && mPosition < lAddress + lSizeInBytes;
+	}
+
+	public boolean hasRemaining()
+	{
+		return mPosition <= mLastValidPosition;
 	}
 
 	public void writeByte(byte pByte)
