@@ -89,7 +89,7 @@ public class OffHeapMemoryAccessTests
 
 		try
 		{
-			final long lLength = 16L * 1000L * 1000L * 1000L;
+			final long lLength = 1L * 1000L * 1000L * 1000L;
 
 			System.out.println("allocateMemory");
 			final long lAddress = OffHeapMemoryAccess.allocateMemory(lLength);
