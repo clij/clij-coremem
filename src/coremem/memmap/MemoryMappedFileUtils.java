@@ -51,7 +51,7 @@ public final class MemoryMappedFileUtils
 			{
 				if (pFileChannel.size() < pFilePosition + pMappedRegionLength)
 				{
-					long lCurrentPosition = pFileChannel.position();
+					final long lCurrentPosition = pFileChannel.position();
 					pFileChannel.position(pFilePosition + pMappedRegionLength
 																- 1);
 					// The following ensures that the file has the size requested in the
@@ -70,23 +70,23 @@ public final class MemoryMappedFileUtils
 																													Long.TYPE,
 																													Long.TYPE);
 			lMemoryMapMethod.setAccessible(true);
-			Object lReturnValue = lMemoryMapMethod.invoke(pFileChannel,
+			final Object lReturnValue = lMemoryMapMethod.invoke(pFileChannel,
 																										pAccessMode.getValue(),
 																										pFilePosition,
 																										pMappedRegionLength);
 
 			final Long lAddressAsLong = (Long) lReturnValue;
 
-			long lAddress = lAddressAsLong.longValue();
+			final long lAddress = lAddressAsLong.longValue();
 			OffHeapMemoryAccess.registerMemoryRegion(lAddress,
 																							pMappedRegionLength);
 
 			lMappedAddress = lAddressAsLong;
 
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
-			String lErrorMessage = String.format(	"Cannot memory map file: %s at file position %d with length %d (%s)",
+			final String lErrorMessage = String.format(	"Cannot memory map file: %s at file position %d with length %d (%s)",
 																						pFileChannel.toString(),
 																						pFilePosition,
 																						pMappedRegionLength,
@@ -108,12 +108,12 @@ public final class MemoryMappedFileUtils
 		try
 		{
 
-			Method lMemoryUnMapMethod = pFileChannel.getClass()
+			final Method lMemoryUnMapMethod = pFileChannel.getClass()
 																							.getDeclaredMethod(	"unmap0",
 																																	Long.TYPE,
 																																	Long.TYPE);
 			lMemoryUnMapMethod.setAccessible(true);
-			Object lReturnValue = lMemoryUnMapMethod.invoke(null,
+			final Object lReturnValue = lMemoryUnMapMethod.invoke(null,
 																											pMemoryMapAddress,
 																											pMappedRegionLength);
 
@@ -123,9 +123,9 @@ public final class MemoryMappedFileUtils
 
 			lIntReturnValue = lReturnAsInteger.intValue();
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
-			String lErrorMessage = String.format(	"Cannot unmap memory at address %d with length %d (%s)",
+			final String lErrorMessage = String.format(	"Cannot unmap memory at address %d with length %d (%s)",
 																						pMemoryMapAddress,
 																						pMappedRegionLength,
 																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
@@ -171,9 +171,9 @@ public final class MemoryMappedFileUtils
 		{
 			pFileChannel.truncate(pLength);
 		}
-		catch (Throwable e)
+		catch (final Throwable e)
 		{
-			String lErrorMessage = String.format(	"Cannot truncate file %s at length %d (%s)",
+			final String lErrorMessage = String.format(	"Cannot truncate file %s at length %d (%s)",
 																						pFileChannel,
 																						pLength,
 																						e.getLocalizedMessage() != null	? e.getLocalizedMessage()
@@ -190,7 +190,7 @@ public final class MemoryMappedFileUtils
 		boolean lWrite = false;
 		boolean lRead = false;
 
-		for (StandardOpenOption lStandardOpenOption : pStandardOpenOption)
+		for (final StandardOpenOption lStandardOpenOption : pStandardOpenOption)
 		{
 			lWrite |= lStandardOpenOption == StandardOpenOption.CREATE;
 			lWrite |= lStandardOpenOption == StandardOpenOption.CREATE_NEW;
@@ -212,7 +212,6 @@ public final class MemoryMappedFileUtils
 
 	private void error(String string, String lErrorMessage)
 	{
-		// TODO Auto-generated method stub
 
 	}
 
