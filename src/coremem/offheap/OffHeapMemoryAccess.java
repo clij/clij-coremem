@@ -71,6 +71,11 @@ public final class OffHeapMemoryAccess
 		cMaximumAllocatableMemory.set(pMaximumAllocatableMemory);
 	}
 
+	public static final void overrideTotalAllocatedMemory(long pTotalAllocatedMemory)
+	{
+		cTotalAllocatedMemory.set(pTotalAllocatedMemory);
+	}
+
 	public static final long getTotalAllocatedMemory()
 	{
 		return cTotalAllocatedMemory.get();
@@ -129,7 +134,8 @@ public final class OffHeapMemoryAccess
 		}
 	}
 
-	public static final boolean isAllocatedMemory(final long pAddress, long pSignature)
+	public static final boolean isAllocatedMemory(final long pAddress,
+																								long pSignature)
 	{
 		synchronized (mLock)
 		{
@@ -144,7 +150,6 @@ public final class OffHeapMemoryAccess
 		final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
 		return lKnownSignature;
 	}
-
 
 	public static final void freeMemory(final long pAddress) throws InvalidNativeMemoryAccessException
 	{
@@ -324,6 +329,5 @@ public final class OffHeapMemoryAccess
 			freeMemory(lAddress);
 		}
 	}
-
 
 }

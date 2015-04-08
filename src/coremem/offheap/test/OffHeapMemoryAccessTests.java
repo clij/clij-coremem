@@ -17,29 +17,41 @@ public class OffHeapMemoryAccessTests
 	@Test
 	public void testMaxAllocation()
 	{
-		int i = 0;
 		try
 		{
-			OffHeapMemoryAccess.setMaximumAllocatableMemory(1000L * 1000L);
-			for (; i < 2000; i++)
+			int i = 0;
+			try
 			{
-				OffHeapMemoryAccess.allocateMemory(1000);
+				OffHeapMemoryAccess.freeAll();
+				OffHeapMemoryAccess.setMaximumAllocatableMemory(1000L * 1000L);
+				for (; i < 2000; i++)
+				{
+					OffHeapMemoryAccess.allocateMemory(1000);
+				}
+				fail();
 			}
+			catch (final OutOfMemoryError e)
+			{
+				System.out.println("i=" + i);
+				assertTrue(i >= 1000);
+			}
+			catch (final Throwable lE)
+			{
+				fail();
+			}
+
+			OffHeapMemoryAccess.freeAll();
+			assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
+		}
+		catch (final Throwable e)
+		{
+			e.printStackTrace();
 			fail();
 		}
-		catch (OutOfMemoryError e)
+		finally
 		{
-			assertTrue(i >= 1000);
+			OffHeapMemoryAccess.setMaximumAllocatableMemory(Long.MAX_VALUE);
 		}
-		catch (Throwable lE)
-		{
-			fail();
-		}
-
-		OffHeapMemoryAccess.freeAll();
-		assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
-
-		OffHeapMemoryAccess.setMaximumAllocatableMemory(Long.MAX_VALUE);
 	}
 
 	@Test
@@ -48,12 +60,12 @@ public class OffHeapMemoryAccessTests
 		try
 		{
 			// System.out.println(cBufferSize);
-			long lAddress = OffHeapMemoryAccess.allocateMemory(cBufferSize);
+			final long lAddress = OffHeapMemoryAccess.allocateMemory(cBufferSize);
 
 			OffHeapMemoryAccess.setByte(lAddress, (byte) 123);
 			assertEquals(OffHeapMemoryAccess.getByte(lAddress), (byte) 123);
 
-			long lAddressReallocated = OffHeapMemoryAccess.reallocateMemory(	lAddress,
+			final long lAddressReallocated = OffHeapMemoryAccess.reallocateMemory(lAddress,
 																																			10);
 
 			OffHeapMemoryAccess.setByte(lAddressReallocated + 9, (byte) 123);
@@ -62,7 +74,7 @@ public class OffHeapMemoryAccessTests
 
 			OffHeapMemoryAccess.freeMemory(lAddressReallocated);
 		}
-		catch (InvalidNativeMemoryAccessException e)
+		catch (final InvalidNativeMemoryAccessException e)
 		{
 			e.printStackTrace();
 			fail();
@@ -80,7 +92,7 @@ public class OffHeapMemoryAccessTests
 			final long lLength = 16L * 1000L * 1000L * 1000L;
 
 			System.out.println("allocateMemory");
-			long lAddress = OffHeapMemoryAccess.allocateMemory(lLength);
+			final long lAddress = OffHeapMemoryAccess.allocateMemory(lLength);
 			System.out.println("lAddress=" + lAddress);
 			assertFalse(lAddress == 0);
 
@@ -96,7 +108,7 @@ public class OffHeapMemoryAccessTests
 			System.out.println("getByte(s)");
 			for (long i = 0; i < lLength; i += 1000L * 1000L)
 			{
-				byte lValue = OffHeapMemoryAccess.getByte(lAddress + i);
+				final byte lValue = OffHeapMemoryAccess.getByte(lAddress + i);
 				assertEquals((byte) i, lValue);
 			}
 
@@ -107,7 +119,7 @@ public class OffHeapMemoryAccessTests
 
 			// System.out.println("end");
 		}
-		catch (InvalidNativeMemoryAccessException e)
+		catch (final InvalidNativeMemoryAccessException e)
 		{
 			e.printStackTrace();
 			fail();

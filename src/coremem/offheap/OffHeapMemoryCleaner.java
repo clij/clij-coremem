@@ -25,47 +25,55 @@ public class OffHeapMemoryCleaner implements Cleaner
 	@Override
 	public void run()
 	{
-		if (mAddressToClean == null)
-			return;
-		if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean,
-																							mSignature))
+		try
 		{
-			format(	"Cleaning memory: name=%s, address=%s, signature=%d \n",
-							mName,
-							mAddressToClean,
-							mSignature);/**/
-			try
+			if (mAddressToClean == null)
+				return;
+			if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean,
+																								mSignature))
 			{
-				OffHeapMemoryAccess.freeMemory(mAddressToClean);
-				format(	"Cleaned successfully memory! name=%s, address=%s, signature=%d \n",
+				format(	"Cleaning memory: name=%s, address=%s, signature=%d \n",
 								mName,
 								mAddressToClean,
 								mSignature);/**/
+				try
+				{
+					OffHeapMemoryAccess.freeMemory(mAddressToClean);
+					format(	"Cleaned successfully memory! name=%s, address=%s, signature=%d \n",
+									mName,
+									mAddressToClean,
+									mSignature);/**/
+				}
+				catch (final Throwable e)
+				{
+					e.printStackTrace();
+				}
 			}
-			catch (final Throwable e)
+			else if (OffHeapMemoryAccess.getSignature(mAddressToClean) != mSignature)
 			{
-				e.printStackTrace();
+				format(	"INFO: Attempted to clean memory with wrong signature! name=%s, address=%d, signature=%d \n",
+								mName,
+								mAddressToClean,
+								mSignature);
+				format("Stack:\n %s \n", Arrays.toString(mAllocationStackTrace)
+																				.replaceAll(", ", "\n"));/**/
+
+			}
+			else if (OffHeapMemoryAccess.getSignature(mAddressToClean) == mSignature)
+			{
+				format(	"INFO: Attempted to clean already freed memory! name=%s, address=%d, signature=%d \n",
+								mName,
+								mAddressToClean,
+								mSignature);
+				format("Stack:\n %s \n", Arrays.toString(mAllocationStackTrace)
+																				.replaceAll(", ", "\n"));/**/
+
 			}
 		}
-		else if (OffHeapMemoryAccess.getSignature(mAddressToClean) != mSignature)
+		catch (final Exception e)
 		{
-			format(	"INFO: Attempted to clean memory with wrong signature! name=%s, address=%d, signature=%d \n",
-							mName,
-							mAddressToClean,
-							mSignature);
-			format("Stack:\n %s \n", Arrays.toString(mAllocationStackTrace)
-																			.replaceAll(", ", "\n"));/**/
-
-		}
-		else if (OffHeapMemoryAccess.getSignature(mAddressToClean) == mSignature)
-		{
-			format(	"INFO: Attempted to clean already freed memory! name=%s, address=%d, signature=%d \n",
-							mName,
-							mAddressToClean,
-							mSignature);
-			format("Stack:\n %s \n", Arrays.toString(mAllocationStackTrace)
-																			.replaceAll(", ", "\n"));/**/
-
+			e.printStackTrace();
+			System.err.println(Arrays.toString(mAllocationStackTrace));
 		}
 	}
 
