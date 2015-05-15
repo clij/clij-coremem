@@ -24,8 +24,7 @@ public final class OffHeapMemoryAccess
 			lTheUnsafeField.setAccessible(true);
 			cUnsafe = (Unsafe) lTheUnsafeField.get(null);
 		}
-		catch (NoSuchFieldException | SecurityException
-				| IllegalArgumentException | IllegalAccessException e)
+		catch (final Throwable e)
 		{
 			e.printStackTrace();
 		}
