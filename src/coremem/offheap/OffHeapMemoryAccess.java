@@ -320,6 +320,13 @@ public final class OffHeapMemoryAccess
 		cUnsafe.putDouble(pAddress, pValue);
 	}
 
+	public static final void fillBytes(	final long pAddress,
+																			final long pNumberOfBytes,
+																			final byte pValue)
+	{
+		cUnsafe.setMemory(pAddress, pNumberOfBytes, pValue);
+	}
+
 	public static void freeAll()
 	{
 		for (final Map.Entry<Long, Long> lEntry : cAllocatedMemoryPointers.entrySet())

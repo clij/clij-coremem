@@ -3,6 +3,7 @@ package coremem.buffers;
 import java.util.ArrayDeque;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
 
 public class ContiguousBuffer
@@ -11,9 +12,14 @@ public class ContiguousBuffer
 	private final long mFirstValidPosition;
 	private final long mLastValidPosition;
 	private long mPosition;
+	private final ArrayDeque<Long> mStack = new ArrayDeque<Long>();
 
-	ArrayDeque<Long> mStack = new ArrayDeque<Long>();
-
+	public static ContiguousBuffer allocate(long pLengthInBytes)
+	{
+		final OffHeapMemory lAllocatedBytes = OffHeapMemory.allocateBytes(pLengthInBytes);
+		final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lAllocatedBytes);
+		return lContiguousBuffer;
+	}
 
 	public ContiguousBuffer(ContiguousMemoryInterface pContiguousMemoryInterface)
 	{
@@ -24,7 +30,12 @@ public class ContiguousBuffer
 		mLastValidPosition = mFirstValidPosition + pContiguousMemoryInterface.getSizeInBytes();
 	}
 
-	public long getCapacity()
+	public ContiguousMemoryInterface getContiguousMemory()
+	{
+		return mContiguousMemoryInterface;
+	}
+
+	public long getSizeInBytes()
 	{
 		return mContiguousMemoryInterface.getSizeInBytes();
 	}
@@ -66,6 +77,12 @@ public class ContiguousBuffer
 		return mPosition <= mLastValidPosition;
 	}
 
+	public void writeBytes(long pNumberOfBytes, byte pByte)
+	{
+		OffHeapMemoryAccess.fillBytes(mPosition, pNumberOfBytes, pByte);
+		mPosition += pNumberOfBytes;
+	}
+
 	public void writeByte(byte pByte)
 	{
 		OffHeapMemoryAccess.setByte(mPosition, pByte);
@@ -84,13 +101,13 @@ public class ContiguousBuffer
 		mPosition += 2;
 	}
 
-	public void writeInt(char pInt)
+	public void writeInt(int pInt)
 	{
 		OffHeapMemoryAccess.setInt(mPosition, pInt);
 		mPosition += 4;
 	}
 
-	public void writeLong(char pLong)
+	public void writeLong(long pLong)
 	{
 		OffHeapMemoryAccess.setLong(mPosition, pLong);
 		mPosition += 8;
@@ -156,5 +173,53 @@ public class ContiguousBuffer
 		mPosition += 8;
 		return lDouble;
 	}
+
+	public void skipBytes(long pNumberToSkip)
+	{
+		mPosition += 1 * pNumberToSkip;
+	}
+
+	public void skipShorts(long pNumberToSkip)
+	{
+		mPosition += 2 * pNumberToSkip;
+	}
+
+	public void skipChars(long pNumberToSkip)
+	{
+		mPosition += 2 * pNumberToSkip;
+	}
+
+	public void skipInts(long pNumberToSkip)
+	{
+		mPosition += 4 * pNumberToSkip;
+	}
+
+	public void skipLongs(long pNumberToSkip)
+	{
+		mPosition += 8 * pNumberToSkip;
+	}
+
+	public void skipFloats(long pNumberToSkip)
+	{
+		mPosition += 4 * pNumberToSkip;
+	}
+
+	public void skipDoubles(long pNumberToSkip)
+	{
+		mPosition += 8 * pNumberToSkip;
+	}
+
+	@Override
+	public String toString()
+	{
+		return String.format(	"ContiguousBuffer [mContiguousMemoryInterface=%s, mFirstValidPosition=%s, mLastValidPosition=%s, mPosition=%s, mStack=%s]",
+													mContiguousMemoryInterface,
+													mFirstValidPosition,
+													mLastValidPosition,
+													mPosition,
+													mStack);
+	}
+
+
 
 }
