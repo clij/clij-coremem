@@ -13,4 +13,5 @@ public enum NativeTypeEnum
 	HalfFloat,
 	Float,
 	Double,
+
 }
