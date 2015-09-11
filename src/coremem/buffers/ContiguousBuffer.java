@@ -21,6 +21,11 @@ public class ContiguousBuffer
 		return lContiguousBuffer;
 	}
 
+	public static ContiguousBuffer wrap(ContiguousMemoryInterface pContiguousMemoryInterface)
+	{
+		return new ContiguousBuffer(pContiguousMemoryInterface);
+	}
+
 	public ContiguousBuffer(ContiguousMemoryInterface pContiguousMemoryInterface)
 	{
 		super();

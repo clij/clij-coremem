@@ -4,6 +4,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import coremem.exceptions.InvalidAllocationParameterException;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
 
@@ -132,10 +133,24 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 					lRecyclable.free();
 				// Got unlucky, we try again (eventualy we might find a compatible one
 				// or just allocate a new one)
-				return request(	pWaitForLiveObjectToComeBack,
-												pWaitTime,
-												pTimeUnit,
-												pRecyclerRequest);
+				try
+				{
+					return request(	pWaitForLiveObjectToComeBack,
+													pWaitTime,
+													pTimeUnit,
+													pRecyclerRequest);
+				}
+				catch (InvalidAllocationParameterException e)
+				{
+					// This is to debug a rare but troublesome exception caused by an
+					// InvalidAllocationParameterException
+					System.err.println(pRecyclerRequest);
+					e.printStackTrace();
+					return request(	pWaitForLiveObjectToComeBack,
+													pWaitTime,
+													pTimeUnit,
+													pRecyclerRequest);
+				}
 			}
 
 		}
