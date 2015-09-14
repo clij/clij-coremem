@@ -2,6 +2,8 @@ package coremem.offheap;
 
 import java.nio.Buffer;
 
+import org.bridj.Pointer;
+
 import coremem.ContiguousMemoryInterface;
 import coremem.MemoryBase;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
@@ -38,6 +40,12 @@ public class OffHeapMemory extends MemoryBase	implements
 	{
 		return new OffHeapMemory(pName, pParent, pAddress, pLengthInBytes);
 	};
+	
+	public static OffHeapMemory wrapPointer(Pointer<Byte> pPointerForSinglePlane)
+	{
+		long lAddress = Pointer.getAddress(pPointerForSinglePlane.getNativeObject(Byte.class), Byte.class);
+		return wrapPointer(pPointerForSinglePlane.toString(),pPointerForSinglePlane,lAddress,pPointerForSinglePlane.getTargetSize());
+	}
 
 	public static final OffHeapMemory wrapBuffer(final Buffer pBuffer)
 	{
@@ -237,5 +245,7 @@ public class OffHeapMemory extends MemoryBase	implements
 						+ getMemoryType()
 						+ "]";
 	}
+
+
 
 }
