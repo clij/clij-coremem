@@ -43,8 +43,9 @@ public class OffHeapMemory extends MemoryBase	implements
 	
 	public static OffHeapMemory wrapPointer(Pointer<Byte> pPointerForSinglePlane)
 	{
-		long lAddress = Pointer.getAddress(pPointerForSinglePlane.getNativeObject(Byte.class), Byte.class);
-		return wrapPointer(pPointerForSinglePlane.toString(),pPointerForSinglePlane,lAddress,pPointerForSinglePlane.getTargetSize());
+		long lAddress = Pointer.getPeer(pPointerForSinglePlane);
+		long lTargetSizeInBytes = pPointerForSinglePlane.getTargetSize();
+		return wrapPointer(pPointerForSinglePlane.toString(),pPointerForSinglePlane,lAddress,lTargetSizeInBytes);
 	}
 
 	public static final OffHeapMemory wrapBuffer(final Buffer pBuffer)
