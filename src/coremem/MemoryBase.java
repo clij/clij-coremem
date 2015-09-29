@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
-import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
 
 import org.bridj.Pointer;
 import org.bridj.Pointer.Releaser;
@@ -19,7 +19,6 @@ import coremem.interfaces.RangeCopyable;
 import coremem.interfaces.SizedInBytes;
 import coremem.interop.BridJInterop;
 import coremem.interop.NIOBuffersInterop;
-import coremem.memmap.FileMappedMemoryRegion;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
 import coremem.rgc.Cleanable;
@@ -364,8 +363,8 @@ public abstract class MemoryBase extends FreeableBase	implements
 	public void copyTo(Buffer pBuffer)
 	{
 		complainIfFreed();
-		
-		if(pBuffer.isReadOnly())
+
+		if (pBuffer.isReadOnly())
 			throw new InvalidWriteAtReadOnly("Cannot write to read-only buffer!");
 		if (!pBuffer.isDirect())
 		{
@@ -513,6 +512,20 @@ public abstract class MemoryBase extends FreeableBase	implements
 																			long pLengthInBytes) throws IOException
 	{
 		complainIfFreed();
+
+		ArrayList<ByteBuffer> lByteBuffersForContiguousMemory = NIOBuffersInterop.getByteBuffersForContiguousMemory(this,
+																																																								pPositionInBufferInBytes,
+																																																								pLengthInBytes);
+
+		pFileChannel.position(pFilePositionInBytes);
+		for (ByteBuffer lByteBuffer : lByteBuffersForContiguousMemory)
+		{
+			pFileChannel.write(lByteBuffer);
+		}
+		return pFilePositionInBytes + pLengthInBytes;
+
+		/*
+		 *The code below has serious performance issues on Windows!
 		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(pFileChannel,
 																																											pFilePositionInBytes,
 																																											pLengthInBytes,
@@ -526,6 +539,7 @@ public abstract class MemoryBase extends FreeableBase	implements
 		lFileMappedMemoryRegion.unmap();
 		lFileMappedMemoryRegion.free();
 		return pFilePositionInBytes + pLengthInBytes;
+		/**/
 	}
 
 	@Override
@@ -547,6 +561,20 @@ public abstract class MemoryBase extends FreeableBase	implements
 																				long pLengthInBytes) throws IOException
 	{
 		complainIfFreed();
+
+		ArrayList<ByteBuffer> lByteBuffersForContiguousMemory = NIOBuffersInterop.getByteBuffersForContiguousMemory(this,
+																																																								pPositionInBufferInBytes,
+																																																								pLengthInBytes);
+
+		pFileChannel.position(pFilePositionInBytes);
+		for (ByteBuffer lByteBuffer : lByteBuffersForContiguousMemory)
+		{
+			pFileChannel.read(lByteBuffer);
+		}
+
+		return pFilePositionInBytes + pLengthInBytes;
+
+		/* The code below has serious performance issues on Windows!
 		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(pFileChannel,
 																																											pFilePositionInBytes,
 																																											pLengthInBytes,
@@ -560,6 +588,7 @@ public abstract class MemoryBase extends FreeableBase	implements
 		lFileMappedMemoryRegion.free();
 
 		return pFilePositionInBytes + pLengthInBytes;
+		/**/
 	}
 
 	@Override

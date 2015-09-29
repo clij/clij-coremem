@@ -6,6 +6,7 @@ import java.nio.channels.FileChannel;
 public interface ReadWriteBytesFileChannel
 {
 
+
 	public long writeBytesToFileChannel(final FileChannel pFileChannel,
 																			final long pFilePositionInBytes) throws IOException;
 
