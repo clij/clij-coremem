@@ -52,6 +52,13 @@ public class OffHeapMemory extends MemoryBase	implements
 	{
 		return NIOBuffersInterop.getContiguousMemoryFrom(pBuffer);
 	};
+	
+	public static final OffHeapMemory copyFromArray(final byte[] pBuffer)
+	{
+		OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(pBuffer.length);
+		lOffHeapMemory.copyFrom(pBuffer);
+		return lOffHeapMemory;
+	};
 
 	public static OffHeapMemory allocateBytes(long pNumberOfBytes)
 	{

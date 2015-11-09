@@ -82,6 +82,12 @@ public class ContiguousBuffer
 		return mPosition <= mLastValidPosition;
 	}
 
+	public void writeFrom(ContiguousMemoryInterface pContiguousMemoryInterface)
+	{
+		OffHeapMemoryAccess.copyMemory(pContiguousMemoryInterface.getAddress(), mPosition, pContiguousMemoryInterface.getSizeInBytes());
+		mPosition += pContiguousMemoryInterface.getSizeInBytes();
+	}
+	
 	public void writeBytes(long pNumberOfBytes, byte pByte)
 	{
 		OffHeapMemoryAccess.fillBytes(mPosition, pNumberOfBytes, pByte);
@@ -224,6 +230,8 @@ public class ContiguousBuffer
 													mPosition,
 													mStack);
 	}
+
+
 
 
 

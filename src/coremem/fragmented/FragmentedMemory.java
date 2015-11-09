@@ -3,17 +3,23 @@ package coremem.fragmented;
 import static java.lang.Math.min;
 
 import java.io.IOException;
+import java.nio.Buffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.buffers.ContiguousBuffer;
 import coremem.exceptions.InvalidFragmentedMemoryStateException;
+import coremem.interop.NIOBuffersInterop;
 import coremem.offheap.OffHeapMemory;
 import coremem.rgc.FreeableBase;
 
-public class FragmentedMemory extends FreeableBase implements
-																									FragmentedMemoryInterface
+public class FragmentedMemory extends FreeableBase	implements
+													FragmentedMemoryInterface
 
 {
 
@@ -21,7 +27,7 @@ public class FragmentedMemory extends FreeableBase implements
 	private long mTotalSizeInBytes;
 
 	public static FragmentedMemory split(	ContiguousMemoryInterface pContiguousMemoryInterface,
-																				int pNumberOfFragments)
+											int pNumberOfFragments)
 	{
 		long lAddress = pContiguousMemoryInterface.getAddress();
 		final long lSizeInBytes = pContiguousMemoryInterface.getSizeInBytes();
@@ -39,9 +45,9 @@ public class FragmentedMemory extends FreeableBase implements
 				lEffectiveFragmentSizeInBytes = lFragmentSizeInBytes;
 
 			lOffHeapMemory = OffHeapMemory.wrapPointer(	"FragmentOf" + pContiguousMemoryInterface,
-																									pContiguousMemoryInterface,
-																									lAddress,
-																									lEffectiveFragmentSizeInBytes);
+														pContiguousMemoryInterface,
+														lAddress,
+														lEffectiveFragmentSizeInBytes);
 			lAddress += lFragmentSizeInBytes;
 			lLeftToBeAssignedSizeInBytes -= lFragmentSizeInBytes;
 			lFragmentedMemory.add(lOffHeapMemory);
@@ -90,20 +96,46 @@ public class FragmentedMemory extends FreeableBase implements
 	}
 
 	@Override
+	public OffHeapMemory add(Buffer pBuffer)
+	{
+		OffHeapMemory lContiguousMemoryFromByteBuffer = NIOBuffersInterop.getContiguousMemoryFrom(pBuffer);
+		add(lContiguousMemoryFromByteBuffer);
+		return lContiguousMemoryFromByteBuffer;
+	}
+
+	@Override
+	public OffHeapMemory makeConsolidatedCopy()
+	{
+		OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(getSizeInBytes());
+
+		final ContiguousBuffer lContiguousBuffer = ContiguousBuffer.wrap(lOffHeapMemory);
+
+		int lNumberOfFragments = getNumberOfFragments();
+
+		for (int i = 0; i < lNumberOfFragments; i++)
+		{
+			ContiguousMemoryInterface lContiguousMemoryInterface = get(i);
+			lContiguousBuffer.writeFrom(lContiguousMemoryInterface);
+		}
+		
+		return lOffHeapMemory;
+	}
+
+	@Override
 	public long writeBytesToFileChannel(FileChannel pFileChannel,
-																			long pFilePositionInBytes) throws IOException
+										long pFilePositionInBytes) throws IOException
 	{
 		return writeBytesToFileChannel(	0,
-																		pFileChannel,
-																		pFilePositionInBytes,
-																		getSizeInBytes());
+										pFileChannel,
+										pFilePositionInBytes,
+										getSizeInBytes());
 	}
 
 	@Override
 	public long writeBytesToFileChannel(long pBufferPositionInBytes,
-																			FileChannel pFileChannel,
-																			long pFilePositionInBytes,
-																			long pLengthInBytes) throws IOException
+										FileChannel pFileChannel,
+										long pFilePositionInBytes,
+										long pLengthInBytes) throws IOException
 	{
 		complainIfFreed();
 		long lBytesWritten = 0;
@@ -114,11 +146,11 @@ public class FragmentedMemory extends FreeableBase implements
 			if (lBytesLeftToBeWritten <= 0)
 				break;
 			final long lBytesToBeWritten = min(	lContiguousMemoryInterface.getSizeInBytes(),
-																					lBytesLeftToBeWritten);
-			lCurrentFilePosition = lContiguousMemoryInterface.writeBytesToFileChannel(0,
-																																								pFileChannel,
-																																								lCurrentFilePosition,
-																																								lBytesToBeWritten);
+												lBytesLeftToBeWritten);
+			lCurrentFilePosition = lContiguousMemoryInterface.writeBytesToFileChannel(	0,
+																						pFileChannel,
+																						lCurrentFilePosition,
+																						lBytesToBeWritten);
 			lBytesWritten += lBytesToBeWritten;
 		}
 		return lCurrentFilePosition;
@@ -126,20 +158,20 @@ public class FragmentedMemory extends FreeableBase implements
 
 	@Override
 	public long readBytesFromFileChannel(	FileChannel pFileChannel,
-																				long pFilePositionInBytes,
-																				long pLengthInBytes) throws IOException
+											long pFilePositionInBytes,
+											long pLengthInBytes) throws IOException
 	{
 		return readBytesFromFileChannel(0,
-																		pFileChannel,
-																		pFilePositionInBytes,
-																		getSizeInBytes());
+										pFileChannel,
+										pFilePositionInBytes,
+										getSizeInBytes());
 	}
 
 	@Override
 	public long readBytesFromFileChannel(	long pBufferPositionInBytes,
-																				FileChannel pFileChannel,
-																				long pFilePositionInBytes,
-																				long pLengthInBytes) throws IOException
+											FileChannel pFileChannel,
+											long pFilePositionInBytes,
+											long pLengthInBytes) throws IOException
 	{
 		complainIfFreed();
 		long lBytesRead = 0;
@@ -150,11 +182,11 @@ public class FragmentedMemory extends FreeableBase implements
 			if (lBytesLeftToBeRead <= 0)
 				break;
 			final long lBytesToReadNow = min(	lContiguousMemoryInterface.getSizeInBytes(),
-																				lBytesLeftToBeRead);
+												lBytesLeftToBeRead);
 			lCurrentFilePosition = lContiguousMemoryInterface.readBytesFromFileChannel(	0,
-																																									pFileChannel,
-																																									lCurrentFilePosition,
-																																									lBytesToReadNow);
+																						pFileChannel,
+																						lCurrentFilePosition,
+																						lBytesToReadNow);
 			lBytesRead += lBytesToReadNow;
 		}
 		return lCurrentFilePosition;
