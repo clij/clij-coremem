@@ -132,14 +132,14 @@ if(hasProperty('bintray_user') && hasProperty('bintray_key') )
 		dryRun = false //Whether to run this as dry-run, without deploying
 		publish = true //If version should be auto published after an upload
 		pkg {
-			repo = 'CoreMem'
-			userOrg = 'rtlib' //An optional organization name when the repo belongs to one of the user's orgs
+			repo = 'ClearControl'
+			userOrg = 'clearcontrol' //An optional organization name when the repo belongs to one of the user's orgs
 			name = 'CoreMem'
 			desc = 'CoreMem'
-			websiteUrl = 'https://github.com/RTlib/CoreMem'
-			issueTrackerUrl = 'https://github.com/RTlib/CoreMem/issues'
-			vcsUrl = 'https://github.com/RTlib/CoreMem.git'
-			//licenses = ['Apache-2.0']
+			websiteUrl = 'https://github.com/ClearControl/CoreMem'
+			issueTrackerUrl = 'https://github.com/ClearControl/CoreMem/issues'
+			vcsUrl = 'https://github.com/ClearControl/CoreMem.git'
+			licenses = ['GPL-3.0']
 			labels = [
 				'Native Memory',
 				'Memory Mapping',
