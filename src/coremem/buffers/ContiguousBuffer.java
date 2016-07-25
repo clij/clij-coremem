@@ -5,12 +5,13 @@ import java.util.ArrayDeque;
 import coremem.ContiguousMemoryInterface;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
+import coremem.types.NativeTypeEnum;
 
 public class ContiguousBuffer
 {
 	private final ContiguousMemoryInterface mContiguousMemoryInterface;
 	private final long mFirstValidPosition;
-	private final long mLastValidPosition;
+	private final long mFirstInvalidPosition;
 	private long mPosition;
 	private final ArrayDeque<Long> mStack = new ArrayDeque<Long>();
 
@@ -32,7 +33,7 @@ public class ContiguousBuffer
 		mContiguousMemoryInterface = pContiguousMemoryInterface;
 		mFirstValidPosition = pContiguousMemoryInterface.getAddress();
 		mPosition = mFirstValidPosition;
-		mLastValidPosition = mFirstValidPosition + pContiguousMemoryInterface.getSizeInBytes();
+		mFirstInvalidPosition = mFirstValidPosition + pContiguousMemoryInterface.getSizeInBytes();
 	}
 
 	public ContiguousMemoryInterface getContiguousMemory()
@@ -77,17 +78,49 @@ public class ContiguousBuffer
 		return lAddress <= mPosition && mPosition < lAddress + lSizeInBytes;
 	}
 
-	public boolean hasRemaining()
-	{
-		return mPosition <= mLastValidPosition;
-	}
-
 	public void writeFrom(ContiguousMemoryInterface pContiguousMemoryInterface)
 	{
-		OffHeapMemoryAccess.copyMemory(pContiguousMemoryInterface.getAddress(), mPosition, pContiguousMemoryInterface.getSizeInBytes());
+		OffHeapMemoryAccess.copyMemory(	pContiguousMemoryInterface.getAddress(),
+																		mPosition,
+																		pContiguousMemoryInterface.getSizeInBytes());
 		mPosition += pContiguousMemoryInterface.getSizeInBytes();
 	}
-	
+
+	public boolean hasRemainingByte()
+	{
+		return mPosition <= mFirstInvalidPosition- Byte.BYTES;
+	}
+
+	public boolean hasRemainingChar()
+	{
+		return mPosition <= mFirstInvalidPosition - Character.BYTES;
+	}
+
+	public boolean hasRemainingShort()
+	{
+		return mPosition <= mFirstInvalidPosition - Short.BYTES;
+	}
+
+	public boolean hasRemainingInt()
+	{
+		return mPosition <= mFirstInvalidPosition - Integer.BYTES;
+	}
+
+	public boolean hasRemainingLong()
+	{
+		return mPosition <= mFirstInvalidPosition - Long.BYTES;
+	}
+
+	public boolean hasRemainingFloat()
+	{
+		return mPosition <= mFirstInvalidPosition - Float.BYTES;
+	}
+
+	public boolean hasRemainingDouble()
+	{
+		return mPosition <= mFirstInvalidPosition - Double.BYTES;
+	}
+
 	public void writeBytes(long pNumberOfBytes, byte pByte)
 	{
 		OffHeapMemoryAccess.fillBytes(mPosition, pNumberOfBytes, pByte);
@@ -223,16 +256,12 @@ public class ContiguousBuffer
 	@Override
 	public String toString()
 	{
-		return String.format(	"ContiguousBuffer [mContiguousMemoryInterface=%s, mFirstValidPosition=%s, mLastValidPosition=%s, mPosition=%s, mStack=%s]",
+		return String.format(	"ContiguousBuffer [mContiguousMemoryInterface=%s, mFirstValidPosition=%s, mFirstInvalidPosition=%s, mPosition=%s, mStack=%s]",
 													mContiguousMemoryInterface,
 													mFirstValidPosition,
-													mLastValidPosition,
+													mFirstInvalidPosition,
 													mPosition,
 													mStack);
 	}
-
-
-
-
 
 }
