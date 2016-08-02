@@ -115,7 +115,7 @@ public class FragmentedMemory extends FreeableBase	implements
 		for (int i = 0; i < lNumberOfFragments; i++)
 		{
 			ContiguousMemoryInterface lContiguousMemoryInterface = get(i);
-			lContiguousBuffer.writeFrom(lContiguousMemoryInterface);
+			lContiguousBuffer.writeContiguousMemory(lContiguousMemoryInterface);
 		}
 		
 		return lOffHeapMemory;

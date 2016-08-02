@@ -14,6 +14,13 @@ import coremem.interfaces.WriteAt;
 import coremem.interfaces.WriteAtAligned;
 import coremem.rgc.Freeable;
 
+/**
+ * ContiguousMemoryInterface represents contiguous chunks of memory that can be
+ * accessed, copied, written and read from disk, and can be exchanged with NIO,
+ * BridJ.
+ * 
+ * @author royer
+ */
 public interface ContiguousMemoryInterface extends
 																					PointerAccessible,
 																					BridJPointerWrappable,
@@ -30,6 +37,16 @@ public interface ContiguousMemoryInterface extends
 																					Freeable
 {
 
-	ContiguousMemoryInterface subRegion(long pOffset, long pLenghInBytes);
+	/**
+	 * Returns a ContiguousMemoryInterface for a sub region.
+	 * 
+	 * @param pOffsetInBytes
+	 *          offset in bytes
+	 * @param pLenghInBytes
+	 *          length in bytes
+	 * @return
+	 */
+	ContiguousMemoryInterface subRegion(long pOffsetInBytes,
+																			long pLenghInBytes);
 
 }

@@ -1,5 +1,9 @@
 package coremem.exceptions;
 
+/**
+ * 
+ * @author royer
+ */
 public class CoreMemException extends RuntimeException
 {
 

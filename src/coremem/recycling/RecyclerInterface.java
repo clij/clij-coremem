@@ -4,9 +4,10 @@ import java.util.concurrent.TimeUnit;
 
 import coremem.rgc.Freeable;
 
-public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extends RecyclerRequest>	extends
-																																																		Freeable
+public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extends RecyclerRequestInterface> extends
+																																																						Freeable
 {
+
 	public abstract long ensurePreallocated(final long pNumberofPrealocatedRecyclablesNeeded,
 																					final P pRecyclerRequest);
 
@@ -21,12 +22,19 @@ public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extend
 														final TimeUnit pTimeUnit,
 														final P pRecyclerRequest);
 
+	public abstract int getMaxNumberOfLiveObjects();
 
+	public abstract int getNumberOfLiveObjects();
 
+	public abstract int getMaxNumberOfAvailableObjects();
 
-	public abstract long getNumberOfAvailableObjects();
-
-	public abstract long getNumberOfLiveObjects();
+	public abstract int getNumberOfAvailableObjects();
+	
+	public abstract long getNumberOfFailedRequests();
+	
+	public abstract double computeLiveMemorySizeInBytes();
+	
+	public abstract double computeAvailableMemorySizeInBytes();
 
 	public abstract void release(final R pObject);
 
@@ -34,6 +42,14 @@ public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extend
 
 	public abstract void clearLive();
 
+	public abstract void addListener(RecyclerListenerInterface pRecyclerListener);
+
+	public abstract void removeListener(RecyclerListenerInterface pRecyclerListener);
+
 	public abstract void printDebugInfo();
+
+
+
+
 
 }

@@ -1,8 +1,8 @@
 package coremem.recycling.test;
 
-import coremem.recycling.RecyclerRequest;
+import coremem.recycling.RecyclerRequestInterface;
 
-class TestRequest implements RecyclerRequest
+class TestRequest implements RecyclerRequestInterface
 {
 	public TestRequest(long pL)
 	{

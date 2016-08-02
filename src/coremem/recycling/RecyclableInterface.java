@@ -3,7 +3,7 @@ package coremem.recycling;
 import coremem.interfaces.SizedInBytes;
 import coremem.rgc.Freeable;
 
-public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequest>	extends
+public interface RecyclableInterface<O extends RecyclableInterface<O, P>, P extends RecyclerRequestInterface>	extends
 																																																				SizedInBytes,
 																																																				Freeable
 {

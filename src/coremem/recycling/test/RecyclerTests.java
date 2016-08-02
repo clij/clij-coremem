@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.Test;
 
 import coremem.recycling.BasicRecycler;
-import coremem.recycling.RecyclableFactory;
+import coremem.recycling.RecyclableFactoryInterface;
 import coremem.recycling.RecyclerInterface;
 
 public class RecyclerTests
@@ -22,7 +22,7 @@ public class RecyclerTests
 	public void testBasics()
 	{
 
-		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
+		final RecyclableFactoryInterface<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactoryInterface<TestRecyclable, TestRequest>()
 		{
 			@Override
 			public TestRecyclable create(TestRequest pParameters)
@@ -147,7 +147,7 @@ public class RecyclerTests
 	@Test
 	public void testTightRecycling()
 	{
-		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
+		final RecyclableFactoryInterface<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactoryInterface<TestRecyclable, TestRequest>()
 		{
 			@Override
 			public TestRecyclable create(TestRequest pParameters)
@@ -175,7 +175,7 @@ public class RecyclerTests
 	@Test
 	public void testTightRecyclingWithRequestChanges()
 	{
-		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
+		final RecyclableFactoryInterface<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactoryInterface<TestRecyclable, TestRequest>()
 		{
 			@Override
 			public TestRecyclable create(TestRequest pParameters)
@@ -259,7 +259,7 @@ public class RecyclerTests
 	@Test
 	public void testAsynchronousRecyclingWithRequestChanges() throws InterruptedException
 	{
-		final RecyclableFactory<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactory<TestRecyclable, TestRequest>()
+		final RecyclableFactoryInterface<TestRecyclable, TestRequest> lRecyclableFactory = new RecyclableFactoryInterface<TestRecyclable, TestRequest>()
 		{
 			@Override
 			public TestRecyclable create(TestRequest pParameters)

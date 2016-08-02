@@ -26,6 +26,13 @@ import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
 import coremem.util.Size;
 
+/**
+ * This abstract base class offers basic functionality for off-heap memory
+ * access, copying, sizing, and memory life-cycle management and garbage
+ * collection.
+ * 
+ * @author royer
+ */
 public abstract class MemoryBase extends FreeableBase	implements
 																											PointerAccessible,
 																											SizedInBytes,
@@ -40,10 +47,22 @@ public abstract class MemoryBase extends FreeableBase	implements
 	protected long mLengthInBytes = 0;
 	protected boolean mIsFree = false;
 
+	/**
+	 * Protected parameterless constructor
+	 */
 	protected MemoryBase()
 	{
 	}
 
+	/**
+	 * Constructs a MemoryBase given an address and length (absolute and all in
+	 * bytes).
+	 * 
+	 * @param pAddressInBytes
+	 *          absolute address in bytes
+	 * @param pLengtInBytes
+	 *          length in bytes.
+	 */
 	public MemoryBase(long pAddressInBytes, long pLengtInBytes)
 	{
 		mAddressInBytes = pAddressInBytes;
@@ -53,12 +72,14 @@ public abstract class MemoryBase extends FreeableBase	implements
 	@Override
 	public abstract MemoryType getMemoryType();
 
+
 	@Override
 	public long getSizeInBytes()
 	{
 		complainIfFreed();
 		return mLengthInBytes;
 	}
+
 
 	@Override
 	public void copyFrom(ContiguousMemoryInterface pFrom)
@@ -86,6 +107,9 @@ public abstract class MemoryBase extends FreeableBase	implements
 																		pTo.getSizeInBytes());
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.interfaces.RangeCopyable#copyRangeTo(long, java.lang.Object, long, long)
+	 */
 	@Override
 	public void copyRangeTo(long pSourceOffset,
 													MemoryBase pTo,
@@ -134,15 +158,22 @@ public abstract class MemoryBase extends FreeableBase	implements
 																		pLengthToCopy);
 	}
 
-	void checkMappableMemory(ContiguousMemoryInterface pTo)
+	/**
+	 * Checks whether the provided ContiguousMemoryInterface is mappable and
+	 * currently mapped.
+	 * 
+	 * @param pContiguousMemoryInterface
+	 */
+	void checkMappableMemory(ContiguousMemoryInterface pContiguousMemoryInterface)
 	{
-		if (pTo instanceof MappableMemory)
+		if (pContiguousMemoryInterface instanceof MappableMemory)
 		{
-			final MappableMemory lMappableMemory = (MappableMemory) pTo;
+			final MappableMemory lMappableMemory = (MappableMemory) pContiguousMemoryInterface;
 			if (!lMappableMemory.isCurrentlyMapped())
 				throw new MappableMemoryException("Memory is not mapped!");
 		}
 	}
+
 
 	@Override
 	public long getAddress()
@@ -152,17 +183,20 @@ public abstract class MemoryBase extends FreeableBase	implements
 		return mAddressInBytes;
 	}
 
+
 	@Override
 	public void free()
 	{
 		mIsFree = true;
 	}
 
+
 	@Override
 	public boolean isFree()
 	{
 		return mIsFree;
 	}
+
 
 	@Override
 	public void setByteAligned(long pOffset, byte pValue)
@@ -171,12 +205,14 @@ public abstract class MemoryBase extends FreeableBase	implements
 																pValue);
 	}
 
+
 	@Override
 	public void setCharAligned(long pOffset, char pValue)
 	{
 		OffHeapMemoryAccess.setChar(mAddressInBytes + (pOffset << Size.CHARSHIFT),
 																pValue);
 	}
+
 
 	@Override
 	public void setShortAligned(long pOffset, short pValue)
@@ -185,12 +221,14 @@ public abstract class MemoryBase extends FreeableBase	implements
 																	pValue);
 	}
 
+
 	@Override
 	public void setIntAligned(long pOffset, int pValue)
 	{
 		OffHeapMemoryAccess.setInt(	mAddressInBytes + (pOffset << Size.INTSHIFT),
 																pValue);
 	}
+
 
 	@Override
 	public void setLongAligned(long pOffset, long pValue)
@@ -199,12 +237,14 @@ public abstract class MemoryBase extends FreeableBase	implements
 																pValue);
 	}
 
+
 	@Override
 	public void setFloatAligned(long pOffset, float pValue)
 	{
 		OffHeapMemoryAccess.setFloat(	mAddressInBytes + (pOffset << Size.FLOATSHIFT),
 																	pValue);
 	}
+
 
 	@Override
 	public void setDoubleAligned(long pOffset, double pValue)
@@ -213,11 +253,13 @@ public abstract class MemoryBase extends FreeableBase	implements
 																	pValue);
 	}
 
+
 	@Override
 	public byte getByteAligned(long pOffset)
 	{
 		return OffHeapMemoryAccess.getByte(mAddressInBytes + (pOffset << Size.BYTESHIFT));
 	}
+
 
 	@Override
 	public char getCharAligned(long pOffset)
@@ -231,11 +273,13 @@ public abstract class MemoryBase extends FreeableBase	implements
 		return OffHeapMemoryAccess.getShort(mAddressInBytes + (pOffset << Size.SHORTSHIFT));
 	}
 
+
 	@Override
 	public int getIntAligned(long pOffset)
 	{
 		return OffHeapMemoryAccess.getInt(mAddressInBytes + (pOffset << Size.INTSHIFT));
 	}
+
 
 	@Override
 	public long getLongAligned(long pOffset)
@@ -243,11 +287,13 @@ public abstract class MemoryBase extends FreeableBase	implements
 		return OffHeapMemoryAccess.getLong(mAddressInBytes + (pOffset << Size.LONGSHIFT));
 	}
 
+
 	@Override
 	public float getFloatAligned(long pOffset)
 	{
 		return OffHeapMemoryAccess.getFloat(mAddressInBytes + (pOffset << Size.FLOATSHIFT));
 	}
+
 
 	@Override
 	public double getDoubleAligned(long pOffset)
@@ -255,11 +301,13 @@ public abstract class MemoryBase extends FreeableBase	implements
 		return OffHeapMemoryAccess.getDouble(mAddressInBytes + (pOffset << Size.DOUBLESHIFT));
 	}
 
+
 	@Override
 	public void setByte(long pOffset, byte pValue)
 	{
 		OffHeapMemoryAccess.setByte(mAddressInBytes + pOffset, pValue);
 	}
+
 
 	@Override
 	public void setChar(long pOffset, char pValue)
@@ -268,17 +316,20 @@ public abstract class MemoryBase extends FreeableBase	implements
 																pValue);
 	}
 
+
 	@Override
 	public void setShort(long pOffset, short pValue)
 	{
 		OffHeapMemoryAccess.setShort(mAddressInBytes + pOffset, pValue);
 	}
 
+
 	@Override
 	public void setInt(long pOffset, int pValue)
 	{
 		OffHeapMemoryAccess.setInt(mAddressInBytes + pOffset, pValue);
 	}
+
 
 	@Override
 	public void setLong(long pOffset, long pValue)
@@ -524,22 +575,6 @@ public abstract class MemoryBase extends FreeableBase	implements
 		}
 		return pFilePositionInBytes + pLengthInBytes;
 
-		/*
-		 *The code below has serious performance issues on Windows!
-		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(pFileChannel,
-																																											pFilePositionInBytes,
-																																											pLengthInBytes,
-																																											StandardOpenOption.CREATE,
-																																											StandardOpenOption.WRITE);
-		lFileMappedMemoryRegion.map();
-		copyRangeTo(pPositionInBufferInBytes,
-								lFileMappedMemoryRegion,
-								0,
-								pLengthInBytes);
-		lFileMappedMemoryRegion.unmap();
-		lFileMappedMemoryRegion.free();
-		return pFilePositionInBytes + pLengthInBytes;
-		/**/
 	}
 
 	@Override
@@ -574,21 +609,6 @@ public abstract class MemoryBase extends FreeableBase	implements
 
 		return pFilePositionInBytes + pLengthInBytes;
 
-		/* The code below has serious performance issues on Windows!
-		final FileMappedMemoryRegion lFileMappedMemoryRegion = new FileMappedMemoryRegion(pFileChannel,
-																																											pFilePositionInBytes,
-																																											pLengthInBytes,
-																																											StandardOpenOption.READ);
-		lFileMappedMemoryRegion.map();
-		lFileMappedMemoryRegion.copyRangeTo(0,
-																				this,
-																				pPositionInBufferInBytes,
-																				pLengthInBytes);
-		lFileMappedMemoryRegion.unmap();
-		lFileMappedMemoryRegion.free();
-
-		return pFilePositionInBytes + pLengthInBytes;
-		/**/
 	}
 
 	@Override

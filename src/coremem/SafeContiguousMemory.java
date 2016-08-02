@@ -11,17 +11,38 @@ import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.interfaces.MemoryType;
 import coremem.rgc.FreedException;
 
-public class SafeMemory implements ContiguousMemoryInterface
+/**
+ * SafeContiguousMemory instances wrap instances of ContiguousMemoryInterface
+ * and provide range checking for most operations. This is usefull when
+ * debugging.
+ * 
+ * @author royer
+ */
+public class SafeContiguousMemory	implements
+																	ContiguousMemoryInterface
 {
 
+	/**
+	 * Wrapped ContiguousMemoryInterface instance.
+	 */
 	private final ContiguousMemoryInterface mDelegatedContiguousMemoryInterface;
 
-	public SafeMemory(ContiguousMemoryInterface pContiguousMemoryInterface)
+	/**
+	 * Constructs a SafeContiguousMemory by wrapping a ContiguousMemoryInterface.
+	 * 
+	 * @param pContiguousMemoryInterface
+	 */
+	public SafeContiguousMemory(ContiguousMemoryInterface pContiguousMemoryInterface)
 	{
 		super();
 		mDelegatedContiguousMemoryInterface = pContiguousMemoryInterface;
 	}
 
+	/**
+	 * Checks whether this offset is valid.
+	 * 
+	 * @param pOffset
+	 */
 	private void checkOffset(long pOffset)
 	{
 		if (pOffset < 0 || pOffset >= mDelegatedContiguousMemoryInterface.getSizeInBytes())
@@ -58,7 +79,6 @@ public class SafeMemory implements ContiguousMemoryInterface
 		checkOffset(pOffset);
 		return mDelegatedContiguousMemoryInterface.getByteAligned(pOffset);
 	}
-
 
 	@Override
 	public char getCharAligned(long pOffset)
@@ -295,7 +315,6 @@ public class SafeMemory implements ContiguousMemoryInterface
 																																				pLengthInBytes);
 	}
 
-
 	@Override
 	public long readBytesFromFileChannel(	long pBufferPositionInBytes,
 																				FileChannel pFileChannel,
@@ -332,6 +351,8 @@ public class SafeMemory implements ContiguousMemoryInterface
 	public ContiguousMemoryInterface subRegion(	long pOffset,
 																							long pLenghInBytes)
 	{
+		checkOffset(pOffset);
+		checkOffset(pOffset + pLenghInBytes - 1);
 		return mDelegatedContiguousMemoryInterface.subRegion(	pOffset,
 																													pLenghInBytes);
 	}
