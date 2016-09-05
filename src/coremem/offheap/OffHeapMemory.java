@@ -15,13 +15,14 @@ import coremem.rgc.Cleaner;
 import coremem.rgc.RessourceGarbageCollector;
 import coremem.util.Size;
 
-public class OffHeapMemory extends MemoryBase	implements
-																							Resizable,
-																							ContiguousMemoryInterface
+public class OffHeapMemory extends MemoryBase implements
+														Resizable,
+														ContiguousMemoryInterface
 
 {
-	protected StackTraceElement[] mAllocationStackTrace = new StackTraceElement[]
-	{ new StackTraceElement("NULL", "NULL", "NULL", -1) };
+	protected StackTraceElement[] mAllocationStackTrace =
+																											new StackTraceElement[]
+																											{ new StackTraceElement("NULL", "NULL", "NULL", -1) };
 	protected String mName = "NOTDEFINED";
 	protected Long mSignature;
 	protected Object mParent = null;
@@ -38,21 +39,27 @@ public class OffHeapMemory extends MemoryBase	implements
 																								final long pAddress,
 																								final long pLengthInBytes)
 	{
-		return new OffHeapMemory(pName, pParent, pAddress, pLengthInBytes);
+		return new OffHeapMemory(	pName,
+															pParent,
+															pAddress,
+															pLengthInBytes);
 	};
-	
+
 	public static OffHeapMemory wrapPointer(Pointer<Byte> pPointerForSinglePlane)
 	{
 		long lAddress = Pointer.getPeer(pPointerForSinglePlane);
 		long lTargetSizeInBytes = pPointerForSinglePlane.getTargetSize();
-		return wrapPointer(pPointerForSinglePlane.toString(),pPointerForSinglePlane,lAddress,lTargetSizeInBytes);
+		return wrapPointer(	pPointerForSinglePlane.toString(),
+												pPointerForSinglePlane,
+												lAddress,
+												lTargetSizeInBytes);
 	}
 
 	public static final OffHeapMemory wrapBuffer(final Buffer pBuffer)
 	{
 		return NIOBuffersInterop.getContiguousMemoryFrom(pBuffer);
 	};
-	
+
 	public static final OffHeapMemory copyFromArray(final byte[] pBuffer)
 	{
 		OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(pBuffer.length);
@@ -137,6 +144,26 @@ public class OffHeapMemory extends MemoryBase	implements
 		return new OffHeapMemory(pName, pNumberOfDoubles * Size.DOUBLE);
 	}
 
+	public static OffHeapMemory allocateAlignedBytes(	String pName,
+																										long pNumberOfBytes,
+																										long pAlignment)
+	{
+		if(pAlignment==0)
+			return allocateBytes(pName,pNumberOfBytes);
+		
+		long lNumberOfBytesWithPadding = pNumberOfBytes + pAlignment;
+
+		OffHeapMemory lAllocatedBytesWithPadding = allocateBytes(	pName,
+																															lNumberOfBytesWithPadding);
+
+		long lOffset = pAlignment - (lAllocatedBytesWithPadding.getAddress() % pAlignment);
+
+		OffHeapMemory lAlignedRegion = lAllocatedBytesWithPadding.subRegion(lOffset,
+																																				pNumberOfBytes);
+
+		return lAlignedRegion;
+	}
+
 	public OffHeapMemory(final long pLengthInBytes)
 	{
 		this(null, pLengthInBytes);
@@ -173,12 +200,14 @@ public class OffHeapMemory extends MemoryBase	implements
 	public OffHeapMemory subRegion(	final long pOffset,
 																	final long pLenghInBytes)
 	{
-		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes + mLengthInBytes)
+		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes
+																										+ mLengthInBytes)
 			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate OffHeapMemory on subregion staring at offset %d and length %d  ",
 																																	pOffset,
 																																	pLenghInBytes));
 		final OffHeapMemory lOffHeapMemory = new OffHeapMemory(	this,
-																														mAddressInBytes + pOffset,
+																														mAddressInBytes
+																																	+ pOffset,
 																														pLenghInBytes);
 		return lOffHeapMemory;
 	}
@@ -198,8 +227,9 @@ public class OffHeapMemory extends MemoryBase	implements
 			throw new UnsupportedMemoryResizingException("Cannot resize externally allocated memory region!");
 		try
 		{
-			mAddressInBytes = OffHeapMemoryAccess.reallocateMemory(	mAddressInBytes,
-																															pNewLength);
+			mAddressInBytes =
+											OffHeapMemoryAccess.reallocateMemory(	mAddressInBytes,
+																														pNewLength);
 			mLengthInBytes = pNewLength;
 		}
 		catch (final Throwable e)
@@ -242,7 +272,7 @@ public class OffHeapMemory extends MemoryBase	implements
 	@Override
 	public String toString()
 	{
-		return "OffHeapMemory [mParent=" + mParent
+		return "OffHeapMemory [mParent="+ mParent
 						+ ", mAddressInBytes="
 						+ mAddressInBytes
 						+ ", mLengthInBytes="
@@ -253,7 +283,5 @@ public class OffHeapMemory extends MemoryBase	implements
 						+ getMemoryType()
 						+ "]";
 	}
-
-
 
 }
