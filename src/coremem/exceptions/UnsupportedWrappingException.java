@@ -1,5 +1,10 @@
 package coremem.exceptions;
 
+/**
+ * Exception thrown for unsupported wrapping of a memory object
+ *
+ * @author royer
+ */
 public class UnsupportedWrappingException extends CoreMemException
 {
 

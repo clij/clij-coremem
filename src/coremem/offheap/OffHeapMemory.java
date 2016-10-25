@@ -15,6 +15,7 @@ import coremem.rgc.Cleaner;
 import coremem.rgc.RessourceGarbageCollector;
 import coremem.util.Size;
 
+@SuppressWarnings("unchecked")
 public class OffHeapMemory extends MemoryBase implements
 														Resizable,
 														ContiguousMemoryInterface

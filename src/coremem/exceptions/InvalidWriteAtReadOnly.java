@@ -1,5 +1,10 @@
 package coremem.exceptions;
 
+/**
+ * Exception thrown when trying to write to a read-only memory object.
+ *
+ * @author royer
+ */
 public class InvalidWriteAtReadOnly extends CoreMemException
 {
 

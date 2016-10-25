@@ -1,7 +1,12 @@
 package coremem.exceptions;
 
-public class InvalidFragmentedMemoryStateException	extends
-CoreMemException
+/**
+ * Exception passed when a fragmented emory is in an invalid state.
+ *
+ * @author royer
+ */
+public class InvalidFragmentedMemoryStateException extends
+																									CoreMemException
 {
 
 	private static final long serialVersionUID = 1L;
@@ -11,8 +16,8 @@ CoreMemException
 		super(pString);
 	}
 
-	public InvalidFragmentedMemoryStateException(String pErrorMessage,
-																						Throwable pE)
+	public InvalidFragmentedMemoryStateException(	String pErrorMessage,
+																								Throwable pE)
 	{
 		super(pErrorMessage, pE);
 	}

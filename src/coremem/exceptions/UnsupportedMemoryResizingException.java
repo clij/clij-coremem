@@ -1,5 +1,11 @@
 package coremem.exceptions;
 
+/**
+ * Exception thrown when trying to resize a memory object that cannot be
+ * resized.
+ *
+ * @author royer
+ */
 public class UnsupportedMemoryResizingException	extends
 																								CoreMemException
 {

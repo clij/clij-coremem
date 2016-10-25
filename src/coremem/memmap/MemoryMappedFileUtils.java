@@ -7,7 +7,7 @@ import java.nio.channels.ClosedChannelException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import coremem.exceptions.MemoryMappedFileException;
+import coremem.exceptions.MemoryMapFileException;
 import coremem.offheap.OffHeapMemoryAccess;
 
 public final class MemoryMappedFileUtils
@@ -26,7 +26,7 @@ public final class MemoryMappedFileUtils
 																MemoryMappedFileAccessMode pAccessMode,
 																final long pFilePosition,
 																final long pMappedRegionLength,
-																final boolean pExtendIfNeeded) throws MemoryMappedFileException
+																final boolean pExtendIfNeeded) throws MemoryMapFileException
 	{
 		Method lMemoryMapMethod;
 		long lMappedAddress;
@@ -94,7 +94,7 @@ public final class MemoryMappedFileUtils
 																																						: e.getCause()
 																																								.getLocalizedMessage());
 			new MemoryMappedFileUtils().error("Native", lErrorMessage);
-			throw new MemoryMappedFileException(lErrorMessage, e);
+			throw new MemoryMapFileException(lErrorMessage, e);
 		}
 
 		return lMappedAddress;
@@ -102,7 +102,7 @@ public final class MemoryMappedFileUtils
 
 	public static final int unmap(FileChannel pFileChannel,
 																final long pMemoryMapAddress,
-																final long pMappedRegionLength) throws MemoryMappedFileException
+																final long pMappedRegionLength) throws MemoryMapFileException
 	{
 		int lIntReturnValue = 0;
 		try
@@ -133,7 +133,7 @@ public final class MemoryMappedFileUtils
 																																								.getLocalizedMessage());
 			// e.printStackTrace();
 			new MemoryMappedFileUtils().error("Native", lErrorMessage);
-			throw new MemoryMappedFileException(lErrorMessage, e);
+			throw new MemoryMapFileException(lErrorMessage, e);
 		}
 
 		return lIntReturnValue;

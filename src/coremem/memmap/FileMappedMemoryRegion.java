@@ -9,7 +9,7 @@ import java.util.Arrays;
 import coremem.ContiguousMemoryInterface;
 import coremem.MappedMemoryBase;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
-import coremem.exceptions.MemoryMappedFileException;
+import coremem.exceptions.MemoryMapFileException;
 import coremem.exceptions.UnsupportedMemoryResizingException;
 import coremem.interfaces.MappableMemory;
 import coremem.interfaces.MemoryType;
@@ -160,9 +160,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 			setCurrentlyMapped(true);
 			return mAddressInBytes;
 		}
-		catch (MemoryMappedFileException | IOException e)
+		catch (MemoryMapFileException | IOException e)
 		{
-			throw new MemoryMappedFileException("Could not map file channel " + mFileChannel,
+			throw new MemoryMapFileException("Could not map file channel " + mFileChannel,
 																					e);
 		}
 
@@ -178,7 +178,7 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		catch (final IOException e)
 		{
 			final String lErrorMessage = String.format("Could not force memory mapping consistency! ");
-			throw new MemoryMappedFileException(lErrorMessage, e);
+			throw new MemoryMapFileException(lErrorMessage, e);
 		}
 	}
 
@@ -247,7 +247,7 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		catch (final Throwable e)
 		{
 			final String lErrorMessage = String.format("Could not unmap memory mapped file! ");
-			throw new MemoryMappedFileException(lErrorMessage, e);
+			throw new MemoryMapFileException(lErrorMessage, e);
 		}
 
 	}

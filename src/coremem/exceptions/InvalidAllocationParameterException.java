@@ -1,5 +1,10 @@
 package coremem.exceptions;
 
+/**
+ * Exception thrown when invalid parameters are passed during memory allocation.
+ *
+ * @author royer
+ */
 public class InvalidAllocationParameterException extends
 																								CoreMemException
 {

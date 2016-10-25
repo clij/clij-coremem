@@ -1,5 +1,10 @@
 package coremem.exceptions;
 
+/**
+ * Exception thrown when an invalid native memory access occurs.
+ *
+ * @author royer
+ */
 public class InvalidNativeMemoryAccessException	extends
 																								CoreMemException
 {

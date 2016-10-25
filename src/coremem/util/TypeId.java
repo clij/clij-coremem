@@ -1,8 +1,18 @@
 package coremem.util;
 
+/**
+ * Utility class with static methods to identify data types.
+ *
+ * @author royer
+ */
 public class TypeId
 {
 
+	/**
+	 * Returns an integer ID for a primitive type based on primitive type class.
+	 * @param pClass class
+	 * @return integer id
+	 */
 	public static int classToId(Class<?> pClass)
 	{
 		if (pClass == Character.class || pClass == char.class
@@ -31,9 +41,14 @@ public class TypeId
 
 	}
 
-	public static Class<?> idToClass(final int pId)
+	/**
+	 * Returns the class of a primitive type given a primitive type integer ID.
+	 * @param pPrimitiveTypeId primitive type ID
+	 * @return corresponding class.
+	 */
+	public static Class<?> idToClass(final int pPrimitiveTypeId)
 	{
-		switch (pId)
+		switch (pPrimitiveTypeId)
 		{
 		case 0:
 			return char.class;
@@ -54,6 +69,11 @@ public class TypeId
 
 	}
 
+	/**
+	 * Return true if the given class corresponds to a float primitive type (float or double)
+	 * @param pClass class
+	 * @return true if float type, false otherwise
+	 */
 	public static boolean isFloatingPointType(final Class<?> pClass)
 	{
 		if (pClass == Float.class || pClass == float.class)
@@ -65,48 +85,88 @@ public class TypeId
 			return false;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a byte.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isByte(Class<?> pType)
 	{
 		return byte.class == pType || Byte.class == pType
 						|| Byte.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a char.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isChar(Class<?> pType)
 	{
 		return char.class == pType || Character.class == pType
 						|| Character.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a short.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isShort(Class<?> pType)
 	{
 		return short.class == pType || Short.class == pType
 						|| Short.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a int.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isInt(Class<?> pType)
 	{
 		return int.class == pType || Integer.class == pType
 						|| Integer.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a long.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isLong(Class<?> pType)
 	{
 		return long.class == pType || Long.class == pType
 						|| Long.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a float.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isFloat(Class<?> pType)
 	{
 		return float.class == pType || Float.class == pType
 						|| Float.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a double.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean isDouble(Class<?> pType)
 	{
 		return double.class == pType || Double.class == pType
 						|| Double.TYPE == pType;
 	}
 
+	/**
+	 * Returns true if the given class corresponds to a 16 bit int type.
+	 * @param pType type class
+	 * @return true if yes, false otherwise
+	 */
 	public static boolean is16bitInt(Class<?> pType)
 	{
 		return isChar(pType) || isShort(pType);

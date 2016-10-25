@@ -1,5 +1,10 @@
 package coremem.types;
 
+/**
+ * Enum listing the different native primitive data types.
+ *
+ * @author royer
+ */
 public enum NativeTypeEnum
 {
 	Byte,

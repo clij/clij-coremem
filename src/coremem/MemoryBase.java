@@ -11,7 +11,7 @@ import org.bridj.Pointer.Releaser;
 
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.InvalidWriteAtReadOnly;
-import coremem.exceptions.MappableMemoryException;
+import coremem.exceptions.MemoryMapException;
 import coremem.interfaces.MappableMemory;
 import coremem.interfaces.MemoryType;
 import coremem.interfaces.PointerAccessible;
@@ -170,7 +170,7 @@ public abstract class MemoryBase extends FreeableBase	implements
 		{
 			final MappableMemory lMappableMemory = (MappableMemory) pContiguousMemoryInterface;
 			if (!lMappableMemory.isCurrentlyMapped())
-				throw new MappableMemoryException("Memory is not mapped!");
+				throw new MemoryMapException("Memory is not mapped!");
 		}
 	}
 

@@ -1,5 +1,10 @@
 package coremem.exceptions;
 
+/**
+ * Out-of-memory exception.
+ *
+ * @author royer
+ */
 public class OutOfMemoryException extends CoreMemException
 {
 

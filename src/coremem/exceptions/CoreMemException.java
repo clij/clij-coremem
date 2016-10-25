@@ -1,6 +1,7 @@
 package coremem.exceptions;
 
 /**
+ * Top-level CoreMem exception.
  * 
  * @author royer
  */
