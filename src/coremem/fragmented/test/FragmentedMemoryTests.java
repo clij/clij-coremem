@@ -24,7 +24,7 @@ public class FragmentedMemoryTests
 		final File lTempFile = File.createTempFile(	this.getClass()
 														.getSimpleName(),
 													"testWriteToReadFromFileChannel");
-		System.out.println(lTempFile);
+		//System.out.println(lTempFile);
 		lTempFile.delete();
 		lTempFile.deleteOnExit();
 
@@ -37,7 +37,7 @@ public class FragmentedMemoryTests
 
 		for (int i = 0; i < 100; i++)
 		{
-			System.out.format("writting block %d \n", i);
+			//System.out.format("writting block %d \n", i);
 			final OffHeapMemory lOffHeapMemory = new OffHeapMemory(129);
 
 			for (int j = 0; j < lOffHeapMemory.getSizeInBytes(); j++)
@@ -73,7 +73,7 @@ public class FragmentedMemoryTests
 
 		for (int i = 0; i < 100; i++)
 		{
-			System.out.println(i);
+			//System.out.println(i);
 			final ContiguousMemoryInterface lContiguousMemoryInterface = lFragmentedMemory2.get(i);
 			for (int j = 0; j < lContiguousMemoryInterface.getSizeInBytes(); j++)
 				assertEquals(	(byte) (i + j),

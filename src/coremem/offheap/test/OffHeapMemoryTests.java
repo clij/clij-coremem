@@ -102,7 +102,7 @@ public class OffHeapMemoryTests
 		final File lTempFile = File.createTempFile(	this.getClass()
 																										.getSimpleName(),
 																								"testWriteToReadFromFileChannel");
-		System.out.println(lTempFile);
+		//System.out.println(lTempFile);
 		lTempFile.delete();
 		// lTempFile.deleteOnExit();
 

@@ -29,11 +29,11 @@ public class NIOBuffersInteropTests
 
 		lBuffer.putInt(15, 12345);
 
-		for (int i = 0; i < cBufferLength - 4; i++)
-			System.out.println(i + " -> \t" + lBuffer.getInt(i));
-		System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
-		for (int i = 0; i < cBufferLength - 4; i++)
-			System.out.println(i + " -> \t" + lContiguousMemory.getInt(i));
+		//for (int i = 0; i < cBufferLength - 4; i++)
+		//	System.out.println(i + " -> \t" + lBuffer.getInt(i));
+		//System.out.println("%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%");
+		//for (int i = 0; i < cBufferLength - 4; i++)
+		//	System.out.println(i + " -> \t" + lContiguousMemory.getInt(i));
 
 		assertEquals(12345, lContiguousMemory.getInt(15));
 

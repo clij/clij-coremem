@@ -211,9 +211,9 @@ public class RecyclerTests
 			lRecyclableObject = lRecycler.getOrWait(1,
 																							TimeUnit.SECONDS,
 																							new TestRequest(2048L));
-			System.out.println(lRecyclableObject);
-			System.out.println("lRecycler.getNumberOfAvailableObjects()" + lRecycler.getNumberOfAvailableObjects());
-			System.out.println("lRecycler.getNumberOfLiveObjects()" + lRecycler.getNumberOfLiveObjects());
+			//System.out.println(lRecyclableObject);
+			//System.out.println("lRecycler.getNumberOfAvailableObjects()" + lRecycler.getNumberOfAvailableObjects());
+			//System.out.println("lRecycler.getNumberOfLiveObjects()" + lRecycler.getNumberOfLiveObjects());
 
 			assertTrue(lRecyclableObject != null);
 			assertEquals(2048L, lRecyclableObject.getSizeInBytes());

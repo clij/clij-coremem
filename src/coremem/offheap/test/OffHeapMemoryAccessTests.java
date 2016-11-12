@@ -32,7 +32,7 @@ public class OffHeapMemoryAccessTests
 			}
 			catch (final OutOfMemoryError e)
 			{
-				System.out.println("i=" + i);
+				//System.out.println("i=" + i);
 				assertTrue(i >= 1000);
 			}
 			catch (final Throwable lE)
@@ -91,21 +91,21 @@ public class OffHeapMemoryAccessTests
 		{
 			final long lLength = 1L * 1000L * 1000L * 1000L;
 
-			System.out.println("allocateMemory");
+			//System.out.println("allocateMemory");
 			final long lAddress = OffHeapMemoryAccess.allocateMemory(lLength);
-			System.out.println("lAddress=" + lAddress);
+			//System.out.println("lAddress=" + lAddress);
 			assertFalse(lAddress == 0);
 
 			/*System.out.println("setMemory");
 			OffHeapMemoryAccess.setMemory(lAddress, lLength, (byte) 0);/**/
 
-			System.out.println("setByte(s)");
+			//System.out.println("setByte(s)");
 			for (long i = 0; i < lLength; i += 1000L * 1000L)
 			{
 				OffHeapMemoryAccess.setByte(lAddress + i, (byte) i);
 			}
 
-			System.out.println("getByte(s)");
+			//System.out.println("getByte(s)");
 			for (long i = 0; i < lLength; i += 1000L * 1000L)
 			{
 				final byte lValue = OffHeapMemoryAccess.getByte(lAddress + i);
@@ -114,7 +114,7 @@ public class OffHeapMemoryAccessTests
 
 			// Thread.sleep(10000);
 
-			System.out.println("freeMemory");
+			//System.out.println("freeMemory");
 			OffHeapMemoryAccess.freeMemory(lAddress);
 
 			// System.out.println("end");
