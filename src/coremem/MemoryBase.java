@@ -448,112 +448,98 @@ public abstract class MemoryBase extends FreeableBase	implements
 	public void copyTo(byte[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getByteAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyTo(short[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getShortAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyTo(char[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getCharAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyTo(int[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getIntAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyTo(long[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getLongAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyTo(float[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getFloatAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyTo(double[] pTo)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pTo.length; i++)
-			pTo[i] = getDoubleAligned(i);
+		OffHeapMemoryAccess.copyToArray(getAddress(), pTo, getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(byte[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setByteAligned(i, pFrom[i]);
+		OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(short[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setShortAligned(i, pFrom[i]);
+    OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(char[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setCharAligned(i, pFrom[i]);
+    OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(int[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setIntAligned(i, pFrom[i]);
+    OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(long[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setLongAligned(i, pFrom[i]);
+    OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(float[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setFloatAligned(i, pFrom[i]);
+    OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override
 	public void copyFrom(double[] pFrom)
 	{
 		complainIfFreed();
-		for (int i = 0; i < pFrom.length; i++)
-			setDoubleAligned(i, pFrom[i]);
+    OffHeapMemoryAccess.copyFromArray(pFrom,getAddress(),getSizeInBytes());
 	}
 
 	@Override

@@ -13,327 +13,359 @@ import coremem.exceptions.OutOfMemoryException;
 public final class OffHeapMemoryAccess
 {
 
-	static private Unsafe cUnsafe;
+  static private Unsafe cUnsafe;
 
-	static
-	{
-		Field lTheUnsafeField;
-		try
-		{
-			lTheUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
-			lTheUnsafeField.setAccessible(true);
-			cUnsafe = (Unsafe) lTheUnsafeField.get(null);
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-		}
-	}
+  static
+  {
+    Field lTheUnsafeField;
+    try
+    {
+      lTheUnsafeField = Unsafe.class.getDeclaredField("theUnsafe");
+      lTheUnsafeField.setAccessible(true);
+      cUnsafe = (Unsafe) lTheUnsafeField.get(null);
+    }
+    catch (final Throwable e)
+    {
+      e.printStackTrace();
+    }
+  }
 
-	static private final AtomicLong cMaximumAllocatableMemory = new AtomicLong(Long.MAX_VALUE);
+  static private final AtomicLong cMaximumAllocatableMemory = new AtomicLong(Long.MAX_VALUE);
 
-	static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointers = new ConcurrentHashMap<Long, Long>();
-	static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointersSignatures = new ConcurrentHashMap<Long, Long>();
-	static private final AtomicLong cTotalAllocatedMemory = new AtomicLong(0);
+  static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointers = new ConcurrentHashMap<Long, Long>();
+  static private final ConcurrentHashMap<Long, Long> cAllocatedMemoryPointersSignatures = new ConcurrentHashMap<Long, Long>();
+  static private final AtomicLong cTotalAllocatedMemory = new AtomicLong(0);
 
-	static private final Object mLock = new OffHeapMemoryAccess();
+  static private final Object mLock = new OffHeapMemoryAccess();
 
-	public static final void registerMemoryRegion(long pAddress,
-																								long pLength)
-	{
-		synchronized (mLock)
-		{
-			cTotalAllocatedMemory.addAndGet(pLength);
-			cAllocatedMemoryPointers.put(pAddress, pLength);
-			cAllocatedMemoryPointersSignatures.put(	pAddress,
-																							System.nanoTime());
-		}
-	}
+  public static final void registerMemoryRegion(long pAddress,
+                                                long pLength)
+  {
+    synchronized (mLock)
+    {
+      cTotalAllocatedMemory.addAndGet(pLength);
+      cAllocatedMemoryPointers.put(pAddress, pLength);
+      cAllocatedMemoryPointersSignatures.put(pAddress,
+                                             System.nanoTime());
+    }
+  }
 
-	public static final void deregisterMemoryRegion(long pAddress)
-	{
-		synchronized (mLock)
-		{
-			cTotalAllocatedMemory.addAndGet(-cAllocatedMemoryPointers.get(pAddress));
-			cAllocatedMemoryPointers.remove(pAddress);
-			cAllocatedMemoryPointersSignatures.remove(pAddress);
-		}
-	}
+  public static final void deregisterMemoryRegion(long pAddress)
+  {
+    synchronized (mLock)
+    {
+      cTotalAllocatedMemory.addAndGet(-cAllocatedMemoryPointers.get(pAddress));
+      cAllocatedMemoryPointers.remove(pAddress);
+      cAllocatedMemoryPointersSignatures.remove(pAddress);
+    }
+  }
 
-	public static long getMaximumAllocatableMemory()
-	{
-		return cMaximumAllocatableMemory.get();
-	}
+  public static long getMaximumAllocatableMemory()
+  {
+    return cMaximumAllocatableMemory.get();
+  }
 
-	public static void setMaximumAllocatableMemory(long pMaximumAllocatableMemory)
-	{
-		cMaximumAllocatableMemory.set(pMaximumAllocatableMemory);
-	}
+  public static void setMaximumAllocatableMemory(long pMaximumAllocatableMemory)
+  {
+    cMaximumAllocatableMemory.set(pMaximumAllocatableMemory);
+  }
 
-	public static final void overrideTotalAllocatedMemory(long pTotalAllocatedMemory)
-	{
-		cTotalAllocatedMemory.set(pTotalAllocatedMemory);
-	}
+  public static final void overrideTotalAllocatedMemory(long pTotalAllocatedMemory)
+  {
+    cTotalAllocatedMemory.set(pTotalAllocatedMemory);
+  }
 
-	public static final long getTotalAllocatedMemory()
-	{
-		return cTotalAllocatedMemory.get();
-	}
+  public static final long getTotalAllocatedMemory()
+  {
+    return cTotalAllocatedMemory.get();
+  }
 
-	public static final int getPageSize()
-	{
-		return cUnsafe.pageSize();
-	}
+  public static final int getPageSize()
+  {
+    return cUnsafe.pageSize();
+  }
 
-	public static final long allocateMemory(final long pLengthInBytes)
-	{
-		synchronized (mLock)
-		{
-			checkMaxAllocatableMemory(pLengthInBytes);
+  public static final long allocateMemory(final long pLengthInBytes)
+  {
+    synchronized (mLock)
+    {
+      checkMaxAllocatableMemory(pLengthInBytes);
 
-			if (pLengthInBytes <= 0)
-				throw new InvalidAllocationParameterException("cUnsafe.allocateMemory requires a strictly positive allocation length: " + pLengthInBytes);
-			final long lAddress = cUnsafe.allocateMemory(pLengthInBytes);
-			if (lAddress <= 0)
-				throw new OutOfMemoryException("cUnsafe.allocateMemory returned null or negative pointer: " + lAddress);
-			registerMemoryRegion(lAddress, pLengthInBytes);
-			return lAddress;
-		}
-	}
+      if (pLengthInBytes <= 0)
+        throw new InvalidAllocationParameterException("cUnsafe.allocateMemory requires a strictly positive allocation length: " + pLengthInBytes);
+      final long lAddress = cUnsafe.allocateMemory(pLengthInBytes);
+      if (lAddress <= 0)
+        throw new OutOfMemoryException("cUnsafe.allocateMemory returned null or negative pointer: " + lAddress);
+      registerMemoryRegion(lAddress, pLengthInBytes);
+      return lAddress;
+    }
+  }
 
-	static void checkMaxAllocatableMemory(final long pLengthInBytes) throws OutOfMemoryError
-	{
-		if (cTotalAllocatedMemory.get() + pLengthInBytes > cMaximumAllocatableMemory.get())
-			throw new OutOfMemoryError(String.format(	"Cannot allocate memory region of length: %d without reaching maximum allocatable memory %d (currently %d bytes are allocated )\n",
-																								pLengthInBytes,
-																								cMaximumAllocatableMemory.get(),
-																								cTotalAllocatedMemory.get()));
-	}
+  static void checkMaxAllocatableMemory(final long pLengthInBytes) throws OutOfMemoryError
+  {
+    if (cTotalAllocatedMemory.get() + pLengthInBytes > cMaximumAllocatableMemory.get())
+      throw new OutOfMemoryError(String.format("Cannot allocate memory region of length: %d without reaching maximum allocatable memory %d (currently %d bytes are allocated )\n",
+                                               pLengthInBytes,
+                                               cMaximumAllocatableMemory.get(),
+                                               cTotalAllocatedMemory.get()));
+  }
 
-	public static final long reallocateMemory(final long pAddress,
-																						final long pNewLengthInBytes) throws InvalidNativeMemoryAccessException
-	{
-		synchronized (mLock)
-		{
-			if (cAllocatedMemoryPointers.get(pAddress) == null)
-				throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
+  public static final long reallocateMemory(final long pAddress,
+                                            final long pNewLengthInBytes) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      if (cAllocatedMemoryPointers.get(pAddress) == null)
+        throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
 
-			final Long lCurrentlyAllocatedLength = cAllocatedMemoryPointers.get(pAddress);
-			checkMaxAllocatableMemory(pNewLengthInBytes - lCurrentlyAllocatedLength);
+      final Long lCurrentlyAllocatedLength = cAllocatedMemoryPointers.get(pAddress);
+      checkMaxAllocatableMemory(pNewLengthInBytes - lCurrentlyAllocatedLength);
 
-			final long lReallocatedMemoryAddress = cUnsafe.reallocateMemory(pAddress,
-																																			pNewLengthInBytes);
-			if (lReallocatedMemoryAddress != pAddress)
-			{
-				deregisterMemoryRegion(pAddress);
-				registerMemoryRegion(	lReallocatedMemoryAddress,
-															pNewLengthInBytes);
-			}
-			return lReallocatedMemoryAddress;
-		}
-	}
+      final long lReallocatedMemoryAddress = cUnsafe.reallocateMemory(pAddress,
+                                                                      pNewLengthInBytes);
+      if (lReallocatedMemoryAddress != pAddress)
+      {
+        deregisterMemoryRegion(pAddress);
+        registerMemoryRegion(lReallocatedMemoryAddress,
+                             pNewLengthInBytes);
+      }
+      return lReallocatedMemoryAddress;
+    }
+  }
 
-	public static final boolean isAllocatedMemory(final long pAddress,
-																								long pSignature)
-	{
-		synchronized (mLock)
-		{
-			final Long lLength = cAllocatedMemoryPointers.get(pAddress);
-			final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
-			return (lLength != null) && (lKnownSignature == pSignature);
-		}
-	}
+  public static final boolean isAllocatedMemory(final long pAddress,
+                                                long pSignature)
+  {
+    synchronized (mLock)
+    {
+      final Long lLength = cAllocatedMemoryPointers.get(pAddress);
+      final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
+      return (lLength != null) && (lKnownSignature == pSignature);
+    }
+  }
 
-	public static Long getSignature(long pAddress)
-	{
-		final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
-		return lKnownSignature;
-	}
+  public static Long getSignature(long pAddress)
+  {
+    final Long lKnownSignature = cAllocatedMemoryPointersSignatures.get(pAddress);
+    return lKnownSignature;
+  }
 
-	public static final void freeMemory(final long pAddress) throws InvalidNativeMemoryAccessException
-	{
-		synchronized (mLock)
-		{
-			if (cAllocatedMemoryPointers.get(pAddress) == null)
-				throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
-			cUnsafe.freeMemory(pAddress);
-			deregisterMemoryRegion(pAddress);
-		}
-	}
+  public static final void freeMemory(final long pAddress) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      if (cAllocatedMemoryPointers.get(pAddress) == null)
+        throw new InvalidNativeMemoryAccessException("Cannot free unallocated memory!");
+      cUnsafe.freeMemory(pAddress);
+      deregisterMemoryRegion(pAddress);
+    }
+  }
 
-	public static final void copyMemory(final long pAddressOrg,
-																			final long pAddressDest,
-																			final long pLengthInBytes) throws InvalidNativeMemoryAccessException
-	{
-		synchronized (mLock)
-		{
-			cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
-		}
-	}
+  public static final void copyFromArray(final Object pSrcArray,
+                                         final long pAddressDest,
+                                         final long pLengthInBytes) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      int lArrayBaseOffset = cUnsafe.arrayBaseOffset(pSrcArray.getClass());
 
-	public static final void copyMemorySafely(final long pAddressOrg,
-																						final long pAddressDest,
-																						final long pLengthInBytes) throws InvalidNativeMemoryAccessException
-	{
-		synchronized (mLock)
-		{
-			final Long lLengthOrg = cAllocatedMemoryPointers.get(pAddressOrg);
-			if (lLengthOrg == null)
-				throw new InvalidNativeMemoryAccessException("Cannot copy from an unallocated memory region!");
+      cUnsafe.copyMemory(pSrcArray,
+                         lArrayBaseOffset,
+                         null,
+                         pAddressDest,
+                         pLengthInBytes);
+    }
+  }
 
-			final Long lLengthDest = cAllocatedMemoryPointers.get(pAddressDest);
-			if (lLengthDest == null)
-				throw new InvalidNativeMemoryAccessException("Cannot copy to an unallocated memory region!");
+  public static final void copyToArray(final long pAddressSrc,
+                                       final Object pDstArray,
+                                       final long pLengthInBytes) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      int lArrayBaseOffset = cUnsafe.arrayBaseOffset(pDstArray.getClass());
 
-			if (pLengthInBytes > lLengthOrg)
-				throw new InvalidNativeMemoryAccessException(String.format(	"Cannot copy - source too small! %d < %d)",
-																																		lLengthOrg,
-																																		pLengthInBytes));
+      cUnsafe.copyMemory(null,
+                         pAddressSrc,
+                         pDstArray,
+                         lArrayBaseOffset,
+                         pLengthInBytes);
+    }
+  }
 
-			if (pLengthInBytes > lLengthDest)
-				throw new InvalidNativeMemoryAccessException(String.format(	"Cannot copy - destination too small! %d < %d)",
-																																		lLengthDest,
-																																		pLengthInBytes));/**/
+  public static final void copyMemory(final long pAddressOrg,
+                                      final long pAddressDest,
+                                      final long pLengthInBytes) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
+    }
+  }
 
-			cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
-		}
-	}
+  public static final void copyMemorySafely(final long pAddressOrg,
+                                            final long pAddressDest,
+                                            final long pLengthInBytes) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      final Long lLengthOrg = cAllocatedMemoryPointers.get(pAddressOrg);
+      if (lLengthOrg == null)
+        throw new InvalidNativeMemoryAccessException("Cannot copy from an unallocated memory region!");
 
-	public static final void setMemory(	final long pAddress,
-																			final long pLengthInBytes,
-																			final byte pValue) throws InvalidNativeMemoryAccessException
-	{
-		synchronized (mLock)
-		{
-			cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
-		}
-	}
+      final Long lLengthDest = cAllocatedMemoryPointers.get(pAddressDest);
+      if (lLengthDest == null)
+        throw new InvalidNativeMemoryAccessException("Cannot copy to an unallocated memory region!");
 
-	public static final void setMemorySafely(	final long pAddress,
-																						final long pLengthInBytes,
-																						final byte pValue) throws InvalidNativeMemoryAccessException
-	{
-		synchronized (mLock)
-		{
-			final Long lLength = cAllocatedMemoryPointers.get(pAddress);
-			if (lLength == null)
-				throw new InvalidNativeMemoryAccessException("Cannot set unallocated memory region!");
+      if (pLengthInBytes > lLengthOrg)
+        throw new InvalidNativeMemoryAccessException(String.format("Cannot copy - source too small! %d < %d)",
+                                                                   lLengthOrg,
+                                                                   pLengthInBytes));
 
-			if (pLengthInBytes > lLength)
-				throw new InvalidNativeMemoryAccessException(String.format(	"Cannot set - memory region too small! %d < %d)",
-																																		lLength,
-																																		pLengthInBytes));/**/
+      if (pLengthInBytes > lLengthDest)
+        throw new InvalidNativeMemoryAccessException(String.format("Cannot copy - destination too small! %d < %d)",
+                                                                   lLengthDest,
+                                                                   pLengthInBytes));/**/
 
-			cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
-		}
-	}
+      cUnsafe.copyMemory(pAddressOrg, pAddressDest, pLengthInBytes);
+    }
+  }
 
-	/* JAVA8 code: public static final void storeReorderingFence()
-	{
-		cUnsafe.storeFence();
-	}
+  public static final void setMemory(final long pAddress,
+                                     final long pLengthInBytes,
+                                     final byte pValue) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
+    }
+  }
 
-	public static final void loadReorderingFence()
-	{
-		cUnsafe.loadFence();
-	}
+  public static final void setMemorySafely(final long pAddress,
+                                           final long pLengthInBytes,
+                                           final byte pValue) throws InvalidNativeMemoryAccessException
+  {
+    synchronized (mLock)
+    {
+      final Long lLength = cAllocatedMemoryPointers.get(pAddress);
+      if (lLength == null)
+        throw new InvalidNativeMemoryAccessException("Cannot set unallocated memory region!");
 
-	public static final void fullReorderingFence()
-	{
-		cUnsafe.fullFence();
-	}/**/
+      if (pLengthInBytes > lLength)
+        throw new InvalidNativeMemoryAccessException(String.format("Cannot set - memory region too small! %d < %d)",
+                                                                   lLength,
+                                                                   pLengthInBytes));/**/
 
-	public static final byte getByte(final long pAddress)
-	{
-		return cUnsafe.getByte(pAddress);
-	}
+      cUnsafe.setMemory(pAddress, pLengthInBytes, pValue);
+    }
+  }
 
-	public static final char getChar(final long pAddress)
-	{
-		return cUnsafe.getChar(pAddress);
-	}
+  /* JAVA8 code: public static final void storeReorderingFence()
+  {
+  	cUnsafe.storeFence();
+  }
 
-	public static final short getShort(final long pAddress)
-	{
-		return cUnsafe.getShort(pAddress);
-	}
+  public static final void loadReorderingFence()
+  {
+  	cUnsafe.loadFence();
+  }
 
-	public static final int getInt(final long pAddress)
-	{
-		return cUnsafe.getInt(pAddress);
-	}
+  public static final void fullReorderingFence()
+  {
+  	cUnsafe.fullFence();
+  }/**/
 
-	public static final long getLong(final long pAddress)
-	{
-		return cUnsafe.getLong(pAddress);
-	}
+  public static final byte getByte(final long pAddress)
+  {
+    return cUnsafe.getByte(pAddress);
+  }
 
-	public static final float getFloat(final long pAddress)
-	{
-		return cUnsafe.getFloat(pAddress);
-	}
+  public static final char getChar(final long pAddress)
+  {
+    return cUnsafe.getChar(pAddress);
+  }
 
-	public static final double getDouble(final long pAddress)
-	{
-		return cUnsafe.getDouble(pAddress);
-	}
+  public static final short getShort(final long pAddress)
+  {
+    return cUnsafe.getShort(pAddress);
+  }
 
-	public static final void setByte(	final long pAddress,
-																		final byte pValue)
-	{
-		cUnsafe.putByte(pAddress, pValue);
-	}
+  public static final int getInt(final long pAddress)
+  {
+    return cUnsafe.getInt(pAddress);
+  }
 
-	public static final void setChar(	final long pAddress,
-																		final char pValue)
-	{
-		cUnsafe.putChar(pAddress, pValue);
-	}
+  public static final long getLong(final long pAddress)
+  {
+    return cUnsafe.getLong(pAddress);
+  }
 
-	public static final void setShort(final long pAddress,
-																		final short pValue)
-	{
-		cUnsafe.putShort(pAddress, pValue);
-	}
+  public static final float getFloat(final long pAddress)
+  {
+    return cUnsafe.getFloat(pAddress);
+  }
 
-	public static final void setInt(final long pAddress,
-																	final int pValue)
-	{
-		cUnsafe.putInt(pAddress, pValue);
-	}
+  public static final double getDouble(final long pAddress)
+  {
+    return cUnsafe.getDouble(pAddress);
+  }
 
-	public static final void setLong(	final long pAddress,
-																		final long pValue)
-	{
-		cUnsafe.putLong(pAddress, pValue);
-	}
+  public static final void setByte(final long pAddress,
+                                   final byte pValue)
+  {
+    cUnsafe.putByte(pAddress, pValue);
+  }
 
-	public static final void setFloat(final long pAddress,
-																		final float pValue)
-	{
-		cUnsafe.putFloat(pAddress, pValue);
-	}
+  public static final void setChar(final long pAddress,
+                                   final char pValue)
+  {
+    cUnsafe.putChar(pAddress, pValue);
+  }
 
-	public static final void setDouble(	final long pAddress,
-																			final double pValue)
-	{
-		cUnsafe.putDouble(pAddress, pValue);
-	}
+  public static final void setShort(final long pAddress,
+                                    final short pValue)
+  {
+    cUnsafe.putShort(pAddress, pValue);
+  }
 
-	public static final void fillBytes(	final long pAddress,
-																			final long pNumberOfBytes,
-																			final byte pValue)
-	{
-		cUnsafe.setMemory(pAddress, pNumberOfBytes, pValue);
-	}
+  public static final void setInt(final long pAddress,
+                                  final int pValue)
+  {
+    cUnsafe.putInt(pAddress, pValue);
+  }
 
-	public static void freeAll()
-	{
-		for (final Map.Entry<Long, Long> lEntry : cAllocatedMemoryPointers.entrySet())
-		{
-			final long lAddress = lEntry.getKey();
-			freeMemory(lAddress);
-		}
-	}
+  public static final void setLong(final long pAddress,
+                                   final long pValue)
+  {
+    cUnsafe.putLong(pAddress, pValue);
+  }
+
+  public static final void setFloat(final long pAddress,
+                                    final float pValue)
+  {
+    cUnsafe.putFloat(pAddress, pValue);
+  }
+
+  public static final void setDouble(final long pAddress,
+                                     final double pValue)
+  {
+    cUnsafe.putDouble(pAddress, pValue);
+  }
+
+  public static final void fillBytes(final long pAddress,
+                                     final long pNumberOfBytes,
+                                     final byte pValue)
+  {
+    cUnsafe.setMemory(pAddress, pNumberOfBytes, pValue);
+  }
+
+  public static void freeAll()
+  {
+    for (final Map.Entry<Long, Long> lEntry : cAllocatedMemoryPointers.entrySet())
+    {
+      final long lAddress = lEntry.getKey();
+      freeMemory(lAddress);
+    }
+  }
 
 }

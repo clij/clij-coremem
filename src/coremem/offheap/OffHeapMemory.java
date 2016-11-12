@@ -144,6 +144,12 @@ public class OffHeapMemory extends MemoryBase implements
 	{
 		return new OffHeapMemory(pName, pNumberOfDoubles * Size.DOUBLE);
 	}
+	
+  public static OffHeapMemory allocatePageAlignedBytes(String pName, long pNumberOfBytes)
+  {
+    long lPageSize = OffHeapMemoryAccess.getPageSize();
+    return allocateAlignedBytes(pName, pNumberOfBytes, lPageSize);
+  }
 
 	public static OffHeapMemory allocateAlignedBytes(	String pName,
 																										long pNumberOfBytes,
@@ -284,5 +290,7 @@ public class OffHeapMemory extends MemoryBase implements
 						+ getMemoryType()
 						+ "]";
 	}
+
+
 
 }
