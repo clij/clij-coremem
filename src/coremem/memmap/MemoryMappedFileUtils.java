@@ -10,6 +10,11 @@ import java.nio.file.StandardOpenOption;
 import coremem.exceptions.MemoryMapFileException;
 import coremem.offheap.OffHeapMemoryAccess;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public final class MemoryMappedFileUtils
 {
 
@@ -22,6 +27,15 @@ public final class MemoryMappedFileUtils
 	public static final MemoryMappedFileAccessMode ReadWrite = MemoryMappedFileAccessMode.ReadWrite;
 	public static final MemoryMappedFileAccessMode Private = MemoryMappedFileAccessMode.Private;
 
+	/**
+	 * @param pFileChannel
+	 * @param pAccessMode
+	 * @param pFilePosition
+	 * @param pMappedRegionLength
+	 * @param pExtendIfNeeded
+	 * @return
+	 * @throws MemoryMapFileException
+	 */
 	public static final long map(	FileChannel pFileChannel,
 																MemoryMappedFileAccessMode pAccessMode,
 																final long pFilePosition,
@@ -100,6 +114,13 @@ public final class MemoryMappedFileUtils
 		return lMappedAddress;
 	}
 
+	/**
+	 * @param pFileChannel
+	 * @param pMemoryMapAddress
+	 * @param pMappedRegionLength
+	 * @return
+	 * @throws MemoryMapFileException
+	 */
 	public static final int unmap(FileChannel pFileChannel,
 																final long pMemoryMapAddress,
 																final long pMappedRegionLength) throws MemoryMapFileException
@@ -159,11 +180,21 @@ public final class MemoryMappedFileUtils
 
 	}/**/
 
+	/**
+	 * @param pFileChannel
+	 * @return
+	 * @throws IOException
+	 */
 	public static final long filesize(FileChannel pFileChannel) throws IOException
 	{
 		return pFileChannel.size();
 	}
 
+	/**
+	 * @param pFileChannel
+	 * @param pLength
+	 * @throws IOException
+	 */
 	public static final void truncate(FileChannel pFileChannel,
 																		final long pLength) throws IOException
 	{
@@ -185,6 +216,10 @@ public final class MemoryMappedFileUtils
 
 	}
 
+	/**
+	 * @param pStandardOpenOption
+	 * @return
+	 */
 	public static MemoryMappedFileAccessMode bestMode(StandardOpenOption[] pStandardOpenOption)
 	{
 		boolean lWrite = false;

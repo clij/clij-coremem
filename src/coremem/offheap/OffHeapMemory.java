@@ -6,291 +6,536 @@ import org.bridj.Pointer;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.MemoryBase;
+import coremem.enums.MemoryType;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.UnsupportedMemoryResizingException;
-import coremem.interfaces.MemoryType;
 import coremem.interfaces.Resizable;
 import coremem.interop.NIOBuffersInterop;
 import coremem.rgc.Cleaner;
 import coremem.rgc.RessourceGarbageCollector;
 import coremem.util.Size;
 
+/**
+ * Instances of this class represent contguous regions of off-heap memory.
+ * 
+ *
+ * @author royer
+ */
 @SuppressWarnings("unchecked")
 public class OffHeapMemory extends MemoryBase implements
-														Resizable,
-														ContiguousMemoryInterface
+                           Resizable,
+                           ContiguousMemoryInterface
 
 {
-	protected StackTraceElement[] mAllocationStackTrace =
-																											new StackTraceElement[]
-																											{ new StackTraceElement("NULL", "NULL", "NULL", -1) };
-	protected String mName = "NOTDEFINED";
-	protected Long mSignature;
-	protected Object mParent = null;
+  protected StackTraceElement[] mAllocationStackTrace =
+                                                      new StackTraceElement[]
+                                                      { new StackTraceElement("NULL", "NULL", "NULL", -1) };
+  protected String mName = "NOTDEFINED";
+  protected Long mSignature;
+  protected Object mParent = null;
 
-	public static final OffHeapMemory wrapPointer(final Object pParent,
-																								final long pAddress,
-																								final long pLengthInBytes)
-	{
-		return wrapPointer("WRAPNULL", pParent, pAddress, pLengthInBytes);
-	};
+  /**
+   * Wraps a 'raw' pointer i.e. a long pointer value and a length. This is used
+   * to wrap a non-coremem memory region. A parent can be given, to prevent its
+   * garbage collection and the possible release of the underlying memory
+   * resource.
+   * 
+   * @param pParent
+   *          parent reference to prevent the parent's garbage collection.
+   * @param pAddress
+   *          address
+   * @param pLengthInBytes
+   *          length in bytes
+   * @return off-heap memory object
+   */
+  public static final OffHeapMemory wrapPointer(final Object pParent,
+                                                final long pAddress,
+                                                final long pLengthInBytes)
+  {
+    return wrapPointer("WRAPNULL", pParent, pAddress, pLengthInBytes);
+  };
 
-	public static final OffHeapMemory wrapPointer(final String pName,
-																								final Object pParent,
-																								final long pAddress,
-																								final long pLengthInBytes)
-	{
-		return new OffHeapMemory(	pName,
-															pParent,
-															pAddress,
-															pLengthInBytes);
-	};
+  /**
+   * Wraps a 'raw' pointer i.e. a long pointer value and a length. This is used
+   * to wrap a non-coremem memory region. A parent can be given, to prevent its
+   * garbage collection and the possible release of the underlying memory
+   * resource.
+   * 
+   * @param pName
+   *          memory region name
+   * @param pParent
+   *          parent reference to prevent the parent's garbage collection.
+   * @param pAddress
+   *          address
+   * @param pLengthInBytes
+   *          length in bytes
+   * @return off-heap memory object
+   */
+  public static final OffHeapMemory wrapPointer(final String pName,
+                                                final Object pParent,
+                                                final long pAddress,
+                                                final long pLengthInBytes)
+  {
+    return new OffHeapMemory(pName,
+                             pParent,
+                             pAddress,
+                             pLengthInBytes);
+  };
 
-	public static OffHeapMemory wrapPointer(Pointer<Byte> pPointerForSinglePlane)
-	{
-		long lAddress = Pointer.getPeer(pPointerForSinglePlane);
-		long lTargetSizeInBytes = pPointerForSinglePlane.getTargetSize();
-		return wrapPointer(	pPointerForSinglePlane.toString(),
-												pPointerForSinglePlane,
-												lAddress,
-												lTargetSizeInBytes);
-	}
+  /**
+   * Wraps a bridj pointer.
+   * 
+   * @param pBridJPointer
+   *          BridJ pointer
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory wrapPointer(Pointer<Byte> pBridJPointer)
+  {
+    long lAddress = Pointer.getPeer(pBridJPointer);
+    long lTargetSizeInBytes = pBridJPointer.getTargetSize();
+    return wrapPointer(pBridJPointer.toString(),
+                       pBridJPointer,
+                       lAddress,
+                       lTargetSizeInBytes);
+  }
 
-	public static final OffHeapMemory wrapBuffer(final Buffer pBuffer)
-	{
-		return NIOBuffersInterop.getContiguousMemoryFrom(pBuffer);
-	};
+  /**
+   * Wraps a NIO buffer.
+   * 
+   * @param pBuffer
+   *          NIO buffer
+   * @return off-heap memory object
+   */
+  public static final OffHeapMemory wrapBuffer(final Buffer pBuffer)
+  {
+    return NIOBuffersInterop.getContiguousMemoryFrom(pBuffer);
+  };
 
-	public static final OffHeapMemory copyFromArray(final byte[] pBuffer)
-	{
-		OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(pBuffer.length);
-		lOffHeapMemory.copyFrom(pBuffer);
-		return lOffHeapMemory;
-	};
+  /**
+   * Creates a off-heap memory object initialized by copying the contents of a
+   * byte array.
+   * 
+   * @param pBuffer
+   * @return off-heap memory object
+   */
+  public static final OffHeapMemory copyFromArray(final byte[] pBuffer)
+  {
+    OffHeapMemory lOffHeapMemory =
+                                 OffHeapMemory.allocateBytes(pBuffer.length);
+    lOffHeapMemory.copyFrom(pBuffer);
+    return lOffHeapMemory;
+  };
 
-	public static OffHeapMemory allocateBytes(long pNumberOfBytes)
-	{
-		return new OffHeapMemory(pNumberOfBytes * Size.BYTE);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of bytes.
+   * 
+   * @param pNumberOfBytes
+   *          number of bytes
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateBytes(long pNumberOfBytes)
+  {
+    return new OffHeapMemory(pNumberOfBytes * Size.BYTE);
+  }
 
-	public static OffHeapMemory allocateChars(long pNumberOfChars)
-	{
-		return new OffHeapMemory(pNumberOfChars * Size.CHAR);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of chars.
+   * 
+   * @param pNumberOfChars
+   *          number of chars
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateChars(long pNumberOfChars)
+  {
+    return new OffHeapMemory(pNumberOfChars * Size.CHAR);
+  }
 
-	public static OffHeapMemory allocateShorts(long pNumberOfShorts)
-	{
-		return new OffHeapMemory(pNumberOfShorts * Size.SHORT);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of shorts.
+   * 
+   * @param pNumberOfShorts
+   *          number of shorts
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateShorts(long pNumberOfShorts)
+  {
+    return new OffHeapMemory(pNumberOfShorts * Size.SHORT);
+  }
 
-	public static OffHeapMemory allocateInts(long pNumberOfInts)
-	{
-		return new OffHeapMemory(pNumberOfInts * Size.INT);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of ints.
+   * 
+   * @param pNumberOfInts
+   *          number of ints
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateInts(long pNumberOfInts)
+  {
+    return new OffHeapMemory(pNumberOfInts * Size.INT);
+  }
 
-	public static OffHeapMemory allocateLongs(long pNumberOfLongs)
-	{
-		return new OffHeapMemory(pNumberOfLongs * Size.LONG);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of longs.
+   * 
+   * @param pNumberOfLongs
+   *          number of longs
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateLongs(long pNumberOfLongs)
+  {
+    return new OffHeapMemory(pNumberOfLongs * Size.LONG);
+  }
 
-	public static OffHeapMemory allocateFloats(long pNumberOfFloats)
-	{
-		return new OffHeapMemory(pNumberOfFloats * Size.FLOAT);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of floats.
+   * 
+   * @param pNumberOfFloats
+   *          number of floats
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateFloats(long pNumberOfFloats)
+  {
+    return new OffHeapMemory(pNumberOfFloats * Size.FLOAT);
+  }
 
-	public static OffHeapMemory allocateDoubles(long pNumberOfDoubles)
-	{
-		return new OffHeapMemory(pNumberOfDoubles * Size.DOUBLE);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of doubles.
+   * 
+   * @param pNumberOfDoubles
+   *          number of doubles
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateDoubles(long pNumberOfDoubles)
+  {
+    return new OffHeapMemory(pNumberOfDoubles * Size.DOUBLE);
+  }
 
-	public static OffHeapMemory allocateBytes(String pName,
-																						long pNumberOfBytes)
-	{
-		return new OffHeapMemory(pName, pNumberOfBytes * Size.BYTE);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of bytes.
+   * 
+   * @param pName
+   * @param pNumberOfBytes
+   *          number of bytes
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateBytes(String pName,
+                                            long pNumberOfBytes)
+  {
+    return new OffHeapMemory(pName, pNumberOfBytes * Size.BYTE);
+  }
 
-	public static OffHeapMemory allocateChars(String pName,
-																						long pNumberOfChars)
-	{
-		return new OffHeapMemory(pName, pNumberOfChars * Size.CHAR);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of chars.
+   * 
+   * @param pName
+   * @param pNumberOfChars
+   *          number of chars
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateChars(String pName,
+                                            long pNumberOfChars)
+  {
+    return new OffHeapMemory(pName, pNumberOfChars * Size.CHAR);
+  }
 
-	public static OffHeapMemory allocateShorts(	String pName,
-																							long pNumberOfShorts)
-	{
-		return new OffHeapMemory(pName, pNumberOfShorts * Size.SHORT);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of shorts.
+   * 
+   * @param pName
+   * @param pNumberOfShorts
+   *          number of shorts
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateShorts(String pName,
+                                             long pNumberOfShorts)
+  {
+    return new OffHeapMemory(pName, pNumberOfShorts * Size.SHORT);
+  }
 
-	public static OffHeapMemory allocateInts(	String pName,
-																						long pNumberOfInts)
-	{
-		return new OffHeapMemory(pName, pNumberOfInts * Size.INT);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of ints.
+   * 
+   * @param pName
+   * @param pNumberOfInts
+   *          number of ints
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateInts(String pName,
+                                           long pNumberOfInts)
+  {
+    return new OffHeapMemory(pName, pNumberOfInts * Size.INT);
+  }
 
-	public static OffHeapMemory allocateLongs(String pName,
-																						long pNumberOfLongs)
-	{
-		return new OffHeapMemory(pName, pNumberOfLongs * Size.LONG);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of longs.
+   * 
+   * @param pName
+   * @param pNumberOfLongs
+   *          number of longs
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateLongs(String pName,
+                                            long pNumberOfLongs)
+  {
+    return new OffHeapMemory(pName, pNumberOfLongs * Size.LONG);
+  }
 
-	public static OffHeapMemory allocateFloats(	String pName,
-																							long pNumberOfFloats)
-	{
-		return new OffHeapMemory(pName, pNumberOfFloats * Size.FLOAT);
-	}
+  /**
+   * Allocates off-heap memory that can hold a given number of floats.
+   * 
+   * @param pName
+   * @param pNumberOfFloats
+   *          number of floats
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateFloats(String pName,
+                                             long pNumberOfFloats)
+  {
+    return new OffHeapMemory(pName, pNumberOfFloats * Size.FLOAT);
+  }
 
-	public static OffHeapMemory allocateDoubles(String pName,
-																							long pNumberOfDoubles)
-	{
-		return new OffHeapMemory(pName, pNumberOfDoubles * Size.DOUBLE);
-	}
-	
-  public static OffHeapMemory allocatePageAlignedBytes(String pName, long pNumberOfBytes)
+  /**
+   * Allocates off-heap memory that can hold a given number of doubles.
+   * 
+   * @param pName
+   * @param pNumberOfDoubles
+   *          number of doubles
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateDoubles(String pName,
+                                              long pNumberOfDoubles)
+  {
+    return new OffHeapMemory(pName, pNumberOfDoubles * Size.DOUBLE);
+  }
+
+  /**
+   * Allocates page=aligned off-heap memory that can hold a given number of
+   * bytes.
+   * 
+   * @param pName
+   * @param pNumberOfBytes
+   *          number of bytes
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocatePageAlignedBytes(String pName,
+                                                       long pNumberOfBytes)
   {
     long lPageSize = OffHeapMemoryAccess.getPageSize();
     return allocateAlignedBytes(pName, pNumberOfBytes, lPageSize);
   }
 
-	public static OffHeapMemory allocateAlignedBytes(	String pName,
-																										long pNumberOfBytes,
-																										long pAlignment)
-	{
-		if(pAlignment==0)
-			return allocateBytes(pName,pNumberOfBytes);
-		
-		long lNumberOfBytesWithPadding = pNumberOfBytes + pAlignment;
+  /**
+   * Allocates off-heap memory that can hold a given number of bytes, with a
+   * given alignment.
+   * 
+   * @param pName
+   * @param pNumberOfBytes
+   *          number of bytes
+   * @param pAlignment
+   *          byte boundary to align to.
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory allocateAlignedBytes(String pName,
+                                                   long pNumberOfBytes,
+                                                   long pAlignment)
+  {
+    if (pAlignment == 0)
+      return allocateBytes(pName, pNumberOfBytes);
 
-		OffHeapMemory lAllocatedBytesWithPadding = allocateBytes(	pName,
-																															lNumberOfBytesWithPadding);
+    long lNumberOfBytesWithPadding = pNumberOfBytes + pAlignment;
 
-		long lOffset = pAlignment - (lAllocatedBytesWithPadding.getAddress() % pAlignment);
+    OffHeapMemory lAllocatedBytesWithPadding =
+                                             allocateBytes(pName,
+                                                           lNumberOfBytesWithPadding);
 
-		OffHeapMemory lAlignedRegion = lAllocatedBytesWithPadding.subRegion(lOffset,
-																																				pNumberOfBytes);
+    long lOffset =
+                 pAlignment - (lAllocatedBytesWithPadding.getAddress()
+                               % pAlignment);
 
-		return lAlignedRegion;
-	}
+    OffHeapMemory lAlignedRegion =
+                                 lAllocatedBytesWithPadding.subRegion(lOffset,
+                                                                      pNumberOfBytes);
 
-	public OffHeapMemory(final long pLengthInBytes)
-	{
-		this(null, pLengthInBytes);
-	}
+    return lAlignedRegion;
+  }
 
-	public OffHeapMemory(final String pName, final long pLengthInBytes)
-	{
-		this(	null,
-					OffHeapMemoryAccess.allocateMemory(pLengthInBytes),
-					pLengthInBytes);
-	}
+  /**
+   * Allocates an off-heap memory region of given length in bytes.
+   * 
+   * @param pLengthInBytes
+   *          length in bytes
+   */
+  public OffHeapMemory(final long pLengthInBytes)
+  {
+    this(null, pLengthInBytes);
+  }
 
-	public OffHeapMemory(	final Object pParent,
-												final long pAddress,
-												final long pLengthInBytes)
-	{
-		this("NULL", pParent, pAddress, pLengthInBytes);
-	}
+  /**
+   * Allocates an off-heap memory region of given name and length in bytes.
+   * 
+   * @param pName
+   *          name
+   * @param pLengthInBytes
+   *          length in bytes
+   */
+  public OffHeapMemory(final String pName, final long pLengthInBytes)
+  {
+    this(pName,
+         null,
+         OffHeapMemoryAccess.allocateMemory(pLengthInBytes),
+         pLengthInBytes);
+  }
 
-	public OffHeapMemory(	final String pName,
-												final Object pParent,
-												final long pAddress,
-												final long pLengthInBytes)
-	{
-		super(pAddress, pLengthInBytes);
-		mName = pName.intern();
-		mParent = pParent;
-		mAllocationStackTrace = Thread.currentThread().getStackTrace();
-		mSignature = OffHeapMemoryAccess.getSignature(getAddress());
-		RessourceGarbageCollector.register(this);
-	}
+  /**
+   * Warps an off-heap memory region of given parent, address, and length in
+   * bytes.
+   * 
+   * @param pParent
+   *          parent
+   * @param pAddress
+   *          address
+   * @param pLengthInBytes
+   *          length in bytes
+   */
+  public OffHeapMemory(final Object pParent,
+                       final long pAddress,
+                       final long pLengthInBytes)
+  {
+    this("NULL", pParent, pAddress, pLengthInBytes);
+  }
 
-	@Override
-	public OffHeapMemory subRegion(	final long pOffset,
-																	final long pLenghInBytes)
-	{
-		if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes
-																										+ mLengthInBytes)
-			throw new InvalidNativeMemoryAccessException(String.format(	"Cannot instanciate OffHeapMemory on subregion staring at offset %d and length %d  ",
-																																	pOffset,
-																																	pLenghInBytes));
-		final OffHeapMemory lOffHeapMemory = new OffHeapMemory(	this,
-																														mAddressInBytes
-																																	+ pOffset,
-																														pLenghInBytes);
-		return lOffHeapMemory;
-	}
+  /**
+   * Warps an off-heap memory region of given name, parent, address, and length
+   * in bytes.
+   * 
+   * @param pName
+   *          name
+   * @param pParent
+   *          parent
+   * @param pAddress
+   *          address
+   * @param pLengthInBytes
+   *          length in bytes
+   */
+  public OffHeapMemory(final String pName,
+                       final Object pParent,
+                       final long pAddress,
+                       final long pLengthInBytes)
+  {
+    super(pAddress, pLengthInBytes);
+    mName = pName==null?"NULL":pName.intern();
+    mParent = pParent;
+    mAllocationStackTrace = Thread.currentThread().getStackTrace();
+    mSignature = OffHeapMemoryAccess.getSignature(getAddress());
+    RessourceGarbageCollector.register(this);
+  }
 
-	@Override
-	public MemoryType getMemoryType()
-	{
-		complainIfFreed();
-		return MemoryType.CPURAMDIRECT;
-	}
+  /* (non-Javadoc)
+   * @see coremem.ContiguousMemoryInterface#subRegion(long, long)
+   */
+  @Override
+  public OffHeapMemory subRegion(final long pOffset,
+                                 final long pLenghInBytes)
+  {
+    if (mAddressInBytes + pOffset + pLenghInBytes > mAddressInBytes
+                                                    + mLengthInBytes)
+      throw new InvalidNativeMemoryAccessException(String.format("Cannot instanciate OffHeapMemory on subregion staring at offset %d and length %d  ",
+                                                                 pOffset,
+                                                                 pLenghInBytes));
+    final OffHeapMemory lOffHeapMemory =
+                                       new OffHeapMemory(this,
+                                                         mAddressInBytes
+                                                               + pOffset,
+                                                         pLenghInBytes);
+    return lOffHeapMemory;
+  }
 
-	@Override
-	public long resize(long pNewLength)
-	{
-		complainIfFreed();
-		if (mParent != null)
-			throw new UnsupportedMemoryResizingException("Cannot resize externally allocated memory region!");
-		try
-		{
-			mAddressInBytes =
-											OffHeapMemoryAccess.reallocateMemory(	mAddressInBytes,
-																														pNewLength);
-			mLengthInBytes = pNewLength;
-		}
-		catch (final Throwable e)
-		{
-			final String lErrorMessage = String.format(	"Could not resize memory region from %d to %d ",
-																									mLengthInBytes,
-																									pNewLength);
-			// error("KAM", lErrorMessage);
-			throw new UnsupportedMemoryResizingException(lErrorMessage, e);
-		}
-		return mLengthInBytes;
-	}
+  /* (non-Javadoc)
+   * @see coremem.MemoryBase#getMemoryType()
+   */
+  @Override
+  public MemoryType getMemoryType()
+  {
+    complainIfFreed();
+    return MemoryType.CPURAMDIRECT;
+  }
 
-	@Override
-	public void free()
-	{
-		if (mParent == null && mAddressInBytes != 0)
-		{
-			OffHeapMemoryAccess.freeMemory(mAddressInBytes);
-		}
-		mAddressInBytes = 0;
-		mParent = null;
-		super.free();
-	}
+  /* (non-Javadoc)
+   * @see coremem.interfaces.Resizable#resize(long)
+   */
+  @Override
+  public long resize(long pNewLength)
+  {
+    complainIfFreed();
+    if (mParent != null)
+      throw new UnsupportedMemoryResizingException("Cannot resize externally allocated memory region!");
+    try
+    {
+      mAddressInBytes =
+                      OffHeapMemoryAccess.reallocateMemory(mAddressInBytes,
+                                                           pNewLength);
+      mLengthInBytes = pNewLength;
+    }
+    catch (final Throwable e)
+    {
+      final String lErrorMessage =
+                                 String.format("Could not resize memory region from %d to %d ",
+                                               mLengthInBytes,
+                                               pNewLength);
+      // error("KAM", lErrorMessage);
+      throw new UnsupportedMemoryResizingException(lErrorMessage, e);
+    }
+    return mLengthInBytes;
+  }
 
-	@Override
-	public Cleaner getCleaner()
-	{
-		if (mParent != null)
-			return new OffHeapMemoryCleaner(null,
-																			mSignature,
-																			mName,
-																			mAllocationStackTrace);
-		return new OffHeapMemoryCleaner(mAddressInBytes,
-																		mSignature,
-																		mName,
-																		mAllocationStackTrace);
-	}
+  /* (non-Javadoc)
+   * @see coremem.MemoryBase#free()
+   */
+  @Override
+  public void free()
+  {
+    if (mParent == null && mAddressInBytes != 0)
+    {
+      OffHeapMemoryAccess.freeMemory(mAddressInBytes);
+    }
+    mAddressInBytes = 0;
+    mParent = null;
+    super.free();
+  }
 
-	@Override
-	public String toString()
-	{
-		return "OffHeapMemory [mParent="+ mParent
-						+ ", mAddressInBytes="
-						+ mAddressInBytes
-						+ ", mLengthInBytes="
-						+ mLengthInBytes
-						+ ", mIsFree="
-						+ mIsFree
-						+ ", getMemoryType()="
-						+ getMemoryType()
-						+ "]";
-	}
+  /* (non-Javadoc)
+   * @see coremem.rgc.Cleanable#getCleaner()
+   */
+  @Override
+  public Cleaner getCleaner()
+  {
+    if (mParent != null)
+      return new OffHeapMemoryCleaner(null,
+                                      mSignature,
+                                      mName,
+                                      mAllocationStackTrace);
+    return new OffHeapMemoryCleaner(mAddressInBytes,
+                                    mSignature,
+                                    mName,
+                                    mAllocationStackTrace);
+  }
 
-
+  /* (non-Javadoc)
+   * @see java.lang.Object#toString()
+   */
+  @Override
+  public String toString()
+  {
+    return "OffHeapMemory [mParent=" + mParent
+           + ", mAddressInBytes="
+           + mAddressInBytes
+           + ", mLengthInBytes="
+           + mLengthInBytes
+           + ", mIsFree="
+           + mIsFree
+           + ", getMemoryType()="
+           + getMemoryType()
+           + "]";
+  }
 
 }

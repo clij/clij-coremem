@@ -1,9 +1,18 @@
 package coremem.rgc;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public abstract class FreeableBase implements Freeable
 {
 
-	public void complainIfFreed() throws FreedException
+	/* (non-Javadoc)
+	 * @see coremem.rgc.Freeable#complainIfFreed()
+	 */
+	@Override
+  public void complainIfFreed() throws FreedException
 	{
 		if (isFree())
 		{

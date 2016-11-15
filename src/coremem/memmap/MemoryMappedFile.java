@@ -7,6 +7,11 @@ import coremem.offheap.OffHeapMemoryAccess;
 import coremem.rgc.Cleanable;
 import coremem.rgc.Cleaner;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class MemoryMappedFile implements AutoCloseable, Cleanable
 {
 
@@ -24,6 +29,13 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 	private final Long mSignature;
 
+	/**
+	 * @param pFileChannel
+	 * @param pAccessMode
+	 * @param pFilePosition
+	 * @param pMappedRegionLength
+	 * @param pExtendIfNeeded
+	 */
 	public MemoryMappedFile(FileChannel pFileChannel,
 													MemoryMappedFileAccessMode pAccessMode,
 													final long pFilePosition,
@@ -50,6 +62,10 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 	}
 
+	/**
+	 * @param pFilePosition
+	 * @return
+	 */
 	public long getAddressAtFilePosition(long pFilePosition)
 	{
 		if (pFilePosition < mRequestedFilePosition)
@@ -61,6 +77,9 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 		return mMappingPointerAddress + (pFilePosition - mActualMappingFilePosition);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.AutoCloseable#close()
+	 */
 	@Override
 	public void close() throws IOException
 	{
@@ -70,6 +89,12 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 	}
 
+
+	/**
+	 *
+	 *
+	 * @author royer
+	 */
 	static class MemoryMappedFileCleaner implements Cleaner
 	{
 		private final long mAddressToClean;
@@ -118,6 +143,9 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.rgc.Cleanable#getCleaner()
+	 */
 	@Override
 	public Cleaner getCleaner()
 	{

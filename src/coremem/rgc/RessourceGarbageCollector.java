@@ -8,6 +8,11 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class RessourceGarbageCollector
 {
 
@@ -45,6 +50,9 @@ public class RessourceGarbageCollector
 
 	private final AtomicBoolean mActive = new AtomicBoolean(true);
 
+	/**
+	 * 
+	 */
 	private void collect()
 	{
 		if (mActive.get())
@@ -61,6 +69,10 @@ public class RessourceGarbageCollector
 			while (true);
 	}
 
+	/**
+	 * @param pPeriod
+	 * @param pUnit
+	 */
 	public void collectAtFixedRate(long pPeriod, TimeUnit pUnit)
 	{
 		final Runnable lCollector = new Runnable()
@@ -77,11 +89,17 @@ public class RessourceGarbageCollector
 																						pUnit);
 	}
 
+	/**
+	 * 
+	 */
 	public static void collectNow()
 	{
 		sRessourceGarbageCollector.collect();
 	}
 
+	/**
+	 * @param pRunnable
+	 */
 	public static void preventCollection(Runnable pRunnable)
 	{
 		final boolean lActive = sRessourceGarbageCollector.mActive.get();
@@ -90,6 +108,9 @@ public class RessourceGarbageCollector
 		sRessourceGarbageCollector.mActive.compareAndSet(false, lActive);
 	}
 
+	/**
+	 * @return
+	 */
 	public static int getNumberOfRegisteredObjects()
 	{
 		return sCleaningPhantomReferenceList.size();

@@ -7,8 +7,8 @@ import java.nio.channels.FileChannel;
 
 import org.bridj.Pointer;
 
+import coremem.enums.MemoryType;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
-import coremem.interfaces.MemoryType;
 import coremem.rgc.FreedException;
 
 /**

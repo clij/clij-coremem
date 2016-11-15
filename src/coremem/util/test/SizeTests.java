@@ -8,8 +8,8 @@ import org.bridj.Pointer;
 import org.junit.Test;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
-import coremem.types.NativeTypeEnum;
 import coremem.util.Size;
 
 public class SizeTests

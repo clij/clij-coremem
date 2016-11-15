@@ -1,19 +1,74 @@
 package coremem.interfaces;
 
-public interface ReadAtAligned extends MemoryTyped
+/**
+ * Memory objects implementing this interface provide methods to read single
+ * primitive types. Offsets are aligned to the written type.
+ *
+ * @author royer
+ */
+public interface ReadAtAligned
 {
-	public byte getByteAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 1 byte.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public byte getByteAligned(final long pOffset);
 
-	public char getCharAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 2 bytes.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public char getCharAligned(final long pOffset);
 
-	public short getShortAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 2 bytes.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public short getShortAligned(final long pOffset);
 
-	public int getIntAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 4 bytes.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public int getIntAligned(final long pOffset);
 
-	public long getLongAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 8 bytes.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public long getLongAligned(final long pOffset);
 
-	public float getFloatAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 4 bytes.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public float getFloatAligned(final long pOffset);
 
-	public double getDoubleAligned(final long pOffset);
+  /**
+   * Reads a value at a given offset. The offset unit is 8 bytes.
+   * 
+   * @param pOffset
+   *          offset
+   * @return value
+   */
+  public double getDoubleAligned(final long pOffset);
 
 }

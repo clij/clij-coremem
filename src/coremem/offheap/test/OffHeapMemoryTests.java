@@ -10,7 +10,7 @@ import java.nio.file.StandardOpenOption;
 
 import org.junit.Test;
 
-import coremem.interfaces.MemoryType;
+import coremem.enums.MemoryType;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
 import coremem.test.ContiguousMemoryTestsHelper;

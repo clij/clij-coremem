@@ -9,11 +9,11 @@ import java.util.ArrayList;
 import org.bridj.Pointer;
 import org.bridj.Pointer.Releaser;
 
+import coremem.enums.MemoryType;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.InvalidWriteAtReadOnly;
 import coremem.exceptions.MemoryMapException;
 import coremem.interfaces.MappableMemory;
-import coremem.interfaces.MemoryType;
 import coremem.interfaces.PointerAccessible;
 import coremem.interfaces.RangeCopyable;
 import coremem.interfaces.SizedInBytes;

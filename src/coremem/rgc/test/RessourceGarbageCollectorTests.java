@@ -2,7 +2,6 @@ package coremem.rgc.test;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -12,7 +11,6 @@ import coremem.rgc.Cleanable;
 import coremem.rgc.Cleaner;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
-import coremem.rgc.FreedException;
 import coremem.rgc.RessourceGarbageCollector;
 
 public class RessourceGarbageCollectorTests

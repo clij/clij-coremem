@@ -6,7 +6,7 @@ import java.io.IOException;
 import org.junit.Test;
 
 import coremem.ContiguousMemoryInterface;
-import coremem.interfaces.MemoryType;
+import coremem.enums.MemoryType;
 import coremem.memmap.FileMappedMemoryRegion;
 import coremem.test.ContiguousMemoryTestsHelper;
 

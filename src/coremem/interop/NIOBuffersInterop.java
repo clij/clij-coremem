@@ -14,8 +14,17 @@ import coremem.exceptions.UnsupportedWrappingException;
 import coremem.offheap.OffHeapMemory;
 import coremem.util.Size;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class NIOBuffersInterop
 {
+	/**
+	 * @param pBuffer
+	 * @return
+	 */
 	public static OffHeapMemory getContiguousMemoryFrom(Buffer pBuffer)
 	{
 		if (!pBuffer.isDirect())
@@ -55,13 +64,13 @@ public class NIOBuffersInterop
 
 	/**
 	 * This method creates a list of ByteBuffers that cover sequentially a given
-	 * ContiguousMemory region. This should only be used witin the CoreMem
+	 * ContiguousMemory region. This should only be used within the CoreMem
 	 * classes. It's use is tricky... IMPORTANT: the bytebuffers returned do not
 	 * hold references to the parent responsible for the memory lifecycle. This
 	 * means that the references of these bytebuffers cannot escape the scope
 	 * within which the ContiguousMemory reference is held. If the GC cleans up
 	 * the ContiguousMemory and there is still a returned ByteBuffer 'alive', this
-	 * will necessarily lead to a seg fault.
+	 * will necessarily lead to a segmentation fault.
 	 * 
 	 * @param pContiguousMemory
 	 * @return

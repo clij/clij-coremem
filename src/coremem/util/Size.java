@@ -11,10 +11,9 @@ import java.nio.ShortBuffer;
 
 import org.bridj.Pointer;
 
-import coremem.ContiguousMemoryInterface;
+import coremem.enums.NativeTypeEnum;
 import coremem.exceptions.UnknownSizeOfException;
 import coremem.interfaces.SizedInBytes;
-import coremem.types.NativeTypeEnum;
 
 /**
  * This class has static methods to compute the size in bytes of java primitive
@@ -451,5 +450,8 @@ public class Size
 		}
 		throw new UnknownSizeOfException("Invalid number of bytes!");
 	}
+	
+	
+	
 
 }

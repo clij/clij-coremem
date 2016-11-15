@@ -1,9 +1,18 @@
 package coremem.interfaces;
 
-public interface PointerAccessible // extends //MemoryTyped//
-																		// ByteBufferWrappable,BridJPointerWrappable
+/**
+ * Memory objects implementing this interface have an underlying long pointer
+ * address and length defined.
+ *
+ * @author royer
+ */
+public interface PointerAccessible extends SizedInBytes
 {
-	long getAddress();
+  /**
+   * Returns the memory's address.
+   * 
+   * @return address
+   */
+  long getAddress();
 
-	long getSizeInBytes();
 }

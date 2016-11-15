@@ -1,6 +1,5 @@
 package coremem.recycling;
 
-import java.util.ArrayList;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
@@ -11,6 +10,13 @@ import coremem.exceptions.InvalidAllocationParameterException;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
 
+/**
+ *
+ *
+ * @param <R>
+ * @param <P>
+ * @author royer
+ */
 public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends RecyclerRequestInterface> extends
 																																																		FreeableBase implements
 																																																								RecyclerInterface<R, P>,
@@ -53,18 +59,27 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		mAutoFree = pAutoFree;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#addListener(coremem.recycling.RecyclerListenerInterface)
+	 */
 	@Override
 	public void addListener(RecyclerListenerInterface pRecyclerListener)
 	{
 		mRecyclerListeners.add(pRecyclerListener);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#removeListener(coremem.recycling.RecyclerListenerInterface)
+	 */
 	@Override
 	public void removeListener(RecyclerListenerInterface pRecyclerListener)
 	{
 		mRecyclerListeners.remove(pRecyclerListener);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#ensurePreallocated(long, coremem.recycling.RecyclerRequestInterface)
+	 */
 	@Override
 	public long ensurePreallocated(	final long pNumberofPrealocatedRecyclablesNeeded,
 																	final P pRecyclerRequest)
@@ -98,6 +113,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getOrWait(long, java.util.concurrent.TimeUnit, coremem.recycling.RecyclerRequestInterface)
+	 */
 	@Override
 	public R getOrWait(	final long pWaitTime,
 											final TimeUnit pTimeUnit,
@@ -106,12 +124,18 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		return request(true, pWaitTime, pTimeUnit, pRecyclerRequest);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getOrFail(coremem.recycling.RecyclerRequestInterface)
+	 */
 	@Override
 	public R getOrFail(final P pRecyclerRequest)
 	{
 		return request(false, 0, TimeUnit.MICROSECONDS, pRecyclerRequest);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#request(boolean, long, java.util.concurrent.TimeUnit, coremem.recycling.RecyclerRequestInterface)
+	 */
 	@Override
 	public R request(	final boolean pWaitForLiveObjectToComeBack,
 										final long pWaitTime,
@@ -215,6 +239,10 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 
 	}
 
+	/**
+	 * @param pWaitTime
+	 * @param pTimeUnit
+	 */
 	private void waitForFreeSpaceInLiveQueue(	long pWaitTime,
 																						TimeUnit pTimeUnit)
 	{
@@ -233,6 +261,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		}
 	}
 
+	/**
+	 * @param pRecyclable
+	 */
 	private void removeFromLiveObjectQueue(final R pRecyclable)
 	{
 		// System.out.println("removeFromLiveObjectQueue:");
@@ -242,6 +273,13 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		notifyListeners();
 	}
 
+	/**
+	 * @param pWait
+	 * @param pWaitTime
+	 * @param pTimeUnit
+	 * @param lRecyclable
+	 * @return
+	 */
 	private R addToLiveObjectQueue(	final boolean pWait,
 																	final long pWaitTime,
 																	final TimeUnit pTimeUnit,
@@ -292,6 +330,10 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		}
 	}
 
+	/**
+	 * @return
+	 * @throws InterruptedException
+	 */
 	private R retrieveFromAvailableObjectsQueue() throws InterruptedException
 	{
 		// System.out.println("retrieveFromAvailableObjectsQueue:");
@@ -303,6 +345,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		return lObject;
 	}
 
+	/**
+	 * @param lRecyclable
+	 */
 	private void addToAvailableObjectsQueue(R lRecyclable)
 	{
 		// System.out.println("addToAvailableObjectsQueue:");
@@ -315,6 +360,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		notifyListeners();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#release(coremem.recycling.RecyclableInterface)
+	 */
 	@Override
 	public void release(final R pRecyclable)
 	{
@@ -323,36 +371,54 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		addToAvailableObjectsQueue(pRecyclable);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getMaxNumberOfLiveObjects()
+	 */
 	@Override
 	public int getMaxNumberOfLiveObjects()
 	{
 		return mMaxNumberOfLiveObjects;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getMaxNumberOfAvailableObjects()
+	 */
 	@Override
 	public int getMaxNumberOfAvailableObjects()
 	{
 		return mMaxNumberOfAvailableObjects;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getNumberOfLiveObjects()
+	 */
 	@Override
 	public int getNumberOfLiveObjects()
 	{
 		return mLiveObjectsQueue.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getNumberOfAvailableObjects()
+	 */
 	@Override
 	public int getNumberOfAvailableObjects()
 	{
 		return mAvailableObjectsQueue.size();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#getNumberOfFailedRequests()
+	 */
 	@Override
 	public long getNumberOfFailedRequests()
 	{
 		return mFailedRequests.longValue();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#computeLiveMemorySizeInBytes()
+	 */
 	@Override
 	public double computeLiveMemorySizeInBytes()
 	{
@@ -362,6 +428,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		return lMemorySizeInBytes;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#computeAvailableMemorySizeInBytes()
+	 */
 	@Override
 	public double computeAvailableMemorySizeInBytes()
 	{
@@ -371,6 +440,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		return lMemorySizeInBytes;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#clearReleased()
+	 */
 	@Override
 	public void clearReleased()
 	{
@@ -381,6 +453,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		notifyListeners();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#clearLive()
+	 */
 	@Override
 	public void clearLive()
 	{
@@ -391,6 +466,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		notifyListeners();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.rgc.Freeable#free()
+	 */
 	@Override
 	public void free()
 	{
@@ -398,48 +476,78 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 		clearReleased();
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.rgc.Freeable#isFree()
+	 */
 	@Override
 	public boolean isFree()
 	{
 		return mIsFreed.get();
 	}
 
+	/**
+	 * @param string
+	 * @param lErrorString
+	 */
 	private void error(String string, String lErrorString)
 	{
 
 	}
 
+	/**
+	 * @param string
+	 * @param lErrorString
+	 * @param e
+	 */
 	private void error(String string, String lErrorString, Throwable e)
 	{
 
 	}
 
+	/**
+	 * @return
+	 */
 	public long getAvailableQueueWaitTime()
 	{
 		return mAvailableQueueWaitTime;
 	}
 
+	/**
+	 * @param pAvailableQueueWaitTime
+	 */
 	public void setAvailableQueueWaitTime(long pAvailableQueueWaitTime)
 	{
 		mAvailableQueueWaitTime = pAvailableQueueWaitTime;
 	}
 
+	/**
+	 * @return
+	 */
 	public TimeUnit getAvailableQueueTimeUnit()
 	{
 		return mAvailableQueueTimeUnit;
 	}
 
+	/**
+	 * @param pAvailableQueueTimeUnit
+	 */
 	public void setAvailableQueueTimeUnit(TimeUnit pAvailableQueueTimeUnit)
 	{
 		mAvailableQueueTimeUnit = pAvailableQueueTimeUnit;
 	}
 
+	/**
+	 * 
+	 */
 	private void notifyFailedRequest()
 	{
 		mFailedRequests.incrementAndGet();
 		notifyListeners();
 	}
 
+	/**
+	 * 
+	 */
 	private void notifyListeners()
 	{
 		if (mRecyclerListeners.isEmpty())
@@ -455,6 +563,9 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
 																lNumberOfFailedRequests);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.recycling.RecyclerInterface#printDebugInfo()
+	 */
 	@Override
 	public void printDebugInfo()
 	{

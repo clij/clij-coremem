@@ -1,4 +1,4 @@
-package coremem.types;
+package coremem.enums;
 
 import coremem.interfaces.SizedInBytes;
 

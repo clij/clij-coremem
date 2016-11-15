@@ -8,17 +8,22 @@ import java.util.Arrays;
 
 import coremem.ContiguousMemoryInterface;
 import coremem.MappedMemoryBase;
+import coremem.enums.MemoryType;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.MemoryMapFileException;
 import coremem.exceptions.UnsupportedMemoryResizingException;
 import coremem.interfaces.MappableMemory;
-import coremem.interfaces.MemoryType;
 import coremem.interfaces.Resizable;
 import coremem.interfaces.SizedInBytes;
 import coremem.offheap.OffHeapMemory;
 import coremem.rgc.Cleaner;
 import coremem.rgc.Freeable;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																														MappableMemory,
 																														Resizable,
@@ -33,6 +38,12 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 	private final long mFilePositionInBytes;
 	private MemoryMappedFile mMemoryMappedFile;
 
+	/**
+	 * @param pFile
+	 * @param pLengthInBytes
+	 * @return
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion createNewFileMappedMemoryRegion(File pFile,
 																																final long pLengthInBytes) throws IOException
 	{
@@ -44,6 +55,12 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																			StandardOpenOption.WRITE);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pLengthInBytes
+	 * @return
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion createNewSparseFileMappedMemoryRegion(File pFile,
 																																			final long pLengthInBytes) throws IOException
 	{
@@ -56,6 +73,12 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																			StandardOpenOption.SPARSE);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pLengthInBytes
+	 * @return
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion openExistingFileMappedMemoryRegion(	File pFile,
 																																		final long pLengthInBytes) throws IOException
 	{
@@ -64,6 +87,13 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																							pLengthInBytes);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pPositionInBytes
+	 * @param pLengthInBytes
+	 * @return
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion openExistingFileMappedMemoryRegion(	File pFile,
 																																		final long pPositionInBytes,
 																																		final long pLengthInBytes) throws IOException
@@ -75,6 +105,12 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																			StandardOpenOption.WRITE);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pLengthInBytes
+	 * @return
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion openReadOnlyExistingFileMappedMemoryRegion(	File pFile,
 																																						final long pLengthInBytes) throws IOException
 	{
@@ -83,6 +119,13 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																											pLengthInBytes);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pPositionInBytes
+	 * @param pLengthInBytes
+	 * @return
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion openReadOnlyExistingFileMappedMemoryRegion(	File pFile,
 																																						final long pPositionInBytes,
 																																						final long pLengthInBytes) throws IOException
@@ -93,6 +136,12 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 																			StandardOpenOption.READ);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pLengthInBytes
+	 * @param pStandardOpenOption
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion(File pFile,
 																final long pLengthInBytes,
 																StandardOpenOption... pStandardOpenOption) throws IOException
@@ -100,6 +149,13 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		this(pFile, 0, pLengthInBytes, pStandardOpenOption);
 	}
 
+	/**
+	 * @param pFile
+	 * @param pPositionInBytes
+	 * @param pLengthInBytes
+	 * @param pStandardOpenOption
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion(File pFile,
 																final long pPositionInBytes,
 																final long pLengthInBytes,
@@ -114,6 +170,13 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 
 	}
 
+	/**
+	 * @param pFileChannel
+	 * @param pPositionInBytes
+	 * @param pLengthInBytes
+	 * @param pStandardOpenOption
+	 * @throws IOException
+	 */
 	public FileMappedMemoryRegion(FileChannel pFileChannel,
 																final long pPositionInBytes,
 																final long pLengthInBytes,
@@ -126,6 +189,11 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		mStandardOpenOption = pStandardOpenOption;
 	}
 
+	/**
+	 * @param pFile
+	 * @param pStandardOpenOption
+	 * @return
+	 */
 	static StandardOpenOption[] obtainStandardOptions(File pFile,
 																										StandardOpenOption... pStandardOpenOption)
 	{
@@ -144,6 +212,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		return lStandardOpenOption;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.MappedMemoryBase#map()
+	 */
 	@Override
 	public long map()
 	{
@@ -168,6 +239,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.interfaces.MappableMemory#force()
+	 */
 	@Override
 	public void force()
 	{
@@ -182,6 +256,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.MappedMemoryBase#unmap()
+	 */
 	@Override
 	public void unmap()
 	{
@@ -208,6 +285,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		}
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.ContiguousMemoryInterface#subRegion(long, long)
+	 */
 	@Override
 	public OffHeapMemory subRegion(long pOffset, long pLenghInBytes)
 	{
@@ -221,6 +301,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		return lOffHeapMemory;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.MemoryBase#getMemoryType()
+	 */
 	@Override
 	public MemoryType getMemoryType()
 	{
@@ -228,14 +311,19 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 		return MemoryType.FILERAM;
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.interfaces.Resizable#resize(long)
+	 */
 	@Override
 	public long resize(long pNewLength)
 	{
 		final String lErrorMessage = String.format("Could not resize memory mapped file! ");
-		// error("KAM", lErrorMessage);
 		throw new UnsupportedMemoryResizingException(lErrorMessage);
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.MemoryBase#free()
+	 */
 	@Override
 	public void free()
 	{
@@ -252,6 +340,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#toString()
+	 */
 	@Override
 	public String toString()
 	{
@@ -275,6 +366,9 @@ public class FileMappedMemoryRegion extends MappedMemoryBase implements
 						+ "]";
 	}
 
+	/* (non-Javadoc)
+	 * @see coremem.rgc.Cleanable#getCleaner()
+	 */
 	@Override
 	public Cleaner getCleaner()
 	{

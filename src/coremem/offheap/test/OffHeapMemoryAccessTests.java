@@ -96,8 +96,8 @@ public class OffHeapMemoryAccessTests
 			//System.out.println("lAddress=" + lAddress);
 			assertFalse(lAddress == 0);
 
-			/*System.out.println("setMemory");
-			OffHeapMemoryAccess.setMemory(lAddress, lLength, (byte) 0);/**/
+			//System.out.println("setMemory");
+			OffHeapMemoryAccess.fillMemory(lAddress, lLength, (byte) 0);
 
 			//System.out.println("setByte(s)");
 			for (long i = 0; i < lLength; i += 1000L * 1000L)

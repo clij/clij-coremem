@@ -37,7 +37,7 @@ public class FragmentedMemoryTests
 
 		for (int i = 0; i < 100; i++)
 		{
-			//System.out.format("writting block %d \n", i);
+			//System.out.format("Writing block %d \n", i);
 			final OffHeapMemory lOffHeapMemory = new OffHeapMemory(129);
 
 			for (int j = 0; j < lOffHeapMemory.getSizeInBytes(); j++)

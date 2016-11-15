@@ -1,18 +1,23 @@
 package coremem.buffers;
 
+import static java.lang.Math.min;
+
 import java.util.ArrayDeque;
 
 import coremem.ContiguousMemoryInterface;
+import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.interfaces.SizedInBytes;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
-import coremem.types.NativeTypeEnum;
 
 /**
  * ContiguousBuffer is a more handy way to read and write to and from instances
  * of ContiguousMemoryInterface. It holds a 'position' that is automatically
  * incremented for read and writes of different primitive types. This position
  * can be moved, pushed and popped.
+ * 
+ * Range checks are only performed for block memory copies or sets, writing or
+ * reading for single primitive types is not protected.
  * 
  * @author royer
  */
@@ -47,8 +52,10 @@ public class ContiguousBuffer implements SizedInBytes
    */
   public static ContiguousBuffer allocate(long pLengthInBytes)
   {
-    final OffHeapMemory lAllocatedBytes = OffHeapMemory.allocateBytes(pLengthInBytes);
-    final ContiguousBuffer lContiguousBuffer = new ContiguousBuffer(lAllocatedBytes);
+    final OffHeapMemory lAllocatedBytes =
+                                        OffHeapMemory.allocateBytes(pLengthInBytes);
+    final ContiguousBuffer lContiguousBuffer =
+                                             new ContiguousBuffer(lAllocatedBytes);
     return lContiguousBuffer;
   }
 
@@ -74,7 +81,8 @@ public class ContiguousBuffer implements SizedInBytes
     mContiguousMemoryInterface = pContiguousMemoryInterface;
     mFirstValidPosition = pContiguousMemoryInterface.getAddress();
     mPosition = mFirstValidPosition;
-    mFirstInvalidPosition = mFirstValidPosition + pContiguousMemoryInterface.getSizeInBytes();
+    mFirstInvalidPosition = mFirstValidPosition
+                            + pContiguousMemoryInterface.getSizeInBytes();
   }
 
   /**
@@ -87,6 +95,7 @@ public class ContiguousBuffer implements SizedInBytes
     return mContiguousMemoryInterface;
   }
 
+  @Override
   public long getSizeInBytes()
   {
     return mContiguousMemoryInterface.getSizeInBytes();
@@ -144,8 +153,20 @@ public class ContiguousBuffer implements SizedInBytes
   public boolean isPositionValid()
   {
     final long lAddress = mContiguousMemoryInterface.getAddress();
-    final long lSizeInBytes = mContiguousMemoryInterface.getSizeInBytes();
-    return lAddress <= mPosition && mPosition < lAddress + lSizeInBytes;
+    final long lSizeInBytes =
+                            mContiguousMemoryInterface.getSizeInBytes();
+    return lAddress <= mPosition
+           && mPosition < lAddress + lSizeInBytes;
+  }
+
+  /**
+   * Returns the remaining bytes that can be written from the current position.
+   * 
+   * @return remaining bytes
+   */
+  public long remainingBytes()
+  {
+    return mFirstInvalidPosition - mPosition;
   }
 
   /**
@@ -231,17 +252,53 @@ public class ContiguousBuffer implements SizedInBytes
   }
 
   /**
-   * Writes the entire contents of a ContigContiguousMemoryInterface into this
-   * buffer. The position is incremented accordingly.
+   * Writes the entire contents of a ContiguousBuffer into this buffer. The
+   * position for _both buffers- is incremented accordingly.
+   * 
+   * @param pContiguousBuffer
+   *          buffer
+   */
+  public void writeContiguousBuffer(ContiguousBuffer pContiguousBuffer)
+  {
+    long lSizeInBytes = min(pContiguousBuffer.remainingBytes(),this.remainingBytes());
+    if (mPosition + lSizeInBytes > mFirstInvalidPosition)
+      throw new InvalidNativeMemoryAccessException("Attemting to write past the end of this buffer");
+
+    OffHeapMemoryAccess.copyMemory(pContiguousBuffer.mPosition,
+                                   mPosition,
+                                   lSizeInBytes);
+    mPosition += lSizeInBytes;
+    pContiguousBuffer.mPosition += lSizeInBytes;
+  }
+
+  /**
+   * Writes the entire contents of a ContiguousMemoryInterface into this buffer.
+   * The position is incremented accordingly.
    * 
    * @param pContiguousMemoryInterface
+   *          memory
    */
   public void writeContiguousMemory(ContiguousMemoryInterface pContiguousMemoryInterface)
   {
+    long lSizeInBytes = pContiguousMemoryInterface.getSizeInBytes();
+    if (mPosition + lSizeInBytes > mFirstInvalidPosition)
+      throw new InvalidNativeMemoryAccessException("Attemting to write past the end of this buffer");
+
     OffHeapMemoryAccess.copyMemory(pContiguousMemoryInterface.getAddress(),
                                    mPosition,
-                                   pContiguousMemoryInterface.getSizeInBytes());
-    mPosition += pContiguousMemoryInterface.getSizeInBytes();
+                                   lSizeInBytes);
+    mPosition += lSizeInBytes;
+  }
+
+  /**
+   * Fills the remaining space in the buffer with a given byte.
+   * 
+   * @param pByte
+   *          byte value.
+   */
+  public void fillBytes(byte pByte)
+  {
+    writeBytes(remainingBytes(), pByte);
   }
 
   /**
@@ -255,7 +312,9 @@ public class ContiguousBuffer implements SizedInBytes
    */
   public void writeBytes(long pNumberOfBytes, byte pByte)
   {
-    OffHeapMemoryAccess.fillBytes(mPosition, pNumberOfBytes, pByte);
+    if (mPosition + pNumberOfBytes > mFirstInvalidPosition)
+      throw new InvalidNativeMemoryAccessException("Attemting to write past the end of this buffer");
+    OffHeapMemoryAccess.fillMemory(mPosition, pNumberOfBytes, pByte);
     mPosition += pNumberOfBytes;
   }
 
