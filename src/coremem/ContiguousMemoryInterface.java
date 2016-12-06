@@ -4,6 +4,7 @@ import coremem.interfaces.BridJPointerWrappable;
 import coremem.interfaces.ByteBufferWrappable;
 import coremem.interfaces.CopyFromToJavaArray;
 import coremem.interfaces.CopyFromToNIOBuffers;
+import coremem.interfaces.CopyRangeFromToJavaArray;
 import coremem.interfaces.Copyable;
 import coremem.interfaces.PointerAccessible;
 import coremem.interfaces.ReadAt;
@@ -32,6 +33,7 @@ public interface ContiguousMemoryInterface extends
 																					Copyable<ContiguousMemoryInterface>,
 																					CopyFromToNIOBuffers,
 																					CopyFromToJavaArray,
+																					CopyRangeFromToJavaArray,
 																					ReadWriteBytesFileChannel,
 																					SizedInBytes,
 																					Freeable

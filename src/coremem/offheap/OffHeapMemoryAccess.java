@@ -273,6 +273,7 @@ public final class OffHeapMemoryAccess
    * 
    * @param pSrcArray
    *          source array
+   * @param pSrcOffset
    * @param pAddressDest
    *          destination address
    * @param pLengthInBytes
@@ -282,6 +283,7 @@ public final class OffHeapMemoryAccess
    *           bytes of the Java array.
    */
   public static final void copyFromArray(final Object pSrcArray,
+                                         final long pSrcOffset,
                                          final long pAddressDest,
                                          final long pLengthInBytes) throws InvalidNativeMemoryAccessException
   {
@@ -292,7 +294,7 @@ public final class OffHeapMemoryAccess
 
       int lArrayLengthInBytes = Size.ofPrimitive1DArray(pSrcArray);
 
-      if (lArrayLengthInBytes != pLengthInBytes)
+      if (lArrayLengthInBytes-pSrcOffset < pLengthInBytes)
         throw new InvalidNativeMemoryAccessException(String.format("Incompatible lengths: Array has length %d bytes, given length is %d bytes",
                                                                    lArrayLengthInBytes,
                                                                    pLengthInBytes));
@@ -312,6 +314,8 @@ public final class OffHeapMemoryAccess
    *          source address
    * @param pDstArray
    *          destination array.
+   * @param pDstOffset
+   *          destination array offset in bytes.
    * @param pLengthInBytes
    *          length in bytes
    * @throws InvalidNativeMemoryAccessException
@@ -320,6 +324,7 @@ public final class OffHeapMemoryAccess
    */
   public static final void copyToArray(final long pAddressSrc,
                                        final Object pDstArray,
+                                       final long pDstOffset,
                                        final long pLengthInBytes) throws InvalidNativeMemoryAccessException
   {
     synchronized (mLock)
@@ -329,7 +334,7 @@ public final class OffHeapMemoryAccess
 
       int lArrayLengthInBytes = Size.ofPrimitive1DArray(pDstArray);
 
-      if (lArrayLengthInBytes != pLengthInBytes)
+      if (lArrayLengthInBytes - pDstOffset < pLengthInBytes)
         throw new InvalidNativeMemoryAccessException(String.format("Incompatible lengths: Array has length %d bytes, given length is %d bytes",
                                                                    lArrayLengthInBytes,
                                                                    pLengthInBytes));
@@ -337,7 +342,7 @@ public final class OffHeapMemoryAccess
       cUnsafe.copyMemory(null,
                          pAddressSrc,
                          pDstArray,
-                         lArrayBaseOffset,
+                         lArrayBaseOffset + pDstOffset,
                          pLengthInBytes);
     }
   }
@@ -481,7 +486,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final byte getByte(final long pAddress)
@@ -491,7 +498,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final char getChar(final long pAddress)
@@ -501,7 +510,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final short getShort(final long pAddress)
@@ -511,7 +522,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final int getInt(final long pAddress)
@@ -521,7 +534,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final long getLong(final long pAddress)
@@ -531,7 +546,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final float getFloat(final long pAddress)
@@ -541,7 +558,9 @@ public final class OffHeapMemoryAccess
 
   /**
    * Returns value at given address.
-   * @param pAddress address
+   * 
+   * @param pAddress
+   *          address
    * @return value
    */
   public static final double getDouble(final long pAddress)
@@ -551,8 +570,11 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setByte(final long pAddress,
                                    final byte pValue)
@@ -562,8 +584,11 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setChar(final long pAddress,
                                    final char pValue)
@@ -573,8 +598,11 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setShort(final long pAddress,
                                     final short pValue)
@@ -584,8 +612,11 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setInt(final long pAddress,
                                   final int pValue)
@@ -595,8 +626,11 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setLong(final long pAddress,
                                    final long pValue)
@@ -606,8 +640,11 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setFloat(final long pAddress,
                                     final float pValue)
@@ -617,15 +654,17 @@ public final class OffHeapMemoryAccess
 
   /**
    * Sets value at given address.
-   * @param pAddress address
-   * @param pValue value
+   * 
+   * @param pAddress
+   *          address
+   * @param pValue
+   *          value
    */
   public static final void setDouble(final long pAddress,
                                      final double pValue)
   {
     cUnsafe.putDouble(pAddress, pValue);
   }
-
 
   /**
    * Frees all allocated off-heap memory. Highly non-recommended as this will
