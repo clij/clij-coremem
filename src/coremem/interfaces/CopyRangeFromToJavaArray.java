@@ -14,7 +14,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated byte array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -31,7 +31,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated short array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -48,7 +48,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated char array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -65,7 +65,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated int array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -82,7 +82,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated long array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -99,7 +99,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated float array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -116,7 +116,7 @@ public interface CopyRangeFromToJavaArray
    * @param pTo
    *          preallocated double array.
    * @param pSrcOffset
-   *          source offset (bytes)
+   *          source offset (array elements)
    * @param pDstOffset
    *          destination offset (array elements)
    * @param pLength
@@ -135,7 +135,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */
@@ -152,7 +152,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */
@@ -169,7 +169,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */
@@ -186,7 +186,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */
@@ -203,7 +203,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */
@@ -220,7 +220,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */
@@ -237,7 +237,7 @@ public interface CopyRangeFromToJavaArray
    * @param pSrcOffset
    *          source offset (array elements)
    * @param pDstOffset
-   *          destination offset (bytes)
+   *          destination offset (array elements)
    * @param pLength
    *          length in array elements
    */

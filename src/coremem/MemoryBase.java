@@ -588,10 +588,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress()+pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.BYTE,
                                     pTo,
-                                    pDstOffset*(long)Size.BYTE,
-                                    pLength);
+                                    pDstOffset * (long) Size.BYTE,
+                                    pLength * (long) Size.BYTE);
   }
 
   @Override
@@ -601,10 +602,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress() + pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.SHORT,
                                     pTo,
-                                    pDstOffset*(long)Size.SHORT,
-                                    pLength);
+                                    pDstOffset * (long) Size.SHORT,
+                                    pLength * (long) Size.SHORT);
   }
 
   @Override
@@ -614,10 +616,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress() + pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.CHAR,
                                     pTo,
-                                    pDstOffset*(long)Size.CHAR,
-                                    pLength);
+                                    pDstOffset * (long) Size.CHAR,
+                                    pLength * (long) Size.CHAR);
   }
 
   @Override
@@ -627,10 +630,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress() + pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.INT,
                                     pTo,
-                                    pDstOffset*(long)Size.INT,
-                                    pLength);
+                                    pDstOffset * (long) Size.INT,
+                                    pLength * (long) Size.INT);
   }
 
   @Override
@@ -640,10 +644,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress() + pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.LONG,
                                     pTo,
-                                    pDstOffset*(long)Size.LONG,
-                                    pLength);
+                                    pDstOffset * (long) Size.LONG,
+                                    pLength * (long) Size.LONG);
   }
 
   @Override
@@ -653,10 +658,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress() + pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.FLOAT,
                                     pTo,
-                                    pDstOffset*(long)Size.FLOAT,
-                                    pLength);
+                                    pDstOffset * (long) Size.FLOAT,
+                                    pLength * (long) Size.FLOAT);
   }
 
   @Override
@@ -666,10 +672,11 @@ public abstract class MemoryBase extends FreeableBase implements
                      int pLength)
   {
     complainIfFreed();
-    OffHeapMemoryAccess.copyToArray(getAddress() + pSrcOffset,
+    OffHeapMemoryAccess.copyToArray(getAddress()
+                                    + pSrcOffset * (long) Size.DOUBLE,
                                     pTo,
-                                    pDstOffset*(long)Size.DOUBLE,
-                                    pLength);
+                                    pDstOffset * (long) Size.DOUBLE,
+                                    pLength * (long) Size.DOUBLE);
   }
 
   @Override
@@ -680,9 +687,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.BYTE,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.BYTE,
+                                      pLength * (long) Size.BYTE);
   }
 
   @Override
@@ -693,9 +701,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.SHORT,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.SHORT,
+                                      pLength * (long) Size.SHORT);
   }
 
   @Override
@@ -706,9 +715,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.CHAR,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.CHAR,
+                                      pLength * (long) Size.CHAR);
   }
 
   @Override
@@ -719,9 +729,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.INT,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.INT,
+                                      pLength * (long) Size.INT);
   }
 
   @Override
@@ -732,9 +743,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.LONG,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.LONG,
+                                      pLength * (long) Size.LONG);
   }
 
   @Override
@@ -745,9 +757,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.FLOAT,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.FLOAT,
+                                      pLength * (long) Size.FLOAT);
   }
 
   @Override
@@ -758,9 +771,10 @@ public abstract class MemoryBase extends FreeableBase implements
   {
     complainIfFreed();
     OffHeapMemoryAccess.copyFromArray(pFrom,
-                                      pSrcOffset*(long)Size.DOUBLE,
-                                      getAddress() + pDstOffset,
-                                      pLength);
+                                      pSrcOffset,
+                                      getAddress() + pDstOffset
+                                                     * (long) Size.DOUBLE,
+                                      pLength * (long) Size.DOUBLE);
   }
 
   @Override

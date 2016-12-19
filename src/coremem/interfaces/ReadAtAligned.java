@@ -18,7 +18,7 @@ public interface ReadAtAligned
   public byte getByteAligned(final long pOffset);
 
   /**
-   * Reads a value at a given offset. The offset unit is 2 bytes.
+   * Reads a value at a given offset. The offset unit is 2 bytes (1 char).
    * 
    * @param pOffset
    *          offset
@@ -27,7 +27,7 @@ public interface ReadAtAligned
   public char getCharAligned(final long pOffset);
 
   /**
-   * Reads a value at a given offset. The offset unit is 2 bytes.
+   * Reads a value at a given offset. The offset unit is 2 bytes (1 short).
    * 
    * @param pOffset
    *          offset
@@ -36,7 +36,7 @@ public interface ReadAtAligned
   public short getShortAligned(final long pOffset);
 
   /**
-   * Reads a value at a given offset. The offset unit is 4 bytes.
+   * Reads a value at a given offset. The offset unit is 4 bytes (1 int).
    * 
    * @param pOffset
    *          offset
@@ -45,7 +45,7 @@ public interface ReadAtAligned
   public int getIntAligned(final long pOffset);
 
   /**
-   * Reads a value at a given offset. The offset unit is 8 bytes.
+   * Reads a value at a given offset. The offset unit is 8 bytes (1 long).
    * 
    * @param pOffset
    *          offset
@@ -54,7 +54,7 @@ public interface ReadAtAligned
   public long getLongAligned(final long pOffset);
 
   /**
-   * Reads a value at a given offset. The offset unit is 4 bytes.
+   * Reads a value at a given offset. The offset unit is 4 bytes (1 float).
    * 
    * @param pOffset
    *          offset
@@ -63,7 +63,7 @@ public interface ReadAtAligned
   public float getFloatAligned(final long pOffset);
 
   /**
-   * Reads a value at a given offset. The offset unit is 8 bytes.
+   * Reads a value at a given offset. The offset unit is 8 bytes (1 double).
    * 
    * @param pOffset
    *          offset

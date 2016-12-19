@@ -273,7 +273,7 @@ public final class OffHeapMemoryAccess
    * 
    * @param pSrcArray
    *          source array
-   * @param pSrcOffset
+   * @param pSrcOffset source offset in elements
    * @param pAddressDest
    *          destination address
    * @param pLengthInBytes
