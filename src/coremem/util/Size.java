@@ -51,7 +51,10 @@ public class Size
 	 */
 	public static long of(final Object pObject)
 	{
-		if (pObject instanceof Class<?>)
+	  long lSize = ofPrimitiveObject(pObject);
+	  if(lSize!=-1)
+	    return lSize;
+	  if (pObject instanceof Class<?>)
 		{
 			return ofPrimitiveClass((Class<?>) pObject);
 		}
@@ -87,7 +90,9 @@ public class Size
 		return -1;
 	}
 
-	/**
+
+
+  /**
 	 * Size in bytes for this primitive.
 	 * 
 	 * @param pPrimitive
@@ -170,6 +175,27 @@ public class Size
 	{
 		return DOUBLE;
 	}
+	
+	 private static long ofPrimitiveObject(Object pObject)
+	  {
+	   if (pObject instanceof Character)
+	      return CHAR;
+	    else if (pObject instanceof Byte)
+	      return BYTE;
+	    else if (pObject instanceof Short)
+	      return SHORT;
+	    else if (pObject instanceof Integer)
+	      return INT;
+	    else if (pObject instanceof Long)
+	      return LONG;
+	    else if (pObject instanceof Float)
+	      return FLOAT;
+	    else if (pObject instanceof Double)
+	      return DOUBLE;
+	    else
+	      return -1;
+
+	  }
 
 	/**
 	 * Returns the size in bytes of this primitive type class
