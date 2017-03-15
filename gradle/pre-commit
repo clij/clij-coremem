@@ -1,6 +1,7 @@
 #!/bin/sh
 # From gist at https://gist.github.com/chadmaughan/5889802
 
+
 # stash any unstaged changes
 git stash -q --keep-index
 
