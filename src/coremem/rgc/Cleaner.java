@@ -7,9 +7,9 @@ package coremem.rgc;
  */
 public interface Cleaner extends Runnable
 {
-	/* (non-Javadoc)
-	 * @see java.lang.Runnable#run()
-	 */
-	@Override
-	public void run();
+  /* (non-Javadoc)
+   * @see java.lang.Runnable#run()
+   */
+  @Override
+  public void run();
 }

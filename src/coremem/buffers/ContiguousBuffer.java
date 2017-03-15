@@ -260,7 +260,8 @@ public class ContiguousBuffer implements SizedInBytes
    */
   public void writeContiguousBuffer(ContiguousBuffer pContiguousBuffer)
   {
-    long lSizeInBytes = min(pContiguousBuffer.remainingBytes(),this.remainingBytes());
+    long lSizeInBytes = min(pContiguousBuffer.remainingBytes(),
+                            this.remainingBytes());
     if (mPosition + lSizeInBytes > mFirstInvalidPosition)
       throw new InvalidNativeMemoryAccessException("Attemting to write past the end of this buffer");
 

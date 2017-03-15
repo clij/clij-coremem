@@ -1,6 +1,5 @@
 package coremem.recycling;
 
-
 /**
  *
  *
@@ -10,9 +9,9 @@ package coremem.recycling;
  */
 public interface RecyclableFactoryInterface<R extends RecyclableInterface<R, P>, P extends RecyclerRequestInterface>
 {
-	/**
-	 * @param pParameters
-	 * @return
-	 */
-	R create(P pParameters);
+  /**
+   * @param pParameters
+   * @return
+   */
+  R create(P pParameters);
 }

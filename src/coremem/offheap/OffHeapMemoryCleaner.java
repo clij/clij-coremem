@@ -108,7 +108,7 @@ public class OffHeapMemoryCleaner implements Cleaner
 
   public void formatWarning(String format, Object... args)
   {
-    //System.err.format(format, args);
+    // System.err.format(format, args);
   }
 
 }

@@ -9,19 +9,19 @@ import coremem.interfaces.SizedInBytes;
  */
 public enum NativeTypeEnum implements SizedInBytes
 {
-	Byte(1),
-	UnsignedByte(1),
-	Short(2),
-	UnsignedShort(2),
-	Int(4),
-	UnsignedInt(4),
-	Long(8),
-	UnsignedLong(8),
-	HalfFloat(2),
-	Float(4),
-	Double(8);
-	
-	private final long mSizeInBytes;
+ Byte(1),
+ UnsignedByte(1),
+ Short(2),
+ UnsignedShort(2),
+ Int(4),
+ UnsignedInt(4),
+ Long(8),
+ UnsignedLong(8),
+ HalfFloat(2),
+ Float(4),
+ Double(8);
+
+  private final long mSizeInBytes;
 
   NativeTypeEnum(long pSizeInBytes)
   {
@@ -35,4 +35,3 @@ public enum NativeTypeEnum implements SizedInBytes
   }
 
 }
-

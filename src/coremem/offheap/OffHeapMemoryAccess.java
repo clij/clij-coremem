@@ -5,11 +5,11 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 
-import sun.misc.Unsafe;
 import coremem.exceptions.InvalidAllocationParameterException;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.OutOfMemoryException;
 import coremem.util.Size;
+import sun.misc.Unsafe;
 
 /**
  *
@@ -273,7 +273,8 @@ public final class OffHeapMemoryAccess
    * 
    * @param pSrcArray
    *          source array
-   * @param pSrcOffset source offset in elements
+   * @param pSrcOffset
+   *          source offset in elements
    * @param pAddressDest
    *          destination address
    * @param pLengthInBytes
@@ -294,7 +295,7 @@ public final class OffHeapMemoryAccess
 
       int lArrayLengthInBytes = Size.ofPrimitive1DArray(pSrcArray);
 
-      if (lArrayLengthInBytes-pSrcOffset < pLengthInBytes)
+      if (lArrayLengthInBytes - pSrcOffset < pLengthInBytes)
         throw new InvalidNativeMemoryAccessException(String.format("Incompatible lengths: Array has length %d bytes, given length is %d bytes",
                                                                    lArrayLengthInBytes,
                                                                    pLengthInBytes));

@@ -2,7 +2,7 @@ package coremem.interfaces;
 
 /**
  * Memory objects implementing this interface provide methods to read single
- * primitive types. Offsets are byte-based. 
+ * primitive types. Offsets are byte-based.
  *
  * @author royer
  */

@@ -6,20 +6,20 @@ package coremem.exceptions;
  * @author royer
  */
 public class InvalidAllocationParameterException extends
-																								CoreMemException
+                                                 CoreMemException
 {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public InvalidAllocationParameterException(String pString)
-	{
-		super(pString);
-	}
+  public InvalidAllocationParameterException(String pString)
+  {
+    super(pString);
+  }
 
-	public InvalidAllocationParameterException(	String pErrorMessage,
-																							Throwable pE)
-	{
-		super(pErrorMessage, pE);
-	}
+  public InvalidAllocationParameterException(String pErrorMessage,
+                                             Throwable pE)
+  {
+    super(pErrorMessage, pE);
+  }
 
 }

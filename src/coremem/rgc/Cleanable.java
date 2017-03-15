@@ -7,9 +7,9 @@ package coremem.rgc;
  */
 public interface Cleanable
 {
-	/**
-	 * @return
-	 */
-	public Cleaner getCleaner();
+  /**
+   * @return
+   */
+  public Cleaner getCleaner();
 
 }

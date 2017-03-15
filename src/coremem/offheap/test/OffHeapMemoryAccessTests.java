@@ -5,125 +5,132 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
-import org.junit.Test;
-
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.offheap.OffHeapMemoryAccess;
 
+import org.junit.Test;
+
 public class OffHeapMemoryAccessTests
 {
-	final private static long cBufferSize = 2 * (long) Integer.MAX_VALUE;
+  final private static long cBufferSize =
+                                        2 * (long) Integer.MAX_VALUE;
 
-	@Test
-	public void testMaxAllocation()
-	{
-		try
-		{
-			int i = 0;
-			try
-			{
-				OffHeapMemoryAccess.freeAll();
-				OffHeapMemoryAccess.setMaximumAllocatableMemory(1000L * 1000L);
-				for (; i < 2000; i++)
-				{
-					OffHeapMemoryAccess.allocateMemory(1000);
-				}
-				fail();
-			}
-			catch (final OutOfMemoryError e)
-			{
-				//System.out.println("i=" + i);
-				assertTrue(i >= 1000);
-			}
-			catch (final Throwable lE)
-			{
-				fail();
-			}
+  @Test
+  public void testMaxAllocation()
+  {
+    try
+    {
+      int i = 0;
+      try
+      {
+        OffHeapMemoryAccess.freeAll();
+        OffHeapMemoryAccess.setMaximumAllocatableMemory(1000L
+                                                        * 1000L);
+        for (; i < 2000; i++)
+        {
+          OffHeapMemoryAccess.allocateMemory(1000);
+        }
+        fail();
+      }
+      catch (final OutOfMemoryError e)
+      {
+        // System.out.println("i=" + i);
+        assertTrue(i >= 1000);
+      }
+      catch (final Throwable lE)
+      {
+        fail();
+      }
 
-			OffHeapMemoryAccess.freeAll();
-			assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
-		}
-		catch (final Throwable e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-		finally
-		{
-			OffHeapMemoryAccess.setMaximumAllocatableMemory(Long.MAX_VALUE);
-		}
-	}
+      OffHeapMemoryAccess.freeAll();
+      assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
+    }
+    catch (final Throwable e)
+    {
+      e.printStackTrace();
+      fail();
+    }
+    finally
+    {
+      OffHeapMemoryAccess.setMaximumAllocatableMemory(Long.MAX_VALUE);
+    }
+  }
 
-	@Test
-	public void testAllocateReallocateFree()
-	{
-		try
-		{
-			// System.out.println(cBufferSize);
-			final long lAddress = OffHeapMemoryAccess.allocateMemory(cBufferSize);
+  @Test
+  public void testAllocateReallocateFree()
+  {
+    try
+    {
+      // System.out.println(cBufferSize);
+      final long lAddress =
+                          OffHeapMemoryAccess.allocateMemory(cBufferSize);
 
-			OffHeapMemoryAccess.setByte(lAddress, (byte) 123);
-			assertEquals(OffHeapMemoryAccess.getByte(lAddress), (byte) 123);
+      OffHeapMemoryAccess.setByte(lAddress, (byte) 123);
+      assertEquals(OffHeapMemoryAccess.getByte(lAddress), (byte) 123);
 
-			final long lAddressReallocated = OffHeapMemoryAccess.reallocateMemory(lAddress,
-																																			10);
+      final long lAddressReallocated =
+                                     OffHeapMemoryAccess.reallocateMemory(lAddress,
+                                                                          10);
 
-			OffHeapMemoryAccess.setByte(lAddressReallocated + 9, (byte) 123);
-			assertEquals(	OffHeapMemoryAccess.getByte(lAddressReallocated + 9),
-										(byte) 123);
+      OffHeapMemoryAccess.setByte(lAddressReallocated + 9,
+                                  (byte) 123);
+      assertEquals(OffHeapMemoryAccess.getByte(lAddressReallocated
+                                               + 9),
+                   (byte) 123);
 
-			OffHeapMemoryAccess.freeMemory(lAddressReallocated);
-		}
-		catch (final InvalidNativeMemoryAccessException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
+      OffHeapMemoryAccess.freeMemory(lAddressReallocated);
+    }
+    catch (final InvalidNativeMemoryAccessException e)
+    {
+      e.printStackTrace();
+      fail();
+    }
 
-	}
+  }
 
-	@Test
-	public void testSuperBig()
-	{
-		// System.out.println("begin");
+  @Test
+  public void testSuperBig()
+  {
+    // System.out.println("begin");
 
-		try
-		{
-			final long lLength = 1L * 1000L * 1000L * 1000L;
+    try
+    {
+      final long lLength = 1L * 1000L * 1000L * 1000L;
 
-			//System.out.println("allocateMemory");
-			final long lAddress = OffHeapMemoryAccess.allocateMemory(lLength);
-			//System.out.println("lAddress=" + lAddress);
-			assertFalse(lAddress == 0);
+      // System.out.println("allocateMemory");
+      final long lAddress =
+                          OffHeapMemoryAccess.allocateMemory(lLength);
+      // System.out.println("lAddress=" + lAddress);
+      assertFalse(lAddress == 0);
 
-			//System.out.println("setMemory");
-			OffHeapMemoryAccess.fillMemory(lAddress, lLength, (byte) 0);
+      // System.out.println("setMemory");
+      OffHeapMemoryAccess.fillMemory(lAddress, lLength, (byte) 0);
 
-			//System.out.println("setByte(s)");
-			for (long i = 0; i < lLength; i += 1000L * 1000L)
-			{
-				OffHeapMemoryAccess.setByte(lAddress + i, (byte) i);
-			}
+      // System.out.println("setByte(s)");
+      for (long i = 0; i < lLength; i += 1000L * 1000L)
+      {
+        OffHeapMemoryAccess.setByte(lAddress + i, (byte) i);
+      }
 
-			//System.out.println("getByte(s)");
-			for (long i = 0; i < lLength; i += 1000L * 1000L)
-			{
-				final byte lValue = OffHeapMemoryAccess.getByte(lAddress + i);
-				assertEquals((byte) i, lValue);
-			}
+      // System.out.println("getByte(s)");
+      for (long i = 0; i < lLength; i += 1000L * 1000L)
+      {
+        final byte lValue = OffHeapMemoryAccess.getByte(lAddress + i);
+        assertEquals((byte) i, lValue);
+      }
 
-			// Thread.sleep(10000);
+      // Thread.sleep(10000);
 
-			//System.out.println("freeMemory");
-			OffHeapMemoryAccess.freeMemory(lAddress);
+      // System.out.println("freeMemory");
+      OffHeapMemoryAccess.freeMemory(lAddress);
 
-			// System.out.println("end");
-		}
-		catch (final InvalidNativeMemoryAccessException e)
-		{
-			e.printStackTrace();
-			fail();
-		}
-	}
+      // System.out.println("end");
+    }
+    catch (final InvalidNativeMemoryAccessException e)
+    {
+      e.printStackTrace();
+      fail();
+    }
+  }
 
 }

@@ -11,27 +11,28 @@ import org.bridj.PointerIO;
  */
 public class BridJInterop
 {
-	/**
-	 * @param pTargetClass
-	 * @param pAddress
-	 * @param pSizeInBytes
-	 * @param pReleaser
-	 * @return
-	 */
-	public static <T> Pointer<T> wrapWithBridJPointer(	Class<T> pTargetClass,
-																				long pAddress,
-																				long pSizeInBytes,
-																				Releaser pReleaser)
-	{
+  /**
+   * @param pTargetClass
+   * @param pAddress
+   * @param pSizeInBytes
+   * @param pReleaser
+   * @return
+   */
+  public static <T> Pointer<T> wrapWithBridJPointer(Class<T> pTargetClass,
+                                                    long pAddress,
+                                                    long pSizeInBytes,
+                                                    Releaser pReleaser)
+  {
 
-		PointerIO<T> lPointerIO = PointerIO.getInstance(pTargetClass);
+    PointerIO<T> lPointerIO = PointerIO.getInstance(pTargetClass);
 
-		Pointer<T> lPointerToAddress = Pointer.pointerToAddress(pAddress,
-																														pSizeInBytes,
-																														lPointerIO,
-																														pReleaser);
+    Pointer<T> lPointerToAddress =
+                                 Pointer.pointerToAddress(pAddress,
+                                                          pSizeInBytes,
+                                                          lPointerIO,
+                                                          pReleaser);
 
-		return lPointerToAddress;
+    return lPointerToAddress;
 
-	}
+  }
 }

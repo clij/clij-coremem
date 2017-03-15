@@ -139,10 +139,12 @@ publishing {
 
 apply from: 'gradle/bintrayUpload.gradle'
 
+
 //***********************************************************************************
 // GIT HOOKS:
 
 apply from: 'gradle/install-git-hooks.gradle'
+
 
 //***********************************************************************************
 // SPOTLESS:

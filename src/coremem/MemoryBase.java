@@ -6,9 +6,6 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 
-import org.bridj.Pointer;
-import org.bridj.Pointer.Releaser;
-
 import coremem.enums.MemoryType;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
 import coremem.exceptions.InvalidWriteAtReadOnly;
@@ -25,6 +22,9 @@ import coremem.rgc.Cleanable;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
 import coremem.util.Size;
+
+import org.bridj.Pointer;
+import org.bridj.Pointer.Releaser;
 
 /**
  * This abstract base class offers basic functionality for off-heap memory

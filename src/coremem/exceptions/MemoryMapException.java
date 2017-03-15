@@ -8,16 +8,16 @@ package coremem.exceptions;
 public class MemoryMapException extends CoreMemException
 {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public MemoryMapException(String pString)
-	{
-		super(pString);
-	}
+  public MemoryMapException(String pString)
+  {
+    super(pString);
+  }
 
-	public MemoryMapException(String pErrorMessage, Throwable pE)
-	{
-		super(pErrorMessage,pE);
-	}
+  public MemoryMapException(String pErrorMessage, Throwable pE)
+  {
+    super(pErrorMessage, pE);
+  }
 
 }

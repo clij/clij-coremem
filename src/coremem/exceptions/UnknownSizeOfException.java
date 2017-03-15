@@ -9,18 +9,18 @@ package coremem.exceptions;
 public class UnknownSizeOfException extends CoreMemException
 {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * Constructs with object for which the size cannot be determined.
-	 * 
-	 * @param pObject
-	 */
-	public UnknownSizeOfException(Object pObject)
-	{
-		super("Unknown size-of for object:  " + pObject
-					+ " of class: "
-					+ pObject.getClass().toString());
-	}
+  /**
+   * Constructs with object for which the size cannot be determined.
+   * 
+   * @param pObject
+   */
+  public UnknownSizeOfException(Object pObject)
+  {
+    super("Unknown size-of for object:  " + pObject
+          + " of class: "
+          + pObject.getClass().toString());
+  }
 
 }

@@ -7,19 +7,19 @@ package coremem.rgc;
  */
 public interface Freeable
 {
-	/**
-	 * 
-	 */
-	public void free();
+  /**
+   * 
+   */
+  public void free();
 
-	/**
-	 * @return
-	 */
-	public boolean isFree();
+  /**
+   * @return
+   */
+  public boolean isFree();
 
-	/**
-	 * @throws FreedException
-	 */
-	public void complainIfFreed() throws FreedException;
+  /**
+   * @throws FreedException
+   */
+  public void complainIfFreed() throws FreedException;
 
 }

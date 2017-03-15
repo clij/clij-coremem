@@ -23,32 +23,32 @@ import coremem.rgc.Freeable;
  * @author royer
  */
 public interface ContiguousMemoryInterface extends
-																					PointerAccessible,
-																					BridJPointerWrappable,
-																					ByteBufferWrappable,
-																					ReadAtAligned,
-																					WriteAtAligned,
-																					ReadAt,
-																					WriteAt,
-																					Copyable<ContiguousMemoryInterface>,
-																					CopyFromToNIOBuffers,
-																					CopyFromToJavaArray,
-																					CopyRangeFromToJavaArray,
-																					ReadWriteBytesFileChannel,
-																					SizedInBytes,
-																					Freeable
+                                           PointerAccessible,
+                                           BridJPointerWrappable,
+                                           ByteBufferWrappable,
+                                           ReadAtAligned,
+                                           WriteAtAligned,
+                                           ReadAt,
+                                           WriteAt,
+                                           Copyable<ContiguousMemoryInterface>,
+                                           CopyFromToNIOBuffers,
+                                           CopyFromToJavaArray,
+                                           CopyRangeFromToJavaArray,
+                                           ReadWriteBytesFileChannel,
+                                           SizedInBytes,
+                                           Freeable
 {
 
-	/**
-	 * Returns a ContiguousMemoryInterface for a sub region.
-	 * 
-	 * @param pOffsetInBytes
-	 *          offset in bytes
-	 * @param pLenghInBytes
-	 *          length in bytes
-	 * @return
-	 */
-	ContiguousMemoryInterface subRegion(long pOffsetInBytes,
-																			long pLenghInBytes);
+  /**
+   * Returns a ContiguousMemoryInterface for a sub region.
+   * 
+   * @param pOffsetInBytes
+   *          offset in bytes
+   * @param pLenghInBytes
+   *          length in bytes
+   * @return
+   */
+  ContiguousMemoryInterface subRegion(long pOffsetInBytes,
+                                      long pLenghInBytes);
 
 }

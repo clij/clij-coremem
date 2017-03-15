@@ -4,9 +4,9 @@ import static org.junit.Assert.*;
 
 import java.util.NoSuchElementException;
 
-import org.junit.Test;
-
 import coremem.buffers.ContiguousBuffer;
+
+import org.junit.Test;
 
 public class ContiguousBufferTests
 {

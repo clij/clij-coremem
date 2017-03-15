@@ -2,8 +2,6 @@ package coremem.offheap;
 
 import java.nio.Buffer;
 
-import org.bridj.Pointer;
-
 import coremem.ContiguousMemoryInterface;
 import coremem.MemoryBase;
 import coremem.enums.MemoryType;
@@ -14,6 +12,8 @@ import coremem.interop.NIOBuffersInterop;
 import coremem.rgc.Cleaner;
 import coremem.rgc.RessourceGarbageCollector;
 import coremem.util.Size;
+
+import org.bridj.Pointer;
 
 /**
  * Instances of this class represent contguous regions of off-heap memory.
@@ -423,7 +423,7 @@ public class OffHeapMemory extends MemoryBase implements
                        final long pLengthInBytes)
   {
     super(pAddress, pLengthInBytes);
-    mName = pName==null?"NULL":pName.intern();
+    mName = pName == null ? "NULL" : pName.intern();
     mParent = pParent;
     mAllocationStackTrace = Thread.currentThread().getStackTrace();
     mSignature = OffHeapMemoryAccess.getSignature(getAddress());
@@ -538,5 +538,4 @@ public class OffHeapMemory extends MemoryBase implements
            + "]";
   }
 
-  
 }

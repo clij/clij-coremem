@@ -11,27 +11,27 @@ import java.lang.ref.ReferenceQueue;
 class CleaningPhantomReference extends PhantomReference<Cleanable>
 {
 
-	private final Cleaner mCleaner;
+  private final Cleaner mCleaner;
 
-	/**
-	 * @param pReferent
-	 * @param pCleaner
-	 * @param pReferencenQueue
-	 */
-	public CleaningPhantomReference(Cleanable pReferent,
-																	Cleaner pCleaner,
-																	ReferenceQueue<Cleanable> pReferencenQueue)
-	{
-		super(pReferent, pReferencenQueue);
-		mCleaner = pCleaner;
-	}
+  /**
+   * @param pReferent
+   * @param pCleaner
+   * @param pReferencenQueue
+   */
+  public CleaningPhantomReference(Cleanable pReferent,
+                                  Cleaner pCleaner,
+                                  ReferenceQueue<Cleanable> pReferencenQueue)
+  {
+    super(pReferent, pReferencenQueue);
+    mCleaner = pCleaner;
+  }
 
-	/**
-	 * @return
-	 */
-	public Cleaner getCleaner()
-	{
-		return mCleaner;
-	}
+  /**
+   * @return
+   */
+  public Cleaner getCleaner()
+  {
+    return mCleaner;
+  }
 
 }

@@ -4,13 +4,13 @@ import static org.junit.Assert.*;
 
 import java.nio.ByteBuffer;
 
-import org.bridj.Pointer;
-import org.junit.Test;
-
 import coremem.ContiguousMemoryInterface;
 import coremem.enums.NativeTypeEnum;
 import coremem.offheap.OffHeapMemory;
 import coremem.util.Size;
+
+import org.bridj.Pointer;
+import org.junit.Test;
 
 public class SizeTests
 {

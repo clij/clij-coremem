@@ -8,14 +8,14 @@ package coremem.rgc;
 public class FreedException extends RuntimeException
 {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	/**
-	 * @param pErrorMessage
-	 */
-	public FreedException(String pErrorMessage)
-	{
-		super(pErrorMessage);
-	}
+  /**
+   * @param pErrorMessage
+   */
+  public FreedException(String pErrorMessage)
+  {
+    super(pErrorMessage);
+  }
 
 }

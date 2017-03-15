@@ -16,104 +16,110 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class RessourceGarbageCollector
 {
 
-	private static final Executor sExecutor = Executors.newSingleThreadExecutor();
+  private static final Executor sExecutor =
+                                          Executors.newSingleThreadExecutor();
 
-	private static final ScheduledExecutorService sScheduledExecutor = Executors.newSingleThreadScheduledExecutor();
+  private static final ScheduledExecutorService sScheduledExecutor =
+                                                                   Executors.newSingleThreadScheduledExecutor();
 
-	private static RessourceGarbageCollector sRessourceGarbageCollector;
+  private static RessourceGarbageCollector sRessourceGarbageCollector;
 
-	static
-	{
-		sRessourceGarbageCollector = new RessourceGarbageCollector();
+  static
+  {
+    sRessourceGarbageCollector = new RessourceGarbageCollector();
 
-		sRessourceGarbageCollector.collectAtFixedRate(100,
-																									TimeUnit.MILLISECONDS);
-	}
+    sRessourceGarbageCollector.collectAtFixedRate(100,
+                                                  TimeUnit.MILLISECONDS);
+  }
 
-	private static ConcurrentLinkedDeque<CleaningPhantomReference> sCleaningPhantomReferenceList = new ConcurrentLinkedDeque<>();
+  private static ConcurrentLinkedDeque<CleaningPhantomReference> sCleaningPhantomReferenceList =
+                                                                                               new ConcurrentLinkedDeque<>();
 
-	public static final void register(Cleanable pCleanable)
-	{
-		final CleaningPhantomReference lCleaningPhantomReference = new CleaningPhantomReference(pCleanable,
-																																											pCleanable.getCleaner(),
-																																											sRessourceGarbageCollector.getReferenceQueue());
+  public static final void register(Cleanable pCleanable)
+  {
+    final CleaningPhantomReference lCleaningPhantomReference =
+                                                             new CleaningPhantomReference(pCleanable,
+                                                                                          pCleanable.getCleaner(),
+                                                                                          sRessourceGarbageCollector.getReferenceQueue());
 
-		sCleaningPhantomReferenceList.add(lCleaningPhantomReference);
-	}
+    sCleaningPhantomReferenceList.add(lCleaningPhantomReference);
+  }
 
-	private final ReferenceQueue<Cleanable> mReferenceQueue = new ReferenceQueue<>();
+  private final ReferenceQueue<Cleanable> mReferenceQueue =
+                                                          new ReferenceQueue<>();
 
-	private ReferenceQueue<Cleanable> getReferenceQueue()
-	{
-		return mReferenceQueue;
-	}
+  private ReferenceQueue<Cleanable> getReferenceQueue()
+  {
+    return mReferenceQueue;
+  }
 
-	private final AtomicBoolean mActive = new AtomicBoolean(true);
+  private final AtomicBoolean mActive = new AtomicBoolean(true);
 
-	/**
-	 * 
-	 */
-	private void collect()
-	{
-		if (mActive.get())
-			do
-			{
-				final CleaningPhantomReference lReference = (CleaningPhantomReference) mReferenceQueue.poll();
-				if (lReference == null)
-					return;
-				final Cleaner lCleaner = lReference.getCleaner();
-				if (lCleaner != null)
-					sExecutor.execute(lCleaner);
-				sCleaningPhantomReferenceList.remove(lReference);
-			}
-			while (true);
-	}
+  /**
+   * 
+   */
+  private void collect()
+  {
+    if (mActive.get())
+      do
+      {
+        final CleaningPhantomReference lReference =
+                                                  (CleaningPhantomReference) mReferenceQueue.poll();
+        if (lReference == null)
+          return;
+        final Cleaner lCleaner = lReference.getCleaner();
+        if (lCleaner != null)
+          sExecutor.execute(lCleaner);
+        sCleaningPhantomReferenceList.remove(lReference);
+      }
+      while (true);
+  }
 
-	/**
-	 * @param pPeriod
-	 * @param pUnit
-	 */
-	public void collectAtFixedRate(long pPeriod, TimeUnit pUnit)
-	{
-		final Runnable lCollector = new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				collect();
-			}
-		};
-		sScheduledExecutor.scheduleAtFixedRate(	lCollector,
-																						0,
-																						pPeriod,
-																						pUnit);
-	}
+  /**
+   * @param pPeriod
+   * @param pUnit
+   */
+  public void collectAtFixedRate(long pPeriod, TimeUnit pUnit)
+  {
+    final Runnable lCollector = new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        collect();
+      }
+    };
+    sScheduledExecutor.scheduleAtFixedRate(lCollector,
+                                           0,
+                                           pPeriod,
+                                           pUnit);
+  }
 
-	/**
-	 * 
-	 */
-	public static void collectNow()
-	{
-		sRessourceGarbageCollector.collect();
-	}
+  /**
+   * 
+   */
+  public static void collectNow()
+  {
+    sRessourceGarbageCollector.collect();
+  }
 
-	/**
-	 * @param pRunnable
-	 */
-	public static void preventCollection(Runnable pRunnable)
-	{
-		final boolean lActive = sRessourceGarbageCollector.mActive.get();
-		sRessourceGarbageCollector.mActive.set(false);
-		pRunnable.run();
-		sRessourceGarbageCollector.mActive.compareAndSet(false, lActive);
-	}
+  /**
+   * @param pRunnable
+   */
+  public static void preventCollection(Runnable pRunnable)
+  {
+    final boolean lActive = sRessourceGarbageCollector.mActive.get();
+    sRessourceGarbageCollector.mActive.set(false);
+    pRunnable.run();
+    sRessourceGarbageCollector.mActive.compareAndSet(false, lActive);
+  }
 
-	/**
-	 * @return
-	 */
-	public static int getNumberOfRegisteredObjects()
-	{
-		return sCleaningPhantomReferenceList.size();
-	}
+  /**
+   * @return
+   */
+  public static int getNumberOfRegisteredObjects()
+  {
+    return sCleaningPhantomReferenceList.size();
+  }
 
 }
