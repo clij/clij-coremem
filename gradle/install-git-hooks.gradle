@@ -9,3 +9,5 @@ task installGitHooks(type: Copy) {
 
 gitExecutableHooks.dependsOn installGitHooks
 clean.dependsOn gitExecutableHooks
+tasks.idea.dependsOn gitExecutableHooks
+tasks.eclipse.dependsOn gitExecutableHooks

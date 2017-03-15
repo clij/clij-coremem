@@ -29,7 +29,7 @@ public class MemoryMappedFileTest
                                               StandardOpenOption.READ,
                                               StandardOpenOption.WRITE);
 
-    long lMappingLength =  ((long)Integer.MAX_VALUE - 8L) + 1000L;
+    long lMappingLength = ((long) Integer.MAX_VALUE - 8L) + 1000L;
 
     MemoryMappedFile lMemoryMappedFile =
                                        new MemoryMappedFile(lFileChannel,
