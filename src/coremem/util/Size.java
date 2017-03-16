@@ -268,7 +268,8 @@ public class Size
   /**
    * Returns the size in bytes of a NIO Buffer
    * 
-   * @param pBuffer NIO buffer
+   * @param pBuffer
+   *          NIO buffer
    * @return size in bytes
    */
   public static long ofBuffer(final Buffer pBuffer)

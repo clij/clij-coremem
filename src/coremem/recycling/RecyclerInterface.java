@@ -117,14 +117,14 @@ public interface RecyclerInterface<R extends RecyclableInterface<R, P>, P extend
    * 
    * @return total siee of live objects in bytes
    */
-  public abstract double computeLiveMemorySizeInBytes();
+  public abstract long computeLiveMemorySizeInBytes();
 
   /**
    * Returns the calculated total size in bytes of available objects.
    * 
    * @return calculated total size in bytes
    */
-  public abstract double computeAvailableMemorySizeInBytes();
+  public abstract long computeAvailableMemorySizeInBytes();
 
   /**
    * Releases the given object

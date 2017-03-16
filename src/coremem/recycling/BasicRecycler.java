@@ -463,7 +463,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
   }
 
   @Override
-  public double computeLiveMemorySizeInBytes()
+  public long computeLiveMemorySizeInBytes()
   {
     long lMemorySizeInBytes = 0;
     for (R lRecyclable : mLiveObjectsQueue)
@@ -471,11 +471,8 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
     return lMemorySizeInBytes;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.recycling.RecyclerInterface#computeAvailableMemorySizeInBytes()
-   */
   @Override
-  public double computeAvailableMemorySizeInBytes()
+  public long computeAvailableMemorySizeInBytes()
   {
     long lMemorySizeInBytes = 0;
     for (R lRecyclable : mAvailableObjectsQueue)
@@ -483,9 +480,6 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
     return lMemorySizeInBytes;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.recycling.RecyclerInterface#clearReleased()
-   */
   @Override
   public void clearReleased()
   {

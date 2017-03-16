@@ -7,11 +7,11 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import org.junit.Test;
-
 import coremem.memmap.MemoryMappedFile;
 import coremem.memmap.MemoryMappedFileAccessMode;
 import coremem.offheap.OffHeapMemoryAccess;
+
+import org.junit.Test;
 
 /**
  * 
