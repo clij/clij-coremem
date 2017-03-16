@@ -1,6 +1,6 @@
 language: java
-script: "gradle build -x findbugsMain -x findbugsTest"
+script: "gradle build -x findbugsMain -x findbugsTest -x spotlessJava"
 jdk:
   - oraclejdk8
-install: gradle assemble -x findbugsMain -x findbugsTest --stacktrace
+install: gradle assemble -x findbugsMain -x findbugsTest -x spotlessJava --stacktrace
 
