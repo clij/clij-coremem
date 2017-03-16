@@ -13,9 +13,24 @@ import coremem.interfaces.RangeCopyable;
 import coremem.interfaces.Resizable;
 import coremem.offheap.OffHeapMemoryAccess;
 
+/**
+ * Helper class for contiguous memory tests
+ *
+ * @author royer
+ */
 public class ContiguousMemoryTestsHelper
 {
 
+  /**
+   * Tests basic functionality of a contiguous memory interface
+   * 
+   * @param pContiguousMemoryInterface
+   *          contiguous memory
+   * @param pMemoryType
+   *          memory type
+   * @param pResize
+   *          true -> attempt resize
+   */
   public static void testBasics(ContiguousMemoryInterface pContiguousMemoryInterface,
                                 MemoryType pMemoryType,
                                 final boolean pResize)
@@ -52,7 +67,14 @@ public class ContiguousMemoryTestsHelper
 
   }
 
-  @SuppressWarnings("unchecked")
+  /**
+   * Tests the copy from one memory to another
+   * 
+   * @param pContiguousMemoryInterface1
+   *          memory 1
+   * @param pContiguousMemoryInterface2
+   *          memory 2
+   */
   public static void testCopySameSize(ContiguousMemoryInterface pContiguousMemoryInterface1,
                                       ContiguousMemoryInterface pContiguousMemoryInterface2)
   {
@@ -105,9 +127,17 @@ public class ContiguousMemoryTestsHelper
     }
   }
 
+  /**
+   * Tests the copy of a range between two different memory objects
+   * 
+   * @param pContiguousMemoryInterface1
+   *          memory 1
+   * @param pContiguousMemoryInterface2
+   *          memory 2
+   */
   @SuppressWarnings("unchecked")
-  public static void testCopyDifferentSize(ContiguousMemoryInterface pContiguousMemoryInterface1,
-                                           ContiguousMemoryInterface pContiguousMemoryInterface2)
+  public static void testCopyRange(ContiguousMemoryInterface pContiguousMemoryInterface1,
+                                   ContiguousMemoryInterface pContiguousMemoryInterface2)
   {
     // OffHeapMemory lRAMDirect1 = new OffHeapMemory(4);
     // OffHeapMemory lRAMDirect2 = new OffHeapMemory(8);
@@ -160,6 +190,14 @@ public class ContiguousMemoryTestsHelper
       ((MappableMemory) pContiguousMemoryInterface2).unmap();
   }
 
+  /**
+   * tests that copy range checks work
+   * 
+   * @param pContiguousMemoryInterface1
+   *          memory 1
+   * @param pContiguousMemoryInterface2
+   *          memory 2
+   */
   @SuppressWarnings("unchecked")
   public static void testCopyChecks(ContiguousMemoryInterface pContiguousMemoryInterface1,
                                     ContiguousMemoryInterface pContiguousMemoryInterface2)
@@ -221,6 +259,12 @@ public class ContiguousMemoryTestsHelper
     }
   }
 
+  /**
+   * Checks read write single native types
+   * 
+   * @param pContiguousMemoryInterface
+   *          memory
+   */
   public static void testWriteRead(ContiguousMemoryInterface pContiguousMemoryInterface)
   {
     // OffHeapMemory lRAMDirect = new OffHeapMemory(4);

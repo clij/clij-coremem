@@ -1,13 +1,26 @@
 package coremem.memmap;
 
 /**
- *
+ * Memory mapped file access modes
  *
  * @author royer
  */
 public enum MemoryMappedFileAccessMode
 {
- ReadOnly(0), ReadWrite(1), Private(2);
+ /**
+  * Read only memory mapping
+  */
+ ReadOnly(0),
+
+ /**
+  * Read and only memory mapping
+  */
+ ReadWrite(1),
+
+ /**
+  * Private memory mapping
+  */
+ Private(2);
 
   private final int mValue;
 
@@ -20,7 +33,9 @@ public enum MemoryMappedFileAccessMode
   }
 
   /**
-   * @return
+   * Returns corresponding int value
+   * 
+   * @return value
    */
   public int getValue()
   {

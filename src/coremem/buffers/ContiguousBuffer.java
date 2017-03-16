@@ -48,7 +48,8 @@ public class ContiguousBuffer implements SizedInBytes
    * Allocates a ContiguousBuffer (using OffHeapMemory) of given length.
    * 
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return contiguous buffer
    */
   public static ContiguousBuffer allocate(long pLengthInBytes)
   {
@@ -63,7 +64,8 @@ public class ContiguousBuffer implements SizedInBytes
    * Wraps a ContiguousMemoryInterface with a ContiguousBuffer.
    * 
    * @param pContiguousMemoryInterface
-   * @return
+   *          contiguous memory to wrap
+   * @return contiguous buffer
    */
   public static ContiguousBuffer wrap(ContiguousMemoryInterface pContiguousMemoryInterface)
   {
@@ -74,6 +76,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Constructs a ContiguousBuffer by wrapping a ContiguousMemoryInterface.
    * 
    * @param pContiguousMemoryInterface
+   *          contiguous memory to wrap
    */
   public ContiguousBuffer(ContiguousMemoryInterface pContiguousMemoryInterface)
   {
@@ -88,7 +91,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Returns the underlying ContiguousMemoryInterface.
    * 
-   * @return
+   * @return contiguous memory
    */
   public ContiguousMemoryInterface getContiguousMemory()
   {
@@ -323,6 +326,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single byte. The position is incremented accordingly.
    * 
    * @param pByte
+   *          value
    */
   public void writeByte(byte pByte)
   {
@@ -334,6 +338,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single short. The position is incremented accordingly.
    * 
    * @param pShort
+   *          value
    */
   public void writeShort(short pShort)
   {
@@ -345,6 +350,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single char. The position is incremented accordingly.
    * 
    * @param pChar
+   *          value
    */
   public void writeChar(char pChar)
   {
@@ -356,6 +362,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single int. The position is incremented accordingly.
    * 
    * @param pInt
+   *          value
    */
   public void writeInt(int pInt)
   {
@@ -367,6 +374,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single long. The position is incremented accordingly.
    * 
    * @param pLong
+   *          value
    */
   public void writeLong(long pLong)
   {
@@ -378,6 +386,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single float. The position is incremented accordingly.
    * 
    * @param pFloat
+   *          value
    */
   public void writeFloat(float pFloat)
   {
@@ -389,6 +398,7 @@ public class ContiguousBuffer implements SizedInBytes
    * Write a single double. The position is incremented accordingly.
    * 
    * @param pDouble
+   *          value
    */
   public void writeDouble(char pDouble)
   {
@@ -399,7 +409,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single byte. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public byte readByte()
   {
@@ -411,7 +421,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single short. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public short readShort()
   {
@@ -423,7 +433,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single char. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public char readChar()
   {
@@ -435,7 +445,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single int. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public int readInt()
   {
@@ -447,7 +457,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single long. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public long readLong()
   {
@@ -459,7 +469,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single float. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public float readFloat()
   {
@@ -471,7 +481,7 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Reads a single double. The position is incremented accordingly.
    * 
-   * @return
+   * @return value
    */
   public double readDouble()
   {
@@ -483,76 +493,80 @@ public class ContiguousBuffer implements SizedInBytes
   /**
    * Skips multiple bytes. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberOfBytesToSkip
+   *          number of bytes to skip
    */
-  public void skipBytes(long pNumberToSkip)
+  public void skipBytes(long pNumberOfBytesToSkip)
   {
-    mPosition += 1 * pNumberToSkip;
+    mPosition += 1 * pNumberOfBytesToSkip;
   }
 
   /**
    * Skips multiple shorts. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberOfShortsToSkip
+   *          number of shorts to skip
    */
-  public void skipShorts(long pNumberToSkip)
+  public void skipShorts(long pNumberOfShortsToSkip)
   {
-    mPosition += 2 * pNumberToSkip;
+    mPosition += 2 * pNumberOfShortsToSkip;
   }
 
   /**
    * Skips multiple chars. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberOfCharsToSkip
+   *          number of chars to skip
    */
-  public void skipChars(long pNumberToSkip)
+  public void skipChars(long pNumberOfCharsToSkip)
   {
-    mPosition += 2 * pNumberToSkip;
+    mPosition += 2 * pNumberOfCharsToSkip;
   }
 
   /**
    * Skips multiple ints. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberofIntsToSkip
+   *          number of ints to skip
    */
-  public void skipInts(long pNumberToSkip)
+  public void skipInts(long pNumberofIntsToSkip)
   {
-    mPosition += 4 * pNumberToSkip;
+    mPosition += 4 * pNumberofIntsToSkip;
   }
 
   /**
    * Skips multiple longs. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberOfLongsToSkip
+   *          number of longs to skip
    */
-  public void skipLongs(long pNumberToSkip)
+  public void skipLongs(long pNumberOfLongsToSkip)
   {
-    mPosition += 8 * pNumberToSkip;
+    mPosition += 8 * pNumberOfLongsToSkip;
   }
 
   /**
    * Skips multiple floats. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberOfFloatsToSkip
+   *          number of floats to skip
    */
-  public void skipFloats(long pNumberToSkip)
+  public void skipFloats(long pNumberOfFloatsToSkip)
   {
-    mPosition += 4 * pNumberToSkip;
+    mPosition += 4 * pNumberOfFloatsToSkip;
   }
 
   /**
    * Skips multiple doubles. The position is incremented accordingly.
    * 
-   * @param pNumberToSkip
+   * @param pNumberOfDoublesToSkip
+   *          number of doubles to skip
    */
-  public void skipDoubles(long pNumberToSkip)
+  public void skipDoubles(long pNumberOfDoublesToSkip)
   {
-    mPosition += 8 * pNumberToSkip;
+    mPosition += 8 * pNumberOfDoublesToSkip;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Object#toString()
-   */
   @Override
   public String toString()
   {

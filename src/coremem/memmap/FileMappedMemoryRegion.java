@@ -20,7 +20,8 @@ import coremem.rgc.Cleaner;
 import coremem.rgc.Freeable;
 
 /**
- *
+ * File mapped memory region. Implements the contiguous memory interface but is
+ * stored in a file.
  *
  * @author royer
  */
@@ -40,10 +41,15 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   private MemoryMappedFile mMemoryMappedFile;
 
   /**
+   * Creates a new file of given length and maps it to memory.
+   * 
    * @param pFile
+   *          file length
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return file mapped memory region
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion createNewFileMappedMemoryRegion(File pFile,
                                                                 final long pLengthInBytes) throws IOException
@@ -57,10 +63,15 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Creates new sparse file and maps it to memory.
+   * 
    * @param pFile
+   *          file
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return file mapped memory region
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion createNewSparseFileMappedMemoryRegion(File pFile,
                                                                       final long pLengthInBytes) throws IOException
@@ -75,10 +86,15 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Opens an existing file and maps it to memory
+   * 
    * @param pFile
+   *          file
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return file mapped memory region
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion openExistingFileMappedMemoryRegion(File pFile,
                                                                    final long pLengthInBytes) throws IOException
@@ -89,11 +105,17 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Opens an existing file and maps it to memory.
+   * 
    * @param pFile
+   *          file
    * @param pPositionInBytes
+   *          position in bytes
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return file mapped memory region
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion openExistingFileMappedMemoryRegion(File pFile,
                                                                    final long pPositionInBytes,
@@ -107,10 +129,15 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Opens an existing file read-only and maps it to memory.
+   * 
    * @param pFile
+   *          file
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return file mapped memory region
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion openReadOnlyExistingFileMappedMemoryRegion(File pFile,
                                                                            final long pLengthInBytes) throws IOException
@@ -121,11 +148,17 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Opens an existing file read-only and maps it to memory.
+   * 
    * @param pFile
+   *          file
    * @param pPositionInBytes
+   *          position in bytes
    * @param pLengthInBytes
-   * @return
+   *          length in bytes
+   * @return file mapped memory region
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion openReadOnlyExistingFileMappedMemoryRegion(File pFile,
                                                                            final long pPositionInBytes,
@@ -138,10 +171,17 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Instanciates a file mapped memory region given a file, length in bytes, and
+   * standard open options.
+   * 
    * @param pFile
+   *          file
    * @param pLengthInBytes
+   *          length in bytes
    * @param pStandardOpenOption
+   *          standard open options
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion(File pFile,
                                 final long pLengthInBytes,
@@ -151,11 +191,19 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Instanciates a file mapped memory region given a file, position in file,
+   * length in bytes, and standard open options.
+   * 
    * @param pFile
+   *          file
    * @param pPositionInBytes
+   *          position in bytes within file
    * @param pLengthInBytes
+   *          length in bytes
    * @param pStandardOpenOption
+   *          standard open options
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion(File pFile,
                                 final long pPositionInBytes,
@@ -172,11 +220,19 @@ public class FileMappedMemoryRegion extends MappedMemoryBase
   }
 
   /**
+   * Instanciates a file mapped memory region given a file channel, position in
+   * file, length in bytes, and standard open options.
+   * 
    * @param pFileChannel
+   *          file channel
    * @param pPositionInBytes
+   *          position in bytes within file
    * @param pLengthInBytes
+   *          length in bytes
    * @param pStandardOpenOption
+   *          standard open options
    * @throws IOException
+   *           thrown if problem while creating file or memory mapping
    */
   public FileMappedMemoryRegion(FileChannel pFileChannel,
                                 final long pPositionInBytes,

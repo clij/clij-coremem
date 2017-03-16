@@ -13,7 +13,8 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setByte(final long pOffset, final byte pValue);
 
@@ -22,7 +23,9 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
+   * 
    */
   public void setChar(final long pOffset, final char pValue);
 
@@ -31,7 +34,9 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
+   * 
    */
   public void setShort(final long pOffset, final short pValue);
 
@@ -40,7 +45,9 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
+   * 
    */
   public void setInt(final long pOffset, final int pValue);
 
@@ -49,7 +56,9 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
+   * 
    */
   public void setLong(final long pOffset, final long pValue);
 
@@ -58,7 +67,9 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
+   * 
    */
   public void setFloat(final long pOffset, final float pValue);
 
@@ -67,7 +78,9 @@ public interface WriteAt extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
+   * 
    */
   public void setDouble(final long pOffset, final double pValue);
 

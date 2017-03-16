@@ -40,13 +40,13 @@ public interface ContiguousMemoryInterface extends
 {
 
   /**
-   * Returns a ContiguousMemoryInterface for a sub region.
+   * Returns a contiguous memory object representing for a memory sub region.
    * 
    * @param pOffsetInBytes
    *          offset in bytes
    * @param pLenghInBytes
    *          length in bytes
-   * @return
+   * @return contiguous memory for sub region
    */
   ContiguousMemoryInterface subRegion(long pOffsetInBytes,
                                       long pLenghInBytes);

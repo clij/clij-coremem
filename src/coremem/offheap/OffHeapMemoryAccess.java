@@ -12,11 +12,11 @@ import coremem.util.Size;
 import sun.misc.Unsafe;
 
 /**
- *
+ * OfHeam memory access. This class offers static methods for memory allocation,
+ * dealocation and read/write access.
  *
  * @author royer
  */
-@SuppressWarnings("restriction")
 public final class OffHeapMemoryAccess
 {
 
@@ -50,8 +50,12 @@ public final class OffHeapMemoryAccess
   static private final Object mLock = new OffHeapMemoryAccess();
 
   /**
+   * Registers a memory region at a given address of given length.
+   * 
    * @param pAddress
+   *          address
    * @param pLength
+   *          length in bytes
    */
   public static final void registerMemoryRegion(long pAddress,
                                                 long pLength)
@@ -66,7 +70,10 @@ public final class OffHeapMemoryAccess
   }
 
   /**
+   * Deregisters a memory region at a given address.
+   * 
    * @param pAddress
+   *          address to deregister
    */
   public static final void deregisterMemoryRegion(long pAddress)
   {
@@ -113,7 +120,7 @@ public final class OffHeapMemoryAccess
   /**
    * Returns the current total amount of memory that has been allocated.
    * 
-   * @return
+   * @return total amount of allocated memory
    */
   public static final long getTotalAllocatedMemory()
   {
@@ -123,7 +130,7 @@ public final class OffHeapMemoryAccess
   /**
    * Returns the page size. https://en.wikipedia.org/wiki/Page_(computer_memory)
    * 
-   * @return
+   * @return page size in bytes
    */
   public static final int getPageSize()
   {
@@ -220,8 +227,8 @@ public final class OffHeapMemoryAccess
    * @param pAddress
    *          address
    * @param pSignature
-   *          signature
-   * @return
+   *          signature for given address
+   * @return true if memory allocated at given address with given signature.
    */
   public static final boolean isAllocatedMemory(final long pAddress,
                                                 long pSignature)

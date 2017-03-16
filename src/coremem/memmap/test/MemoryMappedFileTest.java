@@ -7,14 +7,28 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.file.StandardOpenOption;
 
-import coremem.memmap.MemoryMappedFile;
-import coremem.memmap.MemoryMappedFileUtils;
-import coremem.offheap.OffHeapMemoryAccess;
-
 import org.junit.Test;
 
+import coremem.memmap.MemoryMappedFile;
+import coremem.memmap.MemoryMappedFileAccessMode;
+import coremem.offheap.OffHeapMemoryAccess;
+
+/**
+ * 
+ *
+ * @author royer
+ */
 public class MemoryMappedFileTest
 {
+
+  /**
+   * Map large memory
+   * 
+   * @throws IOException
+   *           NA
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void testMapLargeFile() throws IOException,
                                  InterruptedException
@@ -33,7 +47,7 @@ public class MemoryMappedFileTest
 
     MemoryMappedFile lMemoryMappedFile =
                                        new MemoryMappedFile(lFileChannel,
-                                                            MemoryMappedFileUtils.ReadWrite,
+                                                            MemoryMappedFileAccessMode.ReadWrite,
                                                             0,
                                                             lMappingLength,
                                                             true);
@@ -56,6 +70,15 @@ public class MemoryMappedFileTest
 
   }
 
+  /**
+   * 
+   * Tests mapping not from the start of file
+   * 
+   * @throws IOException
+   *           NA
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void testMapNotFromStart() throws IOException,
                                     InterruptedException
@@ -75,7 +98,7 @@ public class MemoryMappedFileTest
 
     MemoryMappedFile lMemoryMappedFile =
                                        new MemoryMappedFile(lFileChannel,
-                                                            MemoryMappedFileUtils.ReadWrite,
+                                                            MemoryMappedFileAccessMode.ReadWrite,
                                                             lMappingOffset,
                                                             lMappingLength,
                                                             true);
@@ -98,6 +121,14 @@ public class MemoryMappedFileTest
 
   }
 
+  /**
+   * Test create file and open in the middle
+   * 
+   * @throws IOException
+   *           NA
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void testCreateFileAndOpenInTheMiddle() throws IOException,
                                                  InterruptedException
@@ -118,7 +149,7 @@ public class MemoryMappedFileTest
 
       MemoryMappedFile lMemoryMappedFile =
                                          new MemoryMappedFile(lFileChannel,
-                                                              MemoryMappedFileUtils.ReadWrite,
+                                                              MemoryMappedFileAccessMode.ReadWrite,
                                                               0,
                                                               lFileLength,
                                                               true);
@@ -151,7 +182,7 @@ public class MemoryMappedFileTest
 
     MemoryMappedFile lMemoryMappedFile =
                                        new MemoryMappedFile(lFileChannel,
-                                                            MemoryMappedFileUtils.ReadWrite,
+                                                            MemoryMappedFileAccessMode.ReadWrite,
                                                             lMappingOffset,
                                                             lMappingLength,
                                                             true);

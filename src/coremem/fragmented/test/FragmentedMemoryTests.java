@@ -15,9 +15,20 @@ import coremem.offheap.OffHeapMemory;
 
 import org.junit.Test;
 
+/**
+ * Fragmented memory tests
+ *
+ * @author royer
+ */
 public class FragmentedMemoryTests
 {
 
+  /**
+   * Tests read and write to file channel
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testWriteToReadFromFileChannel() throws IOException
   {
@@ -91,6 +102,12 @@ public class FragmentedMemoryTests
     lFileChannel2.close();
   }
 
+  /**
+   * Tests even split
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testSplitEven() throws IOException
   {
@@ -104,6 +121,12 @@ public class FragmentedMemoryTests
     assertEquals(2 * 5, lSplit.get(0).getSizeInBytes());
   }
 
+  /**
+   * Tests uneven split
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testSplitUneven() throws IOException
   {
@@ -119,6 +142,12 @@ public class FragmentedMemoryTests
     assertEquals(2 * (5 + 1), lSplit.get(2).getSizeInBytes());
   }
 
+  /**
+   * tests byte buffer
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testByteBuffers() throws IOException
   {
@@ -148,6 +177,12 @@ public class FragmentedMemoryTests
 
   }
 
+  /**
+   * tests consolidate fragmented memory to single off heap memory
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testConsolidate() throws IOException
   {
@@ -165,6 +200,7 @@ public class FragmentedMemoryTests
       lFragmentedMemory.add(lByteBuffer);
     }
 
+    @SuppressWarnings("unused")
     OffHeapMemory lMakeConsolidatedCopy =
                                         lFragmentedMemory.makeConsolidatedCopy();
 

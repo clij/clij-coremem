@@ -8,6 +8,11 @@ import coremem.recycling.RecyclableInterface;
 import coremem.recycling.RecyclerInterface;
 import coremem.rgc.FreeableBase;
 
+/**
+ * Example Recyclable used for testing.
+ *
+ * @author royer
+ */
 public class TestRecyclable extends FreeableBase implements
                             RecyclableInterface<TestRecyclable, TestRequest>
 {
@@ -18,9 +23,16 @@ public class TestRecyclable extends FreeableBase implements
   private RecyclerInterface<TestRecyclable, TestRequest> mRecycler;
   AtomicBoolean mReleased = new AtomicBoolean(false);
 
-  public TestRecyclable(TestRequest pParameters)
+  /**
+   * Instanciates a recyclable object with a given request
+   * 
+   * @param pRequest
+   *          request
+   * 
+   */
+  public TestRecyclable(TestRequest pRequest)
   {
-    recycle(pParameters);
+    recycle(pRequest);
   }
 
   @Override

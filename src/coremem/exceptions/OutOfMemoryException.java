@@ -10,14 +10,31 @@ public class OutOfMemoryException extends CoreMemException
 
   private static final long serialVersionUID = 1L;
 
-  public OutOfMemoryException(String pString)
+  /**
+   * Instanciates with error message and Throwable cause
+   * 
+   * @param pErrorMessage
+   *          error message
+   */
+  public OutOfMemoryException(String pErrorMessage)
   {
-    super(pString);
+    super(pErrorMessage);
   }
 
-  public OutOfMemoryException(String pErrorMessage, Throwable pE)
+  /**
+   * 
+   * Instanciates with error message and Throwable cause
+   * 
+   * @param pErrorMessage
+   *          error message
+   * @param pThrowable
+   *          cause
+   */
+  public OutOfMemoryException(String pErrorMessage,
+                              Throwable pThrowable)
+
   {
-    super(pErrorMessage, pE);
+    super(pErrorMessage, pThrowable);
   }
 
 }

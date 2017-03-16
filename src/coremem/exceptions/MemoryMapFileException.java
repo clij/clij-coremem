@@ -10,9 +10,18 @@ public class MemoryMapFileException extends MemoryMapException
 
   private static final long serialVersionUID = 1L;
 
-  public MemoryMapFileException(String lErrorMessage, Throwable pE)
+  /**
+   * Instanciates with error message and Throwable cause
+   * 
+   * @param pErrorMessage
+   *          error message
+   * @param pThrowable
+   *          cause
+   */
+  public MemoryMapFileException(String pErrorMessage,
+                                Throwable pThrowable)
   {
-    super(lErrorMessage, pE);
+    super(pErrorMessage, pThrowable);
   }
 
 }

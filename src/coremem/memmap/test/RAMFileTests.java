@@ -10,11 +10,22 @@ import coremem.test.ContiguousMemoryTestsHelper;
 
 import org.junit.Test;
 
+/**
+ * File mapped memory region tests
+ *
+ * @author royer
+ */
 public class RAMFileTests
 {
 
   private static final long cMemoryRegionSize = 1024;
 
+  /**
+   * Tests large memory maps
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testLargeMemory() throws IOException
   {
@@ -29,6 +40,12 @@ public class RAMFileTests
 
   }
 
+  /**
+   * Tests basics
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testBasics() throws IOException
   {
@@ -51,6 +68,12 @@ public class RAMFileTests
     return lCreateTempFile;
   }
 
+  /**
+   * tests same size copy
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testCopySameSize() throws IOException
   {
@@ -68,6 +91,10 @@ public class RAMFileTests
 
   }
 
+  /**
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testCopyDifferentSize() throws IOException
   {
@@ -80,10 +107,14 @@ public class RAMFileTests
                                                                                      1,
                                                                                      8);
 
-    ContiguousMemoryTestsHelper.testCopyDifferentSize(lContiguousMemoryInterface1,
-                                                      lContiguousMemoryInterface2);
+    ContiguousMemoryTestsHelper.testCopyRange(lContiguousMemoryInterface1,
+                                              lContiguousMemoryInterface2);
   }
 
+  /**
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testCopyChecks() throws IOException
   {
@@ -100,6 +131,10 @@ public class RAMFileTests
                                                lContiguousMemoryInterface2);
   }
 
+  /**
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testWriteRead() throws IOException
   {

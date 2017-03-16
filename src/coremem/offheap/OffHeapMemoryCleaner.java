@@ -26,9 +26,13 @@ public class OffHeapMemoryCleaner implements Cleaner
    * problematic memory region was allocated.
    * 
    * @param pAddress
+   *          address to free
    * @param pSignature
+   *          corresponding signature
    * @param pName
+   *          name of memory
    * @param pAllocationStackTrace
+   *          allocation stack trace at allocation point
    */
   public OffHeapMemoryCleaner(Long pAddress,
                               Long pSignature,
@@ -41,9 +45,6 @@ public class OffHeapMemoryCleaner implements Cleaner
     mAllocationStackTrace = pAllocationStackTrace;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.rgc.Cleaner#run()
-   */
   @Override
   public void run()
   {
@@ -101,12 +102,12 @@ public class OffHeapMemoryCleaner implements Cleaner
     }
   }
 
-  public void format(String format, Object... args)
+  private void format(String format, Object... args)
   {
     // System.out.format(format, args);
   }
 
-  public void formatWarning(String format, Object... args)
+  private void formatWarning(String format, Object... args)
   {
     // System.err.format(format, args);
   }

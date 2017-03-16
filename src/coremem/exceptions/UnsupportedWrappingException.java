@@ -10,15 +10,30 @@ public class UnsupportedWrappingException extends CoreMemException
 
   private static final long serialVersionUID = 1L;
 
-  public UnsupportedWrappingException(String pString)
+  /**
+   * Instanciates with an error message.
+   * 
+   * @param pErrorMessage
+   *          error message
+   */
+  public UnsupportedWrappingException(String pErrorMessage)
   {
-    super(pString);
+    super(pErrorMessage);
   }
 
+  /**
+   * Instanciates with error message and Throwable cause
+   * 
+   * @param pErrorMessage
+   *          error message
+   * @param pThrowable
+   *          cause
+   * 
+   */
   public UnsupportedWrappingException(String pErrorMessage,
-                                      Throwable pE)
+                                      Throwable pThrowable)
   {
-    super(pErrorMessage, pE);
+    super(pErrorMessage, pThrowable);
   }
 
 }

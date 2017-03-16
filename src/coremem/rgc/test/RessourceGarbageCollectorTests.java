@@ -9,14 +9,25 @@ import coremem.rgc.Cleanable;
 import coremem.rgc.Cleaner;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
-import coremem.rgc.RessourceGarbageCollector;
+import coremem.rgc.RessourceCleaner;
 
 import org.junit.Test;
 
+/**
+ * testing the ressource garbage collector
+ *
+ * @author royer
+ */
 public class RessourceGarbageCollectorTests
 {
   static AtomicInteger sCounter = new AtomicInteger(0);
 
+  /**
+   * Free ressource wth given Id
+   * 
+   * @param pResourceId
+   *          ressource id
+   */
   public static final void freeRessource(long pResourceId)
   {
     sCounter.incrementAndGet();
@@ -33,7 +44,7 @@ public class RessourceGarbageCollectorTests
 
     {
       ClassWithRessource lClassWithRessource = this;
-      RessourceGarbageCollector.register(lClassWithRessource);
+      RessourceCleaner.register(lClassWithRessource);
 
       // double[] lGarbage = new double[10000000];
       // lGarbage[12345] = 1;
@@ -77,14 +88,19 @@ public class RessourceGarbageCollectorTests
 
   }
 
+  /**
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
-  public void testRessourceCollection() throws InterruptedException
+  public void testRessourceCleaner() throws InterruptedException
   {
 
     for (int i = 0; i < 100; i++)
     {
+      @SuppressWarnings("unused")
       ClassWithRessource a = new ClassWithRessource();
-      RessourceGarbageCollector.collectNow();
+      RessourceCleaner.cleanNow();
       sleep(1);
     }
 
@@ -92,12 +108,12 @@ public class RessourceGarbageCollectorTests
     {
       sleep(1);
       System.gc();
-      RessourceGarbageCollector.collectNow();
+      RessourceCleaner.cleanNow();
       // System.out.println(i);
     }
 
     int lNumberOfRegisteredObjects =
-                                   RessourceGarbageCollector.getNumberOfRegisteredObjects();
+                                   RessourceCleaner.getNumberOfRegisteredObjects();
     assertEquals(0, lNumberOfRegisteredObjects);
     // System.out.println("lNumberOfRegisteredObjects=" +
     // lNumberOfRegisteredObjects);

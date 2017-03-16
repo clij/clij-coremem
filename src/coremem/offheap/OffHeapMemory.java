@@ -10,7 +10,7 @@ import coremem.exceptions.UnsupportedMemoryResizingException;
 import coremem.interfaces.Resizable;
 import coremem.interop.NIOBuffersInterop;
 import coremem.rgc.Cleaner;
-import coremem.rgc.RessourceGarbageCollector;
+import coremem.rgc.RessourceCleaner;
 import coremem.util.Size;
 
 import org.bridj.Pointer;
@@ -21,7 +21,6 @@ import org.bridj.Pointer;
  *
  * @author royer
  */
-@SuppressWarnings("unchecked")
 public class OffHeapMemory extends MemoryBase implements
                            Resizable,
                            ContiguousMemoryInterface
@@ -116,6 +115,7 @@ public class OffHeapMemory extends MemoryBase implements
    * byte array.
    * 
    * @param pBuffer
+   *          buffer to copy contents from
    * @return off-heap memory object
    */
   public static final OffHeapMemory copyFromArray(final byte[] pBuffer)
@@ -214,6 +214,7 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates off-heap memory that can hold a given number of bytes.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
    * @param pNumberOfBytes
    *          number of bytes
    * @return off-heap memory object
@@ -227,7 +228,10 @@ public class OffHeapMemory extends MemoryBase implements
   /**
    * Allocates off-heap memory that can hold a given number of chars.
    * 
+   * 
    * @param pName
+   *          name (can be used to track allocation origin)
+   * 
    * @param pNumberOfChars
    *          number of chars
    * @return off-heap memory object
@@ -242,6 +246,7 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates off-heap memory that can hold a given number of shorts.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
    * @param pNumberOfShorts
    *          number of shorts
    * @return off-heap memory object
@@ -256,6 +261,8 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates off-heap memory that can hold a given number of ints.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
+   * 
    * @param pNumberOfInts
    *          number of ints
    * @return off-heap memory object
@@ -270,6 +277,7 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates off-heap memory that can hold a given number of longs.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
    * @param pNumberOfLongs
    *          number of longs
    * @return off-heap memory object
@@ -284,6 +292,7 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates off-heap memory that can hold a given number of floats.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
    * @param pNumberOfFloats
    *          number of floats
    * @return off-heap memory object
@@ -298,6 +307,7 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates off-heap memory that can hold a given number of doubles.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
    * @param pNumberOfDoubles
    *          number of doubles
    * @return off-heap memory object
@@ -312,7 +322,9 @@ public class OffHeapMemory extends MemoryBase implements
    * Allocates page=aligned off-heap memory that can hold a given number of
    * bytes.
    * 
+   * 
    * @param pName
+   *          name (can be used to track allocation origin)
    * @param pNumberOfBytes
    *          number of bytes
    * @return off-heap memory object
@@ -329,6 +341,8 @@ public class OffHeapMemory extends MemoryBase implements
    * given alignment.
    * 
    * @param pName
+   *          name (can be used to track allocation origin)
+   * 
    * @param pNumberOfBytes
    *          number of bytes
    * @param pAlignment
@@ -427,7 +441,7 @@ public class OffHeapMemory extends MemoryBase implements
     mParent = pParent;
     mAllocationStackTrace = Thread.currentThread().getStackTrace();
     mSignature = OffHeapMemoryAccess.getSignature(getAddress());
-    RessourceGarbageCollector.register(this);
+    RessourceCleaner.register(this);
   }
 
   /* (non-Javadoc)

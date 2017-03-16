@@ -1,16 +1,15 @@
 package coremem.rgc;
 
+import coremem.exceptions.FreedException;
+
 /**
- *
+ * Base class for all freeable objects
  *
  * @author royer
  */
 public abstract class FreeableBase implements Freeable
 {
 
-  /* (non-Javadoc)
-   * @see coremem.rgc.Freeable#complainIfFreed()
-   */
   @Override
   public void complainIfFreed() throws FreedException
   {

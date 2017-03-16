@@ -11,6 +11,12 @@ public class InvalidNativeMemoryAccessException extends
 
   private static final long serialVersionUID = 1L;
 
+  /**
+   * Instanciates with error message and Throwable cause
+   * 
+   * @param pString
+   *          error message
+   */
   public InvalidNativeMemoryAccessException(String pString)
   {
     super(pString);

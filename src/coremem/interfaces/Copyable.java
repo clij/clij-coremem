@@ -14,6 +14,7 @@ public interface Copyable<M extends Copyable<M>>
    * Copies this memory object entirely into an other.
    * 
    * @param pTo
+   *          object to copy to
    */
   public void copyTo(M pTo);
 
@@ -21,6 +22,7 @@ public interface Copyable<M extends Copyable<M>>
    * Copies an other memory object entirely into this one.
    * 
    * @param pFrom
+   *          object to copy from
    */
   public void copyFrom(M pFrom);
 

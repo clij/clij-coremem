@@ -8,9 +8,17 @@ import coremem.buffers.ContiguousBuffer;
 
 import org.junit.Test;
 
+/**
+ * Contiguous buffer tests
+ *
+ * @author royer
+ */
 public class ContiguousBufferTests
 {
 
+  /**
+   * Tests
+   */
   @Test
   public void test()
   {

@@ -21,6 +21,7 @@ import org.bridj.Pointer;
  *
  * @author royer
  */
+@SuppressWarnings("javadoc")
 public class Size
 {
 
@@ -264,6 +265,12 @@ public class Size
     return -1;
   }
 
+  /**
+   * Returns the size in bytes of a NIO Buffer
+   * 
+   * @param pBuffer NIO buffer
+   * @return size in bytes
+   */
   public static long ofBuffer(final Buffer pBuffer)
   {
     final int lCapacity = pBuffer.capacity();

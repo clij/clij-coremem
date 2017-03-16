@@ -14,13 +14,14 @@ public class UnknownSizeOfException extends CoreMemException
   /**
    * Constructs with object for which the size cannot be determined.
    * 
-   * @param pObject
+   * @param pOffendingObject
+   *          offending object for which the size could not be determined
    */
-  public UnknownSizeOfException(Object pObject)
+  public UnknownSizeOfException(Object pOffendingObject)
   {
-    super("Unknown size-of for object:  " + pObject
+    super("Unknown size-of for object:  " + pOffendingObject
           + " of class: "
-          + pObject.getClass().toString());
+          + pOffendingObject.getClass().toString());
   }
 
 }

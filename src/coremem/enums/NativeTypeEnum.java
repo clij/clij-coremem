@@ -7,8 +7,10 @@ import coremem.interfaces.SizedInBytes;
  *
  * @author royer
  */
+@SuppressWarnings("javadoc")
 public enum NativeTypeEnum implements SizedInBytes
 {
+
  Byte(1),
  UnsignedByte(1),
  Short(2),

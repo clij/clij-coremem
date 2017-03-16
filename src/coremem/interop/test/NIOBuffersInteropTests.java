@@ -12,11 +12,19 @@ import coremem.interop.NIOBuffersInterop;
 
 import org.junit.Test;
 
+/**
+ * NIO buffers interop tests
+ *
+ * @author royer
+ */
 public class NIOBuffersInteropTests
 {
 
   private static final int cBufferLength = 32;
 
+  /**
+   * Tests byte buffers
+   */
   @Test
   public void testByteBuffer()
   {
@@ -41,6 +49,9 @@ public class NIOBuffersInteropTests
 
   }
 
+  /**
+   * Tests double buffer
+   */
   @Test
   public void testDoubleBuffer()
   {

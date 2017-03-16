@@ -12,9 +12,17 @@ import coremem.util.Size;
 import org.bridj.Pointer;
 import org.junit.Test;
 
+/**
+ * Size tests
+ *
+ * @author royer
+ */
 public class SizeTests
 {
 
+  /**
+   * Tests primitive types
+   */
   @Test
   public void testPrimitives()
   {
@@ -73,6 +81,9 @@ public class SizeTests
     }
   }
 
+  /**
+   * Tests native type enum
+   */
   @Test
   public void testNativeTypeEnum()
   {
@@ -88,6 +99,9 @@ public class SizeTests
     assertEquals(Size.DOUBLE, Size.of(NativeTypeEnum.Double));
   }
 
+  /**
+   * Tests strings
+   */
   @Test
   public void testStrings()
   {
@@ -95,6 +109,9 @@ public class SizeTests
     assertEquals(4 * Size.CHAR, Size.of("1234"));
   }
 
+  /**
+   * Tests NIO Buffers
+   */
   @Test
   public void testNIOBuffers()
   {
@@ -122,8 +139,11 @@ public class SizeTests
 
   }
 
+  /**
+   * Tests off heap memory
+   */
   @Test
-  public void testSizedInBytes()
+  public void testOffHeapMemory()
   {
     OffHeapMemory lOffHeapMemory = OffHeapMemory.allocateBytes(11);
     ContiguousMemoryInterface lContiguousMemoryInterface =
@@ -132,6 +152,9 @@ public class SizeTests
     assertEquals(11, Size.of(lContiguousMemoryInterface));
   }
 
+  /**
+   * Tests BridJ pointer
+   */
   @Test
   public void testBridJPointer()
   {

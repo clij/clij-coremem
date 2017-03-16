@@ -17,28 +17,29 @@ import coremem.offheap.OffHeapMemoryAccess;
  */
 public final class MemoryMappedFileUtils
 {
-
-  public static final long cPageSize = 4096;
-  public static final long cAllocationGranularity = 65536;
+  static final long cAllocationGranularity = 65536;
+  static final long cPageSize = 4096;
 
   private static final ByteBuffer cZeroBuffer =
                                               ByteBuffer.allocateDirect(1);
 
-  public static final MemoryMappedFileAccessMode ReadOnly =
-                                                          MemoryMappedFileAccessMode.ReadOnly;
-  public static final MemoryMappedFileAccessMode ReadWrite =
-                                                           MemoryMappedFileAccessMode.ReadWrite;
-  public static final MemoryMappedFileAccessMode Private =
-                                                         MemoryMappedFileAccessMode.Private;
-
   /**
+   * Maps a region of a file.
+   * 
    * @param pFileChannel
+   *          file channel
    * @param pAccessMode
+   *          access mode
    * @param pFilePosition
+   *          file position in bytes
    * @param pMappedRegionLength
+   *          mapped region length
    * @param pExtendIfNeeded
-   * @return
+   *          extend file length if needed (file not as long as request mapping
+   *          length).
+   * @return mapped address
    * @throws MemoryMapFileException
+   *           thrown if problem occurs while mapping.
    */
   public static final long map(FileChannel pFileChannel,
                                MemoryMappedFileAccessMode pAccessMode,
@@ -121,11 +122,17 @@ public final class MemoryMappedFileUtils
   }
 
   /**
+   * Unmaps memory mapped file.
+   * 
    * @param pFileChannel
+   *          file channel
    * @param pMemoryMapAddress
+   *          mapped address
    * @param pMappedRegionLength
-   * @return
+   *          mapped region length
+   * @return return code
    * @throws MemoryMapFileException
+   *           thrown if problem occurs while unmapping
    */
   public static final int unmap(FileChannel pFileChannel,
                                 final long pMemoryMapAddress,
@@ -190,9 +197,13 @@ public final class MemoryMappedFileUtils
   }/**/
 
   /**
+   * Returns the file size for a given file channel
+   * 
    * @param pFileChannel
-   * @return
+   *          file channel
+   * @return file size in bytes
    * @throws IOException
+   *           exception
    */
   public static final long filesize(FileChannel pFileChannel) throws IOException
   {
@@ -200,9 +211,14 @@ public final class MemoryMappedFileUtils
   }
 
   /**
+   * Truncates file for given file channel
+   * 
    * @param pFileChannel
+   *          file channel
    * @param pLength
+   *          truncation length
    * @throws IOException
+   *           thrown if problem while truncating file
    */
   public static final void truncate(FileChannel pFileChannel,
                                     final long pLength) throws IOException
@@ -227,8 +243,11 @@ public final class MemoryMappedFileUtils
   }
 
   /**
+   * Determines best access mode gigen standard open options.
+   * 
    * @param pStandardOpenOption
-   * @return
+   *          standard open options
+   * @return best access mode
    */
   public static MemoryMappedFileAccessMode bestMode(StandardOpenOption[] pStandardOpenOption)
   {

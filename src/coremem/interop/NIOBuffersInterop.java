@@ -15,15 +15,19 @@ import coremem.util.Size;
 import org.bridj.JNI;
 
 /**
- *
+ * NIO buffers interoperability
  *
  * @author royer
  */
+@SuppressWarnings("deprecation")
 public class NIOBuffersInterop
 {
   /**
+   * Returns a contiguous buffer from a NIO buffer
+   * 
    * @param pBuffer
-   * @return
+   *          NIO buffer
+   * @return contiguous memory
    */
   public static OffHeapMemory getContiguousMemoryFrom(Buffer pBuffer)
   {
@@ -74,9 +78,14 @@ public class NIOBuffersInterop
    * will necessarily lead to a segmentation fault.
    * 
    * @param pContiguousMemory
-   * @return
+   *          contiguous memory
+   * @param pPositionInBytes
+   *          position in bytes
+   * @param pLengthInBytes
+   *          length in bytes
+   * @return array of NIO byte buffers corresponding to given contiguous memory
+   *         region
    */
-  @SuppressWarnings("deprecation")
   public static ArrayList<ByteBuffer> getByteBuffersForContiguousMemory(ContiguousMemoryInterface pContiguousMemory,
                                                                         long pPositionInBytes,
                                                                         long pLengthInBytes)

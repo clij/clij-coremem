@@ -12,15 +12,29 @@ public class UnsupportedMemoryResizingException extends
 
   private static final long serialVersionUID = 1L;
 
-  public UnsupportedMemoryResizingException(String pString)
+  /**
+   * Instanciates with error message
+   * 
+   * @param pErrorMessage
+   *          error message
+   */
+  public UnsupportedMemoryResizingException(String pErrorMessage)
   {
-    super(pString);
+    super(pErrorMessage);
   }
 
+  /**
+   * Instanciates with error message and Throwable cause
+   * 
+   * @param pErrorMessage
+   *          error message
+   * @param pThrowable
+   *          cause
+   */
   public UnsupportedMemoryResizingException(String pErrorMessage,
-                                            Throwable pE)
+                                            Throwable pThrowable)
   {
-    super(pErrorMessage, pE);
+    super(pErrorMessage, pThrowable);
   }
 
 }

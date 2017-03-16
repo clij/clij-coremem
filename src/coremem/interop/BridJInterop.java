@@ -5,23 +5,30 @@ import org.bridj.Pointer.Releaser;
 import org.bridj.PointerIO;
 
 /**
- *
+ * BridJ buffers interoperability
  *
  * @author royer
  */
 public class BridJInterop
 {
   /**
+   * Gets Bridj pointer given a target class, native address, size in bytes, and
+   * releaser
+   * 
    * @param pTargetClass
+   *          target class
    * @param pAddress
+   *          address
    * @param pSizeInBytes
+   *          size in bytes
    * @param pReleaser
-   * @return
+   *          releaser
+   * @return BridJ pointer
    */
-  public static <T> Pointer<T> wrapWithBridJPointer(Class<T> pTargetClass,
-                                                    long pAddress,
-                                                    long pSizeInBytes,
-                                                    Releaser pReleaser)
+  public static <T> Pointer<T> getBridJPointer(Class<T> pTargetClass,
+                                               long pAddress,
+                                               long pSizeInBytes,
+                                               Releaser pReleaser)
   {
 
     PointerIO<T> lPointerIO = PointerIO.getInstance(pTargetClass);

@@ -279,10 +279,6 @@ public class FragmentedMemory extends FreeableBase
       lContiguousMemoryInterface.free();
   }
 
-  /* (non-Javadoc)
-   * @see coremem.rgc.Freeable#isFree()
-   */
-  @SuppressWarnings("null")
   @Override
   public boolean isFree()
   {

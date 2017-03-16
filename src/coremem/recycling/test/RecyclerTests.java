@@ -15,9 +15,17 @@ import coremem.recycling.RecyclerInterface;
 
 import org.junit.Test;
 
+/**
+ *
+ *
+ * @author royer
+ */
 public class RecyclerTests
 {
 
+  /**
+   * Basic tests
+   */
   @Test
   public void testBasics()
   {
@@ -153,6 +161,9 @@ public class RecyclerTests
     assertEquals(200, lRecycler.getNumberOfLiveObjects());
   }
 
+  /**
+   * Tests tight recycling
+   */
   @Test
   public void testTightRecycling()
   {
@@ -184,6 +195,9 @@ public class RecyclerTests
 
   }
 
+  /**
+   * tests tight recycling with changes in request parameters
+   */
   @Test
   public void testTightRecyclingWithRequestChanges()
   {
@@ -275,6 +289,12 @@ public class RecyclerTests
 
   }
 
+  /**
+   * Tests async recycling with requests changes
+   * 
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
   public void testAsynchronousRecyclingWithRequestChanges() throws InterruptedException
   {
@@ -383,10 +403,10 @@ public class RecyclerTests
     lProducerExecutor.shutdown();
     lProducerExecutor.awaitTermination(100, TimeUnit.SECONDS);
 
-    System.out.println("lRecycler.getNumberOfAvailableObjects()="
+    /*System.out.println("lRecycler.getNumberOfAvailableObjects()="
                        + lRecycler.getNumberOfAvailableObjects());
     System.out.println("lRecycler.getNumberOfLiveObjects()="
-                       + lRecycler.getNumberOfLiveObjects());
+                       + lRecycler.getNumberOfLiveObjects());/**/
 
     // assertEquals(0, lRecycler.getNumberOfAvailableObjects());
     assertEquals(0, lRecycler.getNumberOfLiveObjects());

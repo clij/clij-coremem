@@ -5,6 +5,7 @@ package coremem.interfaces;
  * to a generic destination.
  *
  * @param <M>
+ *          object type for copy target
  * @author royer
  */
 public interface RangeCopyable<M>

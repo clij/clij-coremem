@@ -11,10 +11,14 @@ public interface MappableMemory
   /**
    * Maps this memory object.
    * 
-   * @return
+   * @return mapping address
+   * 
    */
   public long map();
 
+  /**
+   * TODO: figue out what this is really about
+   */
   public void force();
 
   /**

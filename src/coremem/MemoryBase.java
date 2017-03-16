@@ -854,10 +854,10 @@ public abstract class MemoryBase extends FreeableBase implements
     };
 
     final Pointer<?> lPointerToAddress =
-                                       BridJInterop.wrapWithBridJPointer(pTargetClass,
-                                                                         getAddress(),
-                                                                         getSizeInBytes(),
-                                                                         lReleaser);
+                                       BridJInterop.getBridJPointer(pTargetClass,
+                                                                    getAddress(),
+                                                                    getSizeInBytes(),
+                                                                    lReleaser);
 
     return lPointerToAddress;
 

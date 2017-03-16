@@ -15,9 +15,17 @@ import coremem.test.ContiguousMemoryTestsHelper;
 
 import org.junit.Test;
 
+/**
+ * OffHeap memory tests
+ *
+ * @author royer
+ */
 public class OffHeapMemoryTests
 {
 
+  /**
+   * Tests basics
+   */
   @Test
   public void testBasics()
   {
@@ -31,8 +39,14 @@ public class OffHeapMemoryTests
 
   }
 
+  /**
+   * Tests resso
+   * 
+   * @throws InterruptedException
+   *           NA
+   */
   @Test
-  public void testRGC() throws InterruptedException
+  public void testRessourceCleaning() throws InterruptedException
   {
 
     for (int i = 0; i < 100; i++)
@@ -58,6 +72,9 @@ public class OffHeapMemoryTests
 
   }
 
+  /**
+   * Tests copy same size.
+   */
   @Test
   public void testCopySameSize()
   {
@@ -73,16 +90,22 @@ public class OffHeapMemoryTests
 
   }
 
+  /**
+   * Tests copy different size
+   */
   @Test
   public void testCopyDifferentSize()
   {
     final OffHeapMemory lOffHeapMemory1 = new OffHeapMemory(4);
     final OffHeapMemory lOffHeapMemory2 = new OffHeapMemory(8);
 
-    ContiguousMemoryTestsHelper.testCopyDifferentSize(lOffHeapMemory1,
-                                                      lOffHeapMemory2);
+    ContiguousMemoryTestsHelper.testCopyRange(lOffHeapMemory1,
+                                              lOffHeapMemory2);
   }
 
+  /**
+   * TEsts copy checks
+   */
   @Test
   public void testCopyChecks()
   {
@@ -93,6 +116,9 @@ public class OffHeapMemoryTests
                                                lOffHeapMemory2);
   }
 
+  /**
+   * Tests write read.
+   */
   @Test
   public void testWriteRead()
   {
@@ -101,6 +127,12 @@ public class OffHeapMemoryTests
     ContiguousMemoryTestsHelper.testWriteRead(lOffHeapMemory);
   }
 
+  /**
+   * tests write and read to from file channel
+   * 
+   * @throws IOException
+   *           NA
+   */
   @Test
   public void testWriteToReadFromFileChannel() throws IOException
   {

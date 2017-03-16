@@ -5,6 +5,7 @@ package coremem.enums;
  *
  * @author royer
  */
+@SuppressWarnings("javadoc")
 public enum MemoryType
 {
  CPURAMDIRECT,

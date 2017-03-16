@@ -30,11 +30,19 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
   private final Long mSignature;
 
   /**
+   * Instanciates a memory mapped file for a given file channel, access mode,
+   * file position, mapped region length, and 'extend-if-needed' flag.
+   * 
    * @param pFileChannel
+   *          file channel
    * @param pAccessMode
+   *          access mode
    * @param pFilePosition
+   *          file position
    * @param pMappedRegionLength
+   *          region length
    * @param pExtendIfNeeded
+   *          true -> extend if needed
    */
   public MemoryMappedFile(FileChannel pFileChannel,
                           MemoryMappedFileAccessMode pAccessMode,
@@ -70,7 +78,8 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
 
   /**
    * @param pFilePosition
-   * @return
+   *          file position
+   * @return address at file position
    */
   public long getAddressAtFilePosition(long pFilePosition)
   {
@@ -94,59 +103,6 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
     MemoryMappedFileUtils.unmap(mFileChannel,
                                 mMappingPointerAddress,
                                 mActualMappingRegionLength);
-
-  }
-
-  /**
-   *
-   *
-   * @author royer
-   */
-  static class MemoryMappedFileCleaner implements Cleaner
-  {
-    private final long mAddressToClean;
-    private final FileChannel mFileChannelToClean;
-    private final long mMappedRegionLength;
-    private final Long mCleanerSignature;
-
-    public MemoryMappedFileCleaner(FileChannel pFileChannel,
-                                   final long pMemoryMapAddress,
-                                   final long pMappedRegionLength,
-                                   final Long pSignature)
-    {
-      mFileChannelToClean = pFileChannel;
-      mAddressToClean = pMemoryMapAddress;
-      mMappedRegionLength = pMappedRegionLength;
-      mCleanerSignature = pSignature;
-    }
-
-    @Override
-    public void run()
-    {
-      if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean,
-                                                mCleanerSignature))
-      {
-        MemoryMappedFileUtils.unmap(mFileChannelToClean,
-                                    mAddressToClean,
-                                    mMappedRegionLength);
-        format("Successfully unmaped memory! channel=%s, address=%s, signature=%d \n",
-               mFileChannelToClean,
-               mAddressToClean,
-               mCleanerSignature);/**/
-      }
-      else
-      {
-        format("Attempted to unmap already unmapped memory, or memorywith wrong signature! channel=%s, address=%s, signature=%d \n",
-               mFileChannelToClean,
-               mAddressToClean,
-               mCleanerSignature);/**/
-      }
-    }
-
-    public void format(String format, Object... args)
-    {
-      System.out.format(format, args);
-    }
 
   }
 

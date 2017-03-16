@@ -6,8 +6,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
 import coremem.enums.MemoryType;
+import coremem.exceptions.FreedException;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
-import coremem.rgc.FreedException;
 
 import org.bridj.Pointer;
 
@@ -30,6 +30,8 @@ public class SafeContiguousMemory implements ContiguousMemoryInterface
    * Constructs a SafeContiguousMemory by wrapping a ContiguousMemoryInterface.
    * 
    * @param pContiguousMemoryInterface
+   *          contiguous memory to wrap
+   * 
    */
   public SafeContiguousMemory(ContiguousMemoryInterface pContiguousMemoryInterface)
   {

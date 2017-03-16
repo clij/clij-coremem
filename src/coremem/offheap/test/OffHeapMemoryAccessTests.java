@@ -10,11 +10,19 @@ import coremem.offheap.OffHeapMemoryAccess;
 
 import org.junit.Test;
 
+/**
+ * Off heap memory access tests
+ *
+ * @author royer
+ */
 public class OffHeapMemoryAccessTests
 {
   final private static long cBufferSize =
                                         2 * (long) Integer.MAX_VALUE;
 
+  /**
+   * tests max allocation
+   */
   @Test
   public void testMaxAllocation()
   {
@@ -56,6 +64,9 @@ public class OffHeapMemoryAccessTests
     }
   }
 
+  /**
+   * Tests reallocate and free
+   */
   @Test
   public void testAllocateReallocateFree()
   {
@@ -88,6 +99,9 @@ public class OffHeapMemoryAccessTests
 
   }
 
+  /**
+   * Tests super big allocation
+   */
   @Test
   public void testSuperBig()
   {

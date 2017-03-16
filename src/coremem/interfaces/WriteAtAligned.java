@@ -13,7 +13,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setByteAligned(final long pOffset, final byte pValue);
 
@@ -22,7 +23,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setCharAligned(final long pOffset, final char pValue);
 
@@ -31,7 +33,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setShortAligned(final long pOffset, final short pValue);
 
@@ -40,7 +43,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setIntAligned(final long pOffset, final int pValue);
 
@@ -49,7 +53,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setLongAligned(final long pOffset, final long pValue);
 
@@ -58,7 +63,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setFloatAligned(final long pOffset, final float pValue);
 
@@ -67,7 +73,8 @@ public interface WriteAtAligned extends MemoryTyped
    * 
    * @param pOffset
    *          offset
-   * @return value
+   * @param pValue
+   *          value to set
    */
   public void setDoubleAligned(final long pOffset,
                                final double pValue);

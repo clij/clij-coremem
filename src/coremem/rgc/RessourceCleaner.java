@@ -9,11 +9,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
+ * The ressource cleaner handles the release of ressources after the garbage
+ * collector has maked objects unreachable.
  *
- *
+ * 
  * @author royer
  */
-public class RessourceGarbageCollector
+public class RessourceCleaner
 {
 
   private static final Executor sExecutor =
@@ -22,25 +24,31 @@ public class RessourceGarbageCollector
   private static final ScheduledExecutorService sScheduledExecutor =
                                                                    Executors.newSingleThreadScheduledExecutor();
 
-  private static RessourceGarbageCollector sRessourceGarbageCollector;
+  private static RessourceCleaner sRessourceCleaner;
 
   static
   {
-    sRessourceGarbageCollector = new RessourceGarbageCollector();
-
-    sRessourceGarbageCollector.collectAtFixedRate(100,
-                                                  TimeUnit.MILLISECONDS);
+    sRessourceCleaner = new RessourceCleaner();
+    sRessourceCleaner.cleanAtFixedRate(100, TimeUnit.MILLISECONDS);
   }
 
   private static ConcurrentLinkedDeque<CleaningPhantomReference> sCleaningPhantomReferenceList =
                                                                                                new ConcurrentLinkedDeque<>();
 
+  /**
+   * Registers a cleanable object. When this object is eventually garbage
+   * collected, the ressources associated to this object will be released by
+   * executing the cleaner runnable.
+   * 
+   * @param pCleanable
+   *          cleanable object for which ressources have to be released.
+   */
   public static final void register(Cleanable pCleanable)
   {
     final CleaningPhantomReference lCleaningPhantomReference =
                                                              new CleaningPhantomReference(pCleanable,
                                                                                           pCleanable.getCleaner(),
-                                                                                          sRessourceGarbageCollector.getReferenceQueue());
+                                                                                          sRessourceCleaner.getReferenceQueue());
 
     sCleaningPhantomReferenceList.add(lCleaningPhantomReference);
   }
@@ -56,9 +64,9 @@ public class RessourceGarbageCollector
   private final AtomicBoolean mActive = new AtomicBoolean(true);
 
   /**
-   * 
+   * Does the cleaning
    */
-  private void collect()
+  private void clean()
   {
     if (mActive.get())
       do
@@ -76,17 +84,21 @@ public class RessourceGarbageCollector
   }
 
   /**
+   * Schedules the cleaning at a fixed rate.
+   * 
    * @param pPeriod
+   *          period
    * @param pUnit
+   *          unit for period
    */
-  public void collectAtFixedRate(long pPeriod, TimeUnit pUnit)
+  private void cleanAtFixedRate(long pPeriod, TimeUnit pUnit)
   {
     final Runnable lCollector = new Runnable()
     {
       @Override
       public void run()
       {
-        collect();
+        clean();
       }
     };
     sScheduledExecutor.scheduleAtFixedRate(lCollector,
@@ -96,26 +108,33 @@ public class RessourceGarbageCollector
   }
 
   /**
+   * Forces the immediate cleaning of ressources after thei corresponding
+   * objects are marked for garbage collection.
+   */
+  public static void cleanNow()
+  {
+    sRessourceCleaner.clean();
+  }
+
+  /**
+   * Prevents the cleaning of ressources for the duration of the execution of
+   * the provided runnable (executed synchronously by same thread as caller)
    * 
-   */
-  public static void collectNow()
-  {
-    sRessourceGarbageCollector.collect();
-  }
-
-  /**
    * @param pRunnable
+   *          runnable
    */
-  public static void preventCollection(Runnable pRunnable)
+  public static void preventCleaning(Runnable pRunnable)
   {
-    final boolean lActive = sRessourceGarbageCollector.mActive.get();
-    sRessourceGarbageCollector.mActive.set(false);
+    final boolean lActive = sRessourceCleaner.mActive.get();
+    sRessourceCleaner.mActive.set(false);
     pRunnable.run();
-    sRessourceGarbageCollector.mActive.compareAndSet(false, lActive);
+    sRessourceCleaner.mActive.compareAndSet(false, lActive);
   }
 
   /**
-   * @return
+   * Returns the number of registered objects
+   * 
+   * @return number of registered objects
    */
   public static int getNumberOfRegisteredObjects()
   {
