@@ -15,7 +15,7 @@ import org.junit.Test;
  *
  * @author royer
  */
-public class RAMFileTests
+public class FileMappedMemoryRegionTests
 {
 
   private static final long cMemoryRegionSize = 1024;
@@ -62,7 +62,7 @@ public class RAMFileTests
   private File createTempFile() throws IOException
   {
     File lCreateTempFile =
-                         File.createTempFile(RAMFileTests.class.toString(),
+                         File.createTempFile(FileMappedMemoryRegionTests.class.toString(),
                                              "" + Math.random());
     lCreateTempFile.deleteOnExit();
     return lCreateTempFile;
