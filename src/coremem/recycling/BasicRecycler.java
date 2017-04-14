@@ -261,6 +261,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
     else
     {
       // Create new recyclable if there are not too many live objects
+      // System.out.println("CREATE NEW RECYCLABLE");
       try
       {
         // If we are not allowed, then give up immediately if we don't have
@@ -400,7 +401,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
    */
   private R retrieveFromAvailableObjectsQueue() throws InterruptedException
   {
-    // System.out.println("retrieveFromAvailableObjectsQueue:");
+    // System.out.print("retrieveFromAvailableObjectsQueue: ");
     // System.out.println(mAvailableObjectsQueue);
 
     R lObject = mAvailableObjectsQueue.poll(mAvailableQueueWaitTime,
@@ -467,7 +468,8 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
   {
     long lMemorySizeInBytes = 0;
     for (R lRecyclable : mLiveObjectsQueue)
-      lMemorySizeInBytes += lRecyclable.getSizeInBytes();
+      if (!lRecyclable.isFree())
+        lMemorySizeInBytes += lRecyclable.getSizeInBytes();
     return lMemorySizeInBytes;
   }
 
@@ -476,7 +478,8 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
   {
     long lMemorySizeInBytes = 0;
     for (R lRecyclable : mAvailableObjectsQueue)
-      lMemorySizeInBytes += lRecyclable.getSizeInBytes();
+      if (!lRecyclable.isFree())
+        lMemorySizeInBytes += lRecyclable.getSizeInBytes();
     return lMemorySizeInBytes;
   }
 
