@@ -400,7 +400,7 @@ public class ContiguousBuffer implements SizedInBytes
    * @param pDouble
    *          value
    */
-  public void writeDouble(char pDouble)
+  public void writeDouble(double pDouble)
   {
     OffHeapMemoryAccess.setDouble(mPosition, pDouble);
     mPosition += 8;
