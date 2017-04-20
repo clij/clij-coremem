@@ -41,7 +41,7 @@ public class FragmentedMemory extends FreeableBase
    * @return fragmented memory
    */
   public static FragmentedMemory split(ContiguousMemoryInterface pContiguousMemoryInterface,
-                                       int pNumberOfFragments)
+                                       long pNumberOfFragments)
   {
     long lAddress = pContiguousMemoryInterface.getAddress();
     final long lSizeInBytes =
@@ -97,27 +97,18 @@ public class FragmentedMemory extends FreeableBase
     super();
   }
 
-  /* (non-Javadoc)
-   * @see coremem.fragmented.FragmentedMemoryInterface#get(int)
-   */
   @Override
   public ContiguousMemoryInterface get(int pIndex)
   {
     return mMemoryRegionList.get(pIndex);
   }
 
-  /* (non-Javadoc)
-   * @see coremem.fragmented.FragmentedMemoryInterface#getNumberOfFragments()
-   */
   @Override
   public int getNumberOfFragments()
   {
     return mMemoryRegionList.size();
   }
 
-  /* (non-Javadoc)
-   * @see coremem.fragmented.FragmentedMemoryInterface#add(coremem.ContiguousMemoryInterface)
-   */
   @Override
   public void add(ContiguousMemoryInterface pContiguousMemoryInterface)
   {
@@ -125,9 +116,6 @@ public class FragmentedMemory extends FreeableBase
     mTotalSizeInBytes += pContiguousMemoryInterface.getSizeInBytes();
   }
 
-  /* (non-Javadoc)
-   * @see coremem.fragmented.FragmentedMemoryInterface#remove(coremem.ContiguousMemoryInterface)
-   */
   @Override
   public void remove(ContiguousMemoryInterface pContiguousMemoryInterface)
   {
@@ -135,9 +123,6 @@ public class FragmentedMemory extends FreeableBase
     mTotalSizeInBytes -= pContiguousMemoryInterface.getSizeInBytes();
   }
 
-  /* (non-Javadoc)
-   * @see coremem.fragmented.FragmentedMemoryInterface#add(java.nio.Buffer)
-   */
   @Override
   public OffHeapMemory add(Buffer pBuffer)
   {
@@ -147,17 +132,20 @@ public class FragmentedMemory extends FreeableBase
     return lContiguousMemoryFromByteBuffer;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.fragmented.FragmentedMemoryInterface#makeConsolidatedCopy()
-   */
   @Override
   public OffHeapMemory makeConsolidatedCopy()
   {
     OffHeapMemory lOffHeapMemory =
                                  OffHeapMemory.allocateBytes(getSizeInBytes());
+    makeConsolidatedCopy(lOffHeapMemory);
+    return lOffHeapMemory;
+  }
 
+  @Override
+  public void makeConsolidatedCopy(ContiguousMemoryInterface pDestinationMemory)
+  {
     final ContiguousBuffer lContiguousBuffer =
-                                             ContiguousBuffer.wrap(lOffHeapMemory);
+                                             ContiguousBuffer.wrap(pDestinationMemory);
 
     int lNumberOfFragments = getNumberOfFragments();
 
@@ -167,12 +155,8 @@ public class FragmentedMemory extends FreeableBase
       lContiguousBuffer.writeContiguousMemory(lContiguousMemoryInterface);
     }
 
-    return lOffHeapMemory;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.interfaces.ReadWriteBytesFileChannel#writeBytesToFileChannel(java.nio.channels.FileChannel, long)
-   */
   @Override
   public long writeBytesToFileChannel(FileChannel pFileChannel,
                                       long pFilePositionInBytes) throws IOException
@@ -183,9 +167,6 @@ public class FragmentedMemory extends FreeableBase
                                    getSizeInBytes());
   }
 
-  /* (non-Javadoc)
-   * @see coremem.interfaces.ReadWriteBytesFileChannel#writeBytesToFileChannel(long, java.nio.channels.FileChannel, long, long)
-   */
   @Override
   public long writeBytesToFileChannel(long pBufferPositionInBytes,
                                       FileChannel pFileChannel,
@@ -214,9 +195,6 @@ public class FragmentedMemory extends FreeableBase
     return lCurrentFilePosition;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.interfaces.ReadWriteBytesFileChannel#readBytesFromFileChannel(java.nio.channels.FileChannel, long, long)
-   */
   @Override
   public long readBytesFromFileChannel(FileChannel pFileChannel,
                                        long pFilePositionInBytes,
@@ -228,9 +206,6 @@ public class FragmentedMemory extends FreeableBase
                                     getSizeInBytes());
   }
 
-  /* (non-Javadoc)
-   * @see coremem.interfaces.ReadWriteBytesFileChannel#readBytesFromFileChannel(long, java.nio.channels.FileChannel, long, long)
-   */
   @Override
   public long readBytesFromFileChannel(long pBufferPositionInBytes,
                                        FileChannel pFileChannel,
@@ -259,9 +234,6 @@ public class FragmentedMemory extends FreeableBase
 
   }
 
-  /* (non-Javadoc)
-   * @see coremem.interfaces.SizedInBytes#getSizeInBytes()
-   */
   @Override
   public long getSizeInBytes()
   {
@@ -269,9 +241,6 @@ public class FragmentedMemory extends FreeableBase
     return mTotalSizeInBytes;
   }
 
-  /* (non-Javadoc)
-   * @see coremem.rgc.Freeable#free()
-   */
   @Override
   public void free()
   {
@@ -299,9 +268,6 @@ public class FragmentedMemory extends FreeableBase
     return lIsFree;
   }
 
-  /* (non-Javadoc)
-   * @see java.lang.Iterable#iterator()
-   */
   @Override
   public Iterator<ContiguousMemoryInterface> iterator()
   {

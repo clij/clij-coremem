@@ -70,4 +70,13 @@ public interface FragmentedMemoryInterface extends
    */
   OffHeapMemory makeConsolidatedCopy();
 
+  /**
+   * Consolidates (copies) the contents of this fragmented memory into a given
+   * contiguous buffer.
+   * 
+   * @param pDestinationMemory
+   *          destination memory
+   */
+  void makeConsolidatedCopy(ContiguousMemoryInterface pDestinationMemory);
+
 }
