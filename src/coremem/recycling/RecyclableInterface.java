@@ -4,10 +4,10 @@ import coremem.interfaces.SizedInBytes;
 import coremem.rgc.Freeable;
 
 /**
- * Interface for all recyclable objects. A recyclable object lifecycle is
+ * Interface for all recyclable objects. A recyclable object life-cycle is
  * handled by the recycling machinery. Recyclable objects are expensive to
- * instanciate and/or garbage collect and thus are reused when possible to
- * reduce ressource ressure on the system.
+ * Instantiate and/or garbage collect and thus are reused when possible to
+ * reduce resource pressure on the system.
  *
  * @param <R>
  *          Recyclable type
@@ -22,7 +22,7 @@ public interface RecyclableInterface<R extends RecyclableInterface<R, P>, P exte
   /**
    * Returns true if this object is compatible with the given request.
    * Compatibility means that the object can be reused as well as an object
-   * newly instanciated with the given request.
+   * newly instantiated with the given request.
    * 
    * @param pRequest
    *          request
