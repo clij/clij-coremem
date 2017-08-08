@@ -5,11 +5,11 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
+import org.bridj.Pointer;
+
 import coremem.enums.MemoryType;
 import coremem.exceptions.FreedException;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
-
-import org.bridj.Pointer;
 
 /**
  * SafeContiguousMemory instances wrap instances of ContiguousMemoryInterface
@@ -25,6 +25,42 @@ public class SafeContiguousMemory implements ContiguousMemoryInterface
    * Wrapped ContiguousMemoryInterface instance.
    */
   private final ContiguousMemoryInterface mDelegatedContiguousMemoryInterface;
+
+  /**
+   * Wraps a contiguous memory with a safe facade that does additional access
+   * checks.
+   * 
+   * @param pContiguousMemory
+   *          contiguous memory to wrap.
+   * @return wrapped contiguous memory
+   */
+  public static final ContiguousMemoryInterface wrap(ContiguousMemoryInterface pContiguousMemory)
+  {
+    return wrap(pContiguousMemory, true);
+  }
+
+  /**
+   * Wraps a contiguous memory with a safe facade that does additional access
+   * checks - but only if the given flag is set to true.
+   * 
+   * @param pContiguousMemory
+   *          contiguous memory to wrap.
+   * @param pDoWrap
+   *          flag that determines if the wrapping occurs or not
+   * @return wrapped (or not wrapped) contiguous memory
+   */
+  public static final ContiguousMemoryInterface wrap(ContiguousMemoryInterface pContiguousMemory,
+                                                     boolean pDoWrap)
+  {
+    if (pDoWrap)
+    {
+      return new SafeContiguousMemory(pContiguousMemory);
+    }
+    else
+    {
+      return pContiguousMemory;
+    }
+  }
 
   /**
    * Constructs a SafeContiguousMemory by wrapping a ContiguousMemoryInterface.
