@@ -5,11 +5,11 @@ import java.nio.Buffer;
 import java.nio.ByteBuffer;
 import java.nio.channels.FileChannel;
 
-import org.bridj.Pointer;
-
 import coremem.enums.MemoryType;
 import coremem.exceptions.FreedException;
 import coremem.exceptions.InvalidNativeMemoryAccessException;
+
+import org.bridj.Pointer;
 
 /**
  * SafeContiguousMemory instances wrap instances of ContiguousMemoryInterface
