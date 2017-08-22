@@ -9,9 +9,9 @@ matrix:
     - os: osx
       osx_image: xcode8
  
-install: ./gradlew assemble -x findbugsMain -x findbugsTest -x spotlessJava --stacktrace
+install: ./gradlew assemble -x spotlessJava --stacktrace
 
-script: "./gradlew build -x findbugsMain -x findbugsTest -x spotlessJava"
+script: "./gradlew build -x spotlessJava"
 
 
 
