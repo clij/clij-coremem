@@ -17,6 +17,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  */
 public class RessourceCleaner
 {
+  private static int sMaxItemsToCleanPerRound = 100000;
+  private static int sCleanupPeriodInMs = 100;
 
   private static final Executor sExecutor =
                                           Executors.newSingleThreadExecutor();
@@ -29,7 +31,8 @@ public class RessourceCleaner
   static
   {
     sRessourceCleaner = new RessourceCleaner();
-    sRessourceCleaner.cleanAtFixedRate(100, TimeUnit.MILLISECONDS);
+    sRessourceCleaner.cleanAtFixedRate(sCleanupPeriodInMs,
+                                       TimeUnit.MILLISECONDS);
   }
 
   private static ConcurrentLinkedDeque<CleaningPhantomReference> sCleaningPhantomReferenceList =
@@ -69,7 +72,8 @@ public class RessourceCleaner
   private void clean()
   {
     if (mActive.get())
-      do
+    {
+      for (int i = 0; i < sMaxItemsToCleanPerRound; i++)
       {
         final CleaningPhantomReference lReference =
                                                   (CleaningPhantomReference) mReferenceQueue.poll();
@@ -80,7 +84,8 @@ public class RessourceCleaner
           sExecutor.execute(lCleaner);
         sCleaningPhantomReferenceList.remove(lReference);
       }
-      while (true);
+
+    }
   }
 
   /**

@@ -95,21 +95,30 @@ public class RessourceGarbageCollectorTests
   @Test
   public void testRessourceCleaner() throws InterruptedException
   {
+    int N = 100;
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < N; i++)
     {
       @SuppressWarnings("unused")
       ClassWithRessource a = new ClassWithRessource();
-      RessourceCleaner.cleanNow();
+      // RessourceCleaner.cleanNow();
       sleep(1);
+      /*System.out.println("registered: "
+                         + RessourceCleaner.getNumberOfRegisteredObjects());/**/
     }
 
-    for (int i = 0; i < 1000; i++)
+    for (int i =
+               0; i < 10000
+                  || RessourceCleaner.getNumberOfRegisteredObjects() != 0; i++)
     {
       sleep(1);
-      System.gc();
-      RessourceCleaner.cleanNow();
+      if (i % 100 == 0)
+        System.gc();
+
+      // RessourceCleaner.cleanNow();
       // System.out.println(i);
+      /*System.out.println("still registered: "
+                         + RessourceCleaner.getNumberOfRegisteredObjects());/**/
     }
 
     int lNumberOfRegisteredObjects =
@@ -119,7 +128,7 @@ public class RessourceGarbageCollectorTests
     // lNumberOfRegisteredObjects);
 
     // System.out.println(sCounter.get());
-    assertEquals(100, sCounter.get());
+    assertEquals(N, sCounter.get());
   }
 
   private void sleep(int pMilliseconds)
