@@ -65,6 +65,23 @@ CoreMem also supports:
 - Recycler pattern: mechanism for reusing ressource-heavy objects like 3D stacks that use off-heap memory).
 - Resource garbage collection API: design your own release-just-before-garbage-collection scheme -- inspired by how it is done in NIO.
 
+### Maven Dependency ###
+
+Artifact:
+```
+compile 'net.coremem:coremem:0.4.5'
+```
+
+Add the JCenter repository:
+```
+repositories {  
+   jcenter()  
+}
+```
+
+If you want to know what is the official latest release, check the contents of this file:
+
+[master file](https://github.com/ClearControl/master/blob/master/master.gradle)
 
 ### How to build project with Gradle
 
