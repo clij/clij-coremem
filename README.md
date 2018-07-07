@@ -83,11 +83,14 @@ If you want to know what is the official latest release, check the contents of t
 
 ### How to build project with Gradle
 
-* Get Gradle [here](http://www.gradle.org/)
+This project uses the gradle wrapper, which means that you don't need to setup gradle on your machine,
+it comes within this repo.
 
-* To build an Eclipse project, Go to the project folder root and run:
+To build and generate an eclipse project, just do:
 
-     gradle build cleanEclipse eclipse
+```
+./gradlew build cleanEclipse eclipse
+```
 
 ### Contributors ###
 
