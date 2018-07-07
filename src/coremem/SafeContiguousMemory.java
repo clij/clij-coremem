@@ -106,6 +106,12 @@ public class SafeContiguousMemory implements ContiguousMemoryInterface
   }
 
   @Override
+  public com.sun.jna.Pointer getJNAPointer()
+  {
+    return mDelegatedContiguousMemoryInterface.getJNAPointer();
+  }
+
+  @Override
   public ByteBuffer getByteBuffer()
   {
     return mDelegatedContiguousMemoryInterface.getByteBuffer();

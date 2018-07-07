@@ -1,5 +1,7 @@
 package coremem.interop;
 
+import coremem.MemoryBase;
+
 import org.bridj.Pointer;
 import org.bridj.Pointer.Releaser;
 import org.bridj.PointerIO;
@@ -42,4 +44,33 @@ public class BridJInterop
     return lPointerToAddress;
 
   }
+
+  @SuppressWarnings(
+  { "unchecked", "rawtypes" })
+  public static Pointer getBridJPointer(MemoryBase pMemoryBase,
+                                        Class pTargetClass)
+  {
+
+    final MemoryBase mThis = pMemoryBase;
+    final Releaser lReleaser = new Releaser()
+    {
+      @SuppressWarnings("unused")
+      volatile MemoryBase mMemoryBase = mThis;
+
+      @Override
+      public void release(Pointer<?> pP)
+      {
+        mMemoryBase = null;
+      }
+    };
+
+    final Pointer<?> lPointerToAddress =
+                                       BridJInterop.getBridJPointer(pTargetClass,
+                                                                    pMemoryBase.getAddress(),
+                                                                    pMemoryBase.getSizeInBytes(),
+                                                                    lReleaser);
+
+    return lPointerToAddress;
+  }
+
 }

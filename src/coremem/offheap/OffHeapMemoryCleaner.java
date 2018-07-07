@@ -51,7 +51,10 @@ public class OffHeapMemoryCleaner implements Cleaner
     try
     {
       if (mAddressToClean == null)
+      {
+        format("Cleaning memory: address is null! \n");/**/
         return;
+      }
       if (OffHeapMemoryAccess.isAllocatedMemory(mAddressToClean,
                                                 mSignature))
       {
@@ -93,6 +96,11 @@ public class OffHeapMemoryCleaner implements Cleaner
                       Arrays.toString(mAllocationStackTrace)
                             .replaceAll(", ", "\n"));/**/
 
+      }
+      else
+      {
+        format("Cleaning memory: not cleaning, unallocated memory or invalid signature."
+               + "\n");/**/
       }
     }
     catch (final Exception e)

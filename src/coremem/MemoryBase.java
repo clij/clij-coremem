@@ -15,6 +15,7 @@ import coremem.interfaces.PointerAccessible;
 import coremem.interfaces.RangeCopyable;
 import coremem.interfaces.SizedInBytes;
 import coremem.interop.BridJInterop;
+import coremem.interop.JNAInterop;
 import coremem.interop.NIOBuffersInterop;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
@@ -22,9 +23,6 @@ import coremem.rgc.Cleanable;
 import coremem.rgc.Freeable;
 import coremem.rgc.FreeableBase;
 import coremem.util.Size;
-
-import org.bridj.Pointer;
-import org.bridj.Pointer.Releaser;
 
 /**
  * This abstract base class offers basic functionality for off-heap memory
@@ -837,30 +835,22 @@ public abstract class MemoryBase extends FreeableBase implements
   @Override
   @SuppressWarnings(
   { "unchecked", "rawtypes" })
-  public Pointer getBridJPointer(Class pTargetClass)
+  public org.bridj.Pointer getBridJPointer(Class pTargetClass)
   {
     complainIfFreed();
-    final MemoryBase mThis = this;
-    final Releaser lReleaser = new Releaser()
-    {
-      @SuppressWarnings("unused")
-      volatile MemoryBase mMemoryBase = mThis;
+    return BridJInterop.getBridJPointer(this, pTargetClass);
+  }
 
-      @Override
-      public void release(Pointer<?> pP)
-      {
-        mMemoryBase = null;
-      }
-    };
-
-    final Pointer<?> lPointerToAddress =
-                                       BridJInterop.getBridJPointer(pTargetClass,
-                                                                    getAddress(),
-                                                                    getSizeInBytes(),
-                                                                    lReleaser);
-
-    return lPointerToAddress;
-
+  /**
+   * Rerturn a JNA pointer. Usefull when interacting with JNA based bindings.
+   * 
+   * @return off-heap memory object
+   */
+  @Override
+  public com.sun.jna.Pointer getJNAPointer()
+  {
+    complainIfFreed();
+    return JNAInterop.getJNAPointer(this);
   }
 
   @Override

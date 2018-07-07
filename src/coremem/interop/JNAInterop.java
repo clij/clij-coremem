@@ -2,6 +2,8 @@ package coremem.interop;
 
 import com.sun.jna.Pointer;
 
+import coremem.ContiguousMemoryInterface;
+
 /**
  * BridJ buffers interoperability
  *
@@ -17,10 +19,27 @@ public class JNAInterop
    *
    * @param pAddress
    *          address
-   * @return BridJ pointer
+   * @return JNA pointer
    */
-  public static Pointer getBridJPointer(long pAddress)
+  public static Pointer getJNAPointer(long pAddress)
   {
     return new Pointer(pAddress);
+  }
+
+  /**
+   * Returns a JNA Pointer
+   *
+   * Note: JNA memory have a BIG problem: the corresponding off-heap memory is
+   * not freed when garbage collected... are not freed when the It is a real
+   * problem.... So it is much better to allocate memory with CoreMem and then
+   * get a JNA pointer, instead of allocating on the JNA side...
+   *
+   * @param pContiguousMemory
+   *          contiguous memory object
+   * @return JNA pointer
+   */
+  public static Pointer getJNAPointer(ContiguousMemoryInterface pContiguousMemory)
+  {
+    return new Pointer(pContiguousMemory.getAddress());
   }
 }

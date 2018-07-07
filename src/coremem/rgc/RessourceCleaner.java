@@ -77,6 +77,8 @@ public class RessourceCleaner
       {
         final CleaningPhantomReference lReference =
                                                   (CleaningPhantomReference) mReferenceQueue.poll();
+
+        // if the queue is empty we get null...
         if (lReference == null)
           return;
         final Cleaner lCleaner = lReference.getCleaner();

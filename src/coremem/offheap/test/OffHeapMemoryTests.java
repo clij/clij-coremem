@@ -11,6 +11,7 @@ import java.nio.file.StandardOpenOption;
 import coremem.enums.MemoryType;
 import coremem.offheap.OffHeapMemory;
 import coremem.offheap.OffHeapMemoryAccess;
+import coremem.rgc.RessourceCleaner;
 import coremem.test.ContiguousMemoryTestsHelper;
 
 import org.junit.Test;
@@ -48,6 +49,10 @@ public class OffHeapMemoryTests
   @Test
   public void testRessourceCleaning() throws InterruptedException
   {
+    // Forces the loading of the Ressource Cleaner...
+    RessourceCleaner.cleanNow();
+
+    System.out.println(OffHeapMemoryAccess.getTotalAllocatedMemory());
 
     for (int i = 0; i < 100; i++)
     {
@@ -58,16 +63,23 @@ public class OffHeapMemoryTests
       System.gc();
       // System.out.println("A * OffHeapMemoryAccess.getTotalAllocatedMemory()="
       // + OffHeapMemoryAccess.getTotalAllocatedMemory());
+      Thread.sleep(1);
     }
 
-    for (int i = 0; i < 100; i++)
+    for (int i = 0; i < 1000; i++)
     {
       System.gc();
       // System.out.println("B * OffHeapMemoryAccess.getTotalAllocatedMemory()="
       // + OffHeapMemoryAccess.getTotalAllocatedMemory());
       Thread.sleep(1);
+      // System.out.println(OffHeapMemoryAccess.getTotalAllocatedMemory());
+
+      if (OffHeapMemoryAccess.getTotalAllocatedMemory() == 0
+          && OffHeapMemoryAccess.getTotalAllocatedMemory() == 0)
+        break;
     }
 
+    assertEquals(0, RessourceCleaner.getNumberOfRegisteredObjects());
     assertEquals(0, OffHeapMemoryAccess.getTotalAllocatedMemory());
 
   }

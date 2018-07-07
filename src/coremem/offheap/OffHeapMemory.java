@@ -1,7 +1,5 @@
 package coremem.offheap;
 
-import java.nio.Buffer;
-
 import coremem.ContiguousMemoryInterface;
 import coremem.MemoryBase;
 import coremem.enums.MemoryType;
@@ -13,11 +11,8 @@ import coremem.rgc.Cleaner;
 import coremem.rgc.RessourceCleaner;
 import coremem.util.Size;
 
-import org.bridj.Pointer;
-
 /**
  * Instances of this class represent contguous regions of off-heap memory.
- * 
  *
  * @author royer
  */
@@ -38,7 +33,7 @@ public class OffHeapMemory extends MemoryBase implements
    * to wrap a non-coremem memory region. A parent can be given, to prevent its
    * garbage collection and the possible release of the underlying memory
    * resource.
-   * 
+   *
    * @param pParent
    *          parent reference to prevent the parent's garbage collection.
    * @param pAddress
@@ -52,14 +47,16 @@ public class OffHeapMemory extends MemoryBase implements
                                                 final long pLengthInBytes)
   {
     return wrapPointer("WRAPNULL", pParent, pAddress, pLengthInBytes);
-  };
+  }
+
+  ;
 
   /**
    * Wraps a 'raw' pointer i.e. a long pointer value and a length. This is used
    * to wrap a non-coremem memory region. A parent can be given, to prevent its
    * garbage collection and the possible release of the underlying memory
    * resource.
-   * 
+   *
    * @param pName
    *          memory region name
    * @param pParent
@@ -79,18 +76,61 @@ public class OffHeapMemory extends MemoryBase implements
                              pParent,
                              pAddress,
                              pLengthInBytes);
-  };
+  }
+
+  ;
+
+  /**
+   * Wraps a JNA pointer.
+   *
+   * @param pJNAPointer
+   *          JNA pointer
+   * @return off-heap memory object
+   */
+  public static OffHeapMemory wrapPointer(com.sun.jna.Pointer pJNAPointer,
+                                          long pTargetSizeInBytes)
+  {
+    long lAddress = com.sun.jna.Pointer.nativeValue(pJNAPointer);
+    return wrapPointer(pJNAPointer.toString(),
+                       pJNAPointer,
+                       lAddress,
+                       pTargetSizeInBytes);
+  }
+
+  /**
+   * In an ideal world, this would wraps a JNA memory or pointer. But, because
+   * of a fatal design flaw in JNA: no automatic freeing on garbage collection.
+   * They do use 'finalise' horror! this is highly discouraged and a mostly
+   * deprecated feature of the JVM, it kills GC performance, why are they doing
+   * this?
+   * <p>
+   * This static method here is meant to be educative and a deterrent to this
+   * pattern. It should not be used, cannot be used and is not functional
+   * anyway. You should always use CoreMem to allocate memory, because CoreMem
+   * does the right thing by freeing memory upon garbage collection. If you need
+   * a JNA memory, allocate a OffHeapMemory and pass a JNA pointer with
+   * getJNAPointer(). If you don't use this pattern, then you have to free the
+   *
+   * @param pJNAMemory
+   *          JNA memory
+   * @return off-heap memory object
+   */
+  @Deprecated
+  public static OffHeapMemory wrapPointer(com.sun.jna.Memory pJNAMemory)
+  {
+    throw new UnsupportedOperationException();
+  }
 
   /**
    * Wraps a bridj pointer.
-   * 
+   *
    * @param pBridJPointer
    *          BridJ pointer
    * @return off-heap memory object
    */
-  public static OffHeapMemory wrapPointer(Pointer<Byte> pBridJPointer)
+  public static OffHeapMemory wrapPointer(org.bridj.Pointer<Byte> pBridJPointer)
   {
-    long lAddress = Pointer.getPeer(pBridJPointer);
+    long lAddress = org.bridj.Pointer.getPeer(pBridJPointer);
     long lTargetSizeInBytes = pBridJPointer.getTargetSize();
     return wrapPointer(pBridJPointer.toString(),
                        pBridJPointer,
@@ -100,20 +140,22 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Wraps a NIO buffer.
-   * 
+   *
    * @param pBuffer
    *          NIO buffer
    * @return off-heap memory object
    */
-  public static final OffHeapMemory wrapBuffer(final Buffer pBuffer)
+  public static final OffHeapMemory wrapBuffer(final java.nio.Buffer pBuffer)
   {
     return NIOBuffersInterop.getContiguousMemoryFrom(pBuffer);
-  };
+  }
+
+  ;
 
   /**
    * Creates a off-heap memory object initialized by copying the contents of a
    * byte array.
-   * 
+   *
    * @param pBuffer
    *          buffer to copy contents from
    * @return off-heap memory object
@@ -124,11 +166,13 @@ public class OffHeapMemory extends MemoryBase implements
                                  OffHeapMemory.allocateBytes(pBuffer.length);
     lOffHeapMemory.copyFrom(pBuffer);
     return lOffHeapMemory;
-  };
+  }
+
+  ;
 
   /**
    * Allocates off-heap memory that can hold a given number of bytes.
-   * 
+   *
    * @param pNumberOfBytes
    *          number of bytes
    * @return off-heap memory object
@@ -140,7 +184,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of chars.
-   * 
+   *
    * @param pNumberOfChars
    *          number of chars
    * @return off-heap memory object
@@ -152,7 +196,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of shorts.
-   * 
+   *
    * @param pNumberOfShorts
    *          number of shorts
    * @return off-heap memory object
@@ -164,7 +208,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of ints.
-   * 
+   *
    * @param pNumberOfInts
    *          number of ints
    * @return off-heap memory object
@@ -176,7 +220,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of longs.
-   * 
+   *
    * @param pNumberOfLongs
    *          number of longs
    * @return off-heap memory object
@@ -188,7 +232,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of floats.
-   * 
+   *
    * @param pNumberOfFloats
    *          number of floats
    * @return off-heap memory object
@@ -200,7 +244,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of doubles.
-   * 
+   *
    * @param pNumberOfDoubles
    *          number of doubles
    * @return off-heap memory object
@@ -212,7 +256,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of bytes.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
    * @param pNumberOfBytes
@@ -227,11 +271,9 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of chars.
-   * 
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
-   * 
    * @param pNumberOfChars
    *          number of chars
    * @return off-heap memory object
@@ -244,7 +286,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of shorts.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
    * @param pNumberOfShorts
@@ -259,10 +301,9 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of ints.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
-   * 
    * @param pNumberOfInts
    *          number of ints
    * @return off-heap memory object
@@ -275,7 +316,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of longs.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
    * @param pNumberOfLongs
@@ -290,7 +331,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of floats.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
    * @param pNumberOfFloats
@@ -305,7 +346,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates off-heap memory that can hold a given number of doubles.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
    * @param pNumberOfDoubles
@@ -321,8 +362,7 @@ public class OffHeapMemory extends MemoryBase implements
   /**
    * Allocates page=aligned off-heap memory that can hold a given number of
    * bytes.
-   * 
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
    * @param pNumberOfBytes
@@ -339,10 +379,9 @@ public class OffHeapMemory extends MemoryBase implements
   /**
    * Allocates off-heap memory that can hold a given number of bytes, with a
    * given alignment.
-   * 
+   *
    * @param pName
    *          name (can be used to track allocation origin)
-   * 
    * @param pNumberOfBytes
    *          number of bytes
    * @param pAlignment
@@ -375,7 +414,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates an off-heap memory region of given length in bytes.
-   * 
+   *
    * @param pLengthInBytes
    *          length in bytes
    */
@@ -386,7 +425,7 @@ public class OffHeapMemory extends MemoryBase implements
 
   /**
    * Allocates an off-heap memory region of given name and length in bytes.
-   * 
+   *
    * @param pName
    *          name
    * @param pLengthInBytes
@@ -403,7 +442,7 @@ public class OffHeapMemory extends MemoryBase implements
   /**
    * Warps an off-heap memory region of given parent, address, and length in
    * bytes.
-   * 
+   *
    * @param pParent
    *          parent
    * @param pAddress
@@ -421,7 +460,7 @@ public class OffHeapMemory extends MemoryBase implements
   /**
    * Warps an off-heap memory region of given name, parent, address, and length
    * in bytes.
-   * 
+   *
    * @param pName
    *          name
    * @param pParent
@@ -441,7 +480,9 @@ public class OffHeapMemory extends MemoryBase implements
     mParent = pParent;
     mAllocationStackTrace = Thread.currentThread().getStackTrace();
     mSignature = OffHeapMemoryAccess.getSignature(getAddress());
-    RessourceCleaner.register(this);
+
+    if (mParent == null)
+      RessourceCleaner.register(this);
   }
 
   /* (non-Javadoc)
