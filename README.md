@@ -79,9 +79,7 @@ repositories {
 }
 ```
 
-If you want to know what is the official latest release, check the contents of this file:
-
-[master file](https://github.com/ClearControl/master/blob/master/master.gradle)
+If you want to know what is the official latest release, check the contents of this [file](https://github.com/ClearControl/master/blob/master/master.gradle).
 
 ### How to build project with Gradle
 
