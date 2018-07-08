@@ -19,8 +19,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'idea'
 apply plugin: 'com.diffplug.gradle.spotless'
 //apply plugin: 'findbugs'
-apply from: 'http://raw.githubusercontent.com/ClearControl/master/master/master.gradle'
-		//'http://github.com/ClearControl/master/blob/master/master.gradle?raw=true'  //'master.gradle'
+apply from: 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
 
 
 //***********************************************************************************
@@ -135,7 +134,6 @@ ext {
 }
 
 apply from: 'https://raw.githubusercontent.com/ClearControl/master/master/bintrayUpload.gradle'
-
 
 //***********************************************************************************
 // GIT HOOKS:
