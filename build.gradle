@@ -1,24 +1,17 @@
-buildscript {
-  repositories {
-    mavenCentral()
-  }
-}
-
 plugins {
 	id "com.jfrog.bintray" version "1.8.3"
-	id "us.kirchmeier.capsule" version "1.0.2"
 	id "com.diffplug.gradle.spotless" version "3.1.0"
+	id "de.undercouch.download" version "3.4.3"
 }
-
-
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 apply plugin: 'idea'
-apply plugin: 'com.diffplug.gradle.spotless'
-//apply plugin: 'findbugs'
+
+
+// Master gradle file:
 apply from: 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
 
 
@@ -32,23 +25,25 @@ sourceSets
 		java
 		{ srcDir 'src' }
 		resources
-		{  srcDir 'src' }
+		{ srcDir 'src' }
 	}
 	test
 	{
 		java
 		{ srcDir 'src' }
 		resources
-		{  srcDir 'src' }
+		{ srcDir 'src' }
 	}
 }
 
 sourceCompatibility = 1.8
+targetCompatibility = 1.8
 
 compileJava {
-    options.compilerArgs << '-XDignore.symbol.file'
+    options.compilerArgs << '-XDignore.symbol.file -Xlint:-deprecation'
     options.fork = true // may not needed on 1.8
     options.forkOptions.executable = 'javac' // may not needed on 1.8
+    options.deprecation = false
 }
 
 test
@@ -106,7 +101,7 @@ if (JavaVersion.current().isJava8Compatible()) {
 //***********************************************************************************
 // PUBLISHING
 
-group = 'net.coremem'
+group   = project.ext.groupname
 version = project.ext.versionsMap[project.name]
 
 artifacts
@@ -124,48 +119,6 @@ publishing {
 	}
 }
 
-//***********************************************************************************
-// BINTRAY UPLOAD:
-
-ext {
-	bintray_repo = 'ClearControl'
-	bintray_userorg = 'clearcontrol'
-	bintray_packagename = 'CoreMem'
-}
-
-apply from: 'https://raw.githubusercontent.com/ClearControl/master/master/bintrayUpload.gradle'
-
-//***********************************************************************************
-// GIT HOOKS:
-
-apply from: 'gradle/install-git-hooks.gradle'
-
-
-//***********************************************************************************
-// SPOTLESS:
-
-spotless {
-    java {
-        //licenseHeader '/* Licensed under Apache-2.0 */' // License header
- 
-        importOrder(['java', 'javax', 'com', 'org'])
-
-        removeUnusedImports() // removes any unused imports
-
-        eclipseFormatFile 'codeformat.eclipse.xml'  
-    }
-}
-
-
-//***********************************************************************************
-// FINDBUGS:
-
-//tasks.withType(FindBugs) {
-//    reports {
-//        xml.enabled false
-//        html.enabled true
-//    }
-//}
 
 
 

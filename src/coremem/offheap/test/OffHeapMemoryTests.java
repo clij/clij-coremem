@@ -52,9 +52,11 @@ public class OffHeapMemoryTests
     // Forces the loading of the Ressource Cleaner...
     RessourceCleaner.cleanNow();
 
-    final long lTotalAllocatedMemory =
+    final long lInitialNumberOfRegisteredObjects = RessourceCleaner.getNumberOfRegisteredObjects();
+
+    final long lInitialAllocatedMemory =
                                      OffHeapMemoryAccess.getTotalAllocatedMemory();
-    System.out.println(lTotalAllocatedMemory);
+    //System.out.println(lInitialAllocatedMemory);
 
     for (int i = 0; i < 100; i++)
     {
@@ -81,9 +83,8 @@ public class OffHeapMemoryTests
         break;
     }
 
-    assertEquals(0, RessourceCleaner.getNumberOfRegisteredObjects());
-    assertEquals(lTotalAllocatedMemory,
-                 OffHeapMemoryAccess.getTotalAllocatedMemory());
+    assertTrue(RessourceCleaner.getNumberOfRegisteredObjects() <= lInitialNumberOfRegisteredObjects);
+    assertTrue(OffHeapMemoryAccess.getTotalAllocatedMemory() <= lInitialAllocatedMemory);
 
   }
 

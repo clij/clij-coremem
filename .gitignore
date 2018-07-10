@@ -5,3 +5,4 @@ build
 .project
 /bin/
 CoreMem.iml
+out
