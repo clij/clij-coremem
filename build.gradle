@@ -6,9 +6,10 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'eclipse'
+apply plugin: 'idea'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
-apply plugin: 'idea'
+
 
 
 // Master gradle file:
@@ -23,16 +24,16 @@ sourceSets
 	main
 	{
 		java
-		{ srcDir 'src' }
+		{ srcDir 'src/main/java' }
 		resources
-		{ srcDir 'src' }
+		{ srcDir 'src/main/java' }
 	}
 	test
 	{
 		java
-		{ srcDir 'src' }
+		{ srcDir 'src/test/java' }
 		resources
-		{ srcDir 'src' }
+		{ srcDir 'src/test/java' }
 	}
 }
 
