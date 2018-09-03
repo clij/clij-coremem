@@ -105,6 +105,7 @@ if (JavaVersion.current().isJava8Compatible()) {
 group   = project.ext.groupname
 version = project.ext.versionsMap[project.name]
 
+
 artifacts
 {
 	archives sourcesJar
