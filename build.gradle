@@ -11,9 +11,24 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 
+project.ext.masterfile = (new File(projectDir,'/gradle/master.gradle')).getAbsolutePath()
 
-// Master gradle file:
-apply from: 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
+// Attempts to download master gradle file
+try {
+    download {
+    src 'https://github.com/ClearControl/master/blob/master/master.gradle?raw=true'
+    dest project.ext.masterfile
+    overwrite false
+    onlyIfModified true
+    tempAndMove true
+    }
+}
+catch (Throwable e)
+{
+}
+
+apply from: project.ext.masterfile
+
 
 
 //***********************************************************************************

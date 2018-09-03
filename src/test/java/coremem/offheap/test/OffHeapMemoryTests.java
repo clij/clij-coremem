@@ -52,11 +52,12 @@ public class OffHeapMemoryTests
     // Forces the loading of the Ressource Cleaner...
     RessourceCleaner.cleanNow();
 
-    final long lInitialNumberOfRegisteredObjects = RessourceCleaner.getNumberOfRegisteredObjects();
+    final long lInitialNumberOfRegisteredObjects =
+                                                 RessourceCleaner.getNumberOfRegisteredObjects();
 
     final long lInitialAllocatedMemory =
-                                     OffHeapMemoryAccess.getTotalAllocatedMemory();
-    //System.out.println(lInitialAllocatedMemory);
+                                       OffHeapMemoryAccess.getTotalAllocatedMemory();
+    // System.out.println(lInitialAllocatedMemory);
 
     for (int i = 0; i < 100; i++)
     {
