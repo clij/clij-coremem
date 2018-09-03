@@ -59,6 +59,11 @@ test
 	maxHeapSize = "4G"
 }
 
+// This excludes the whole damn android dx thingy that is really not needed...
+configurations.all {
+	exclude group:"com.google.android.tools", module: "dx"
+}
+
 dependencies
 {
 	// BridJ:
