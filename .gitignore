@@ -12,3 +12,5 @@ gradle/codeformat.eclipse.xml
 gradle/installGitHooks
 gradle/master.gradle
 gradle/spotless.gradle
+/.idea/
+*.iml

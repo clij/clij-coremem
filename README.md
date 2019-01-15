@@ -95,3 +95,4 @@ To build and generate an eclipse project, just do:
 ### Contributors ###
 
 * Loic Royer (loic.royer -at- czbiohub -point- org)
+* Robert Haase (robert.haase -at- mpi-cbg.de)
