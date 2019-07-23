@@ -8,13 +8,13 @@
 	<parent>
 		<groupId>net.haesleinhuepf</groupId>
 		<artifactId>clij-parent-pom</artifactId>
-		<version>0.7.0</version>
+		<version>1.0.9-BETA</version>
 		<relativePath />
 	</parent>
 
 	<groupId>net.clearcontrol</groupId>
 	<artifactId>clij-coremem</artifactId>
-	<version>0.5.0</version>
+	<version>0.5.1</version>
 
 	<name>clij-coremem</name>
 	<description>clij-coremem</description>

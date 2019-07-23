@@ -109,6 +109,8 @@ public class RessourceCleaner
       @Override
       public void run()
       {
+        System.out.println("Set deamon");
+        Thread.currentThread().setDaemon(true);
         clean();
       }
     };
