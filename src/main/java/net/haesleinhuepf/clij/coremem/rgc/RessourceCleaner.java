@@ -104,18 +104,20 @@ public class RessourceCleaner
    */
   private void cleanAtFixedRate(long pPeriod, TimeUnit pUnit)
   {
-    final Runnable lCollector = new Runnable()
-    {
-      @Override
-      public void run()
-      {
-        clean();
-      }
-    };
-    sScheduledExecutor.scheduleAtFixedRate(lCollector,
-                                           0,
-                                           pPeriod,
-                                           pUnit);
+//    final Runnable lCollector = new Runnable()
+//    {
+//      @Override
+//      public void run()
+//      {
+//        System.out.println("Set deamon");
+//        Thread.currentThread().setDaemon(true);
+//        clean();
+//      }
+//    };
+//    sScheduledExecutor.scheduleAtFixedRate(lCollector,
+//                                           0,
+//                                           pPeriod,
+//                                           pUnit);
   }
 
   /**
