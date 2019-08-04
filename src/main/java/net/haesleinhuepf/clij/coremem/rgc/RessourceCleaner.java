@@ -102,6 +102,7 @@ public class RessourceCleaner
    */
   private void cleanAtFixedRate(long pPeriod, TimeUnit pUnit)
   {
+    /*
     final Runnable lCollector = new Runnable()
     {
       @Override
@@ -126,6 +127,7 @@ public class RessourceCleaner
     lThread.setDaemon(true);
     lThread.setPriority(Thread.MIN_PRIORITY);
     lThread.start();
+    */
   }
 
   /**

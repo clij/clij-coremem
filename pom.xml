@@ -14,7 +14,7 @@
 
 	<groupId>net.clearcontrol</groupId>
 	<artifactId>clij-coremem</artifactId>
-	<version>0.5.4</version>
+	<version>0.5.4-nothread</version>
 
 	<name>clij-coremem</name>
 	<description>clij-coremem</description>
