@@ -27,8 +27,6 @@ public class RessourceCleaner
   private static final Executor sExecutor =
                                           Executors.newSingleThreadExecutor();
 
-  private static final ScheduledExecutorService sScheduledExecutor =
-                                                                   Executors.newSingleThreadScheduledExecutor();
 
   private static RessourceCleaner sRessourceCleaner;
 
@@ -104,20 +102,30 @@ public class RessourceCleaner
    */
   private void cleanAtFixedRate(long pPeriod, TimeUnit pUnit)
   {
-//    final Runnable lCollector = new Runnable()
-//    {
-//      @Override
-//      public void run()
-//      {
-//        System.out.println("Set deamon");
-//        Thread.currentThread().setDaemon(true);
-//        clean();
-//      }
-//    };
-//    sScheduledExecutor.scheduleAtFixedRate(lCollector,
-//                                           0,
-//                                           pPeriod,
-//                                           pUnit);
+    final Runnable lCollector = new Runnable()
+    {
+      @Override
+      public void run()
+      {
+        final long lPeriodInMillis = pUnit.toMillis(pPeriod);
+        while(true)
+        {
+          clean();
+          try
+          {
+            Thread.sleep(lPeriodInMillis);
+          }
+          catch (InterruptedException pE)
+          {
+          }
+        }
+      }
+    };
+
+    Thread lThread = new Thread(lCollector, "RGC_Thread");
+    lThread.setDaemon(true);
+    lThread.setPriority(Thread.MIN_PRIORITY);
+    lThread.start();
   }
 
   /**
