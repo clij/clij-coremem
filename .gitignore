@@ -14,3 +14,4 @@ gradle/master.gradle
 gradle/spotless.gradle
 /.idea/
 *.iml
+/target/
