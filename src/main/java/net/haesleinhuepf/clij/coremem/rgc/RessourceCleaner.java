@@ -52,6 +52,14 @@ public class RessourceCleaner
       return;
     }
 
+    // workaround: CLIJ takes care of cleaning them itself
+    if (pCleanable.getClass().getSimpleName().compareTo("ClearCLBuffer") ==0 ||
+        pCleanable.getClass().getSimpleName().compareTo("ClearCLImage") ==0 ||
+        pCleanable.getClass().getSimpleName().compareTo("ClearCLKernel") == 0
+    ) {
+      return;
+    }
+
     String key =  pCleanable.getClass().getName();
     if (inOutTracker.containsKey(key)) {
       inOutTracker.get(key)[0]++;
