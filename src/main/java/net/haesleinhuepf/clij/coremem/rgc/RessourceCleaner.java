@@ -1,14 +1,9 @@
 package net.haesleinhuepf.clij.coremem.rgc;
 
-import net.haesleinhuepf.clij.coremem.rgc.Cleanable;
-import net.haesleinhuepf.clij.coremem.rgc.Cleaner;
-import net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference;
-
 import java.lang.ref.ReferenceQueue;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -92,6 +87,8 @@ public class RessourceCleaner
     }
   }
 
+  private CleaningThread mCleaningThread = null;
+
   /**
    * Schedules the cleaning at a fixed rate.
    * 
@@ -102,32 +99,69 @@ public class RessourceCleaner
    */
   private void cleanAtFixedRate(long pPeriod, TimeUnit pUnit)
   {
-    /*
-    final Runnable lCollector = new Runnable()
-    {
+    if (mCleaningThread != null) {
+      return;
+    }
+    mCleaningThread = new CleaningThread(pPeriod, pUnit);
+    mCleaningThread.setDaemon(true);
+    mCleaningThread.setPriority(Thread.MIN_PRIORITY);
+    mCleaningThread.start();
+
+    Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
-      public void run()
+      public void run() {
+        System.out.println("SHUTDOWN");
+        mCleaningThread.shutdown();
+      }
+    });
+
+  }
+
+  private class CleaningThread extends Thread {
+    private volatile boolean runtimeClosing = false;
+
+    long mPeriod;
+    TimeUnit mUnit;
+
+    public CleaningThread(long pPeriod, TimeUnit pUnit) {
+      super("RGC_Thread");
+      mPeriod = pPeriod;
+      mUnit = pUnit;
+    }
+
+    @Override
+    public void run()
+    {
+      final long lPeriodInMillis = mUnit.toMillis(mPeriod);
+      while(!runtimeClosing)
       {
-        final long lPeriodInMillis = pUnit.toMillis(pPeriod);
-        while(true)
+        System.out.println("Cleaning " + getNumberOfRegisteredObjects() + "(" + runtimeClosing + ")");
+        clean();
+        try
         {
-          clean();
-          try
-          {
-            Thread.sleep(lPeriodInMillis);
-          }
-          catch (InterruptedException pE)
-          {
-          }
+          Thread.sleep(lPeriodInMillis);
+        }
+        catch (InterruptedException pE)
+        {
         }
       }
-    };
+    }
 
-    Thread lThread = new Thread(lCollector, "RGC_Thread");
-    lThread.setDaemon(true);
-    lThread.setPriority(Thread.MIN_PRIORITY);
-    lThread.start();
-    */
+    public void shutdown() {
+      runtimeClosing = true;
+    }
+  }
+
+  public static void shutdown() {
+    System.out.println("Shutting down");
+    sRessourceCleaner.mCleaningThread.shutdown();
+    System.out.println("Trying to clean the rest");
+
+    while (getNumberOfRegisteredObjects() > 0) {
+      System.out.println("Cleaning " + getNumberOfRegisteredObjects());
+      sRessourceCleaner.clean();
+    }
+
   }
 
   /**
