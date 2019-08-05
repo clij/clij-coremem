@@ -157,10 +157,10 @@ public class RessourceCleaner
     sRessourceCleaner.mCleaningThread.shutdown();
     System.out.println("Trying to clean the rest");
 
-    while (getNumberOfRegisteredObjects() > 0) {
-      System.out.println("Cleaning " + getNumberOfRegisteredObjects());
-      sRessourceCleaner.clean();
-    }
+    //while (getNumberOfRegisteredObjects() > 0) {
+    //  System.out.println("Cleaning " + getNumberOfRegisteredObjects());
+    //  sRessourceCleaner.clean();
+    //}
 
   }
 
