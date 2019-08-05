@@ -1,14 +1,10 @@
 package net.haesleinhuepf.clij.coremem.rgc;
 
-import net.haesleinhuepf.clij.coremem.rgc.Cleanable;
-import net.haesleinhuepf.clij.coremem.rgc.Cleaner;
-import net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference;
-
 import java.lang.ref.ReferenceQueue;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -27,6 +23,7 @@ public class RessourceCleaner
   private static final Executor sExecutor =
                                           Executors.newSingleThreadExecutor();
 
+  //private static HashMap<String, Long[]> inOutTracker = new HashMap<String, Long[]>();
 
   private static RessourceCleaner sRessourceCleaner;
 
@@ -50,6 +47,27 @@ public class RessourceCleaner
    */
   public static final void register(net.haesleinhuepf.clij.coremem.rgc.Cleanable pCleanable)
   {
+    if (pCleanable == null ) {
+      System.out.println("null wanted to register for cleaning");
+      return;
+    }
+
+    // workaround: CLIJ takes care of cleaning them itself
+    if (pCleanable.getClass().getSimpleName().compareTo("ClearCLBuffer") ==0 ||
+        pCleanable.getClass().getSimpleName().compareTo("ClearCLImage") ==0 ||
+        pCleanable.getClass().getSimpleName().compareTo("ClearCLKernel") == 0
+    ) {
+      return;
+    }
+
+
+//    String key =  pCleanable.getClass().getName();
+//    if (inOutTracker.containsKey(key)) {
+//      inOutTracker.get(key)[0]++;
+//    } else {
+//      inOutTracker.put(key, new Long[]{new Long(0)});
+//    }
+
     final net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference lCleaningPhantomReference =
                                                              new net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference(pCleanable,
                                                                                           pCleanable.getCleaner(),
@@ -83,6 +101,18 @@ public class RessourceCleaner
         // if the queue is empty we get null...
         if (lReference == null)
           return;
+
+//        if (lReference.get() != null) {
+//          String key = lReference.get().getClass().getName();
+//          if (inOutTracker.containsKey(key)) {
+//            inOutTracker.get(key)[0]--;
+//          } else {
+//            //System.out.println("Cleaning something that has never been added: " + lReference);
+//          }
+//        } else {
+//          //System.out.println("Cleaning some nullish thing...");
+//        }
+
         final Cleaner lCleaner = lReference.getCleaner();
         if (lCleaner != null)
           sExecutor.execute(lCleaner);
@@ -91,6 +121,8 @@ public class RessourceCleaner
 
     }
   }
+
+  private CleaningThread mCleaningThread = null;
 
   /**
    * Schedules the cleaning at a fixed rate.
@@ -102,30 +134,74 @@ public class RessourceCleaner
    */
   private void cleanAtFixedRate(long pPeriod, TimeUnit pUnit)
   {
-    final Runnable lCollector = new Runnable()
-    {
+    if (mCleaningThread != null) {
+      return;
+    }
+    mCleaningThread = new CleaningThread(pPeriod, pUnit);
+    mCleaningThread.setDaemon(true);
+    mCleaningThread.setPriority(Thread.MIN_PRIORITY);
+    mCleaningThread.start();
+
+    Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
-      public void run()
+      public void run() {
+        //System.out.println("SHUTDOWN");
+        mCleaningThread.shutdown();
+      }
+    });
+
+  }
+
+  private class CleaningThread extends Thread {
+    private volatile boolean runtimeClosing = false;
+
+    long mPeriod;
+    TimeUnit mUnit;
+
+    public CleaningThread(long pPeriod, TimeUnit pUnit) {
+      super("RGC_Thread");
+      mPeriod = pPeriod;
+      mUnit = pUnit;
+    }
+
+    @Override
+    public void run()
+    {
+      final long lPeriodInMillis = mUnit.toMillis(mPeriod);
+      while(!runtimeClosing)
       {
-        final long lPeriodInMillis = pUnit.toMillis(pPeriod);
-        while(true)
+        //System.out.println("Cleaning " + getNumberOfRegisteredObjects() + "(" + runtimeClosing + ")");
+        clean();
+        try
         {
-          clean();
-          try
-          {
-            Thread.sleep(lPeriodInMillis);
-          }
-          catch (InterruptedException pE)
-          {
-          }
+          Thread.sleep(lPeriodInMillis);
+        }
+        catch (InterruptedException pE)
+        {
         }
       }
-    };
+    }
 
-    Thread lThread = new Thread(lCollector, "RGC_Thread");
-    lThread.setDaemon(true);
-    lThread.setPriority(Thread.MIN_PRIORITY);
-    lThread.start();
+    public void shutdown() {
+      runtimeClosing = true;
+    }
+  }
+
+  public static void shutdown() {
+    //System.out.println("Shutting down");
+    sRessourceCleaner.mCleaningThread.shutdown();
+    //System.out.println("Trying to clean the rest");
+    sRessourceCleaner.clean();
+
+    //for (String key : inOutTracker.keySet()) {
+    //  System.out.println(key + ": " + inOutTracker.get(key)[0]);
+    //}
+
+    //while (getNumberOfRegisteredObjects() > 0) {
+    //  System.out.println("Cleaning " + getNumberOfRegisteredObjects());
+    //  sRessourceCleaner.clean();
+    //}
+
   }
 
   /**
