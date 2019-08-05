@@ -23,7 +23,7 @@ public class RessourceCleaner
   private static final Executor sExecutor =
                                           Executors.newSingleThreadExecutor();
 
-  //private static HashMap<String, Long[]> inOutTracker = new HashMap<String, Long[]>();
+  private static HashMap<String, Long[]> inOutTracker = new HashMap<String, Long[]>();
 
   private static RessourceCleaner sRessourceCleaner;
 
@@ -61,12 +61,12 @@ public class RessourceCleaner
 //    }
 
 
-//    String key =  pCleanable.getClass().getName();
-//    if (inOutTracker.containsKey(key)) {
-//      inOutTracker.get(key)[0]++;
-//    } else {
-//      inOutTracker.put(key, new Long[]{new Long(0)});
-//    }
+    String key =  pCleanable.getClass().getName();
+    if (inOutTracker.containsKey(key)) {
+      inOutTracker.get(key)[0]++;
+    } else {
+      inOutTracker.put(key, new Long[]{new Long(0)});
+    }
 
     final net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference lCleaningPhantomReference =
                                                              new net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference(pCleanable,
@@ -102,16 +102,16 @@ public class RessourceCleaner
         if (lReference == null)
           return;
 
-//        if (lReference.get() != null) {
-//          String key = lReference.get().getClass().getName();
-//          if (inOutTracker.containsKey(key)) {
-//            inOutTracker.get(key)[0]--;
-//          } else {
-//            //System.out.println("Cleaning something that has never been added: " + lReference);
-//          }
-//        } else {
-//          //System.out.println("Cleaning some nullish thing...");
-//        }
+        if (lReference.get() != null) {
+          String key = lReference.get().getClass().getName();
+          if (inOutTracker.containsKey(key)) {
+            inOutTracker.get(key)[0]--;
+          } else {
+            //System.out.println("Cleaning something that has never been added: " + lReference);
+          }
+        } else {
+          //System.out.println("Cleaning some nullish thing...");
+        }
 
         final Cleaner lCleaner = lReference.getCleaner();
         if (lCleaner != null)
@@ -202,6 +202,12 @@ public class RessourceCleaner
     //  sRessourceCleaner.clean();
     //}
 
+  }
+
+  public static void whatsIn() {
+    for (String key : inOutTracker.keySet()) {
+      System.out.println(key + ": " + inOutTracker.get(key)[0]);
+    }
   }
 
   /**
