@@ -23,7 +23,7 @@ public class RessourceCleaner
   private static final Executor sExecutor =
                                           Executors.newSingleThreadExecutor();
 
-  private static HashMap<String, Long[]> inOutTracker = new HashMap<String, Long[]>();
+  //private static HashMap<String, Long[]> inOutTracker = new HashMap<String, Long[]>();
 
   private static RessourceCleaner sRessourceCleaner;
 
@@ -60,12 +60,13 @@ public class RessourceCleaner
       return;
     }
 
-    String key =  pCleanable.getClass().getName();
-    if (inOutTracker.containsKey(key)) {
-      inOutTracker.get(key)[0]++;
-    } else {
-      inOutTracker.put(key, new Long[]{new Long(0)});
-    }
+
+//    String key =  pCleanable.getClass().getName();
+//    if (inOutTracker.containsKey(key)) {
+//      inOutTracker.get(key)[0]++;
+//    } else {
+//      inOutTracker.put(key, new Long[]{new Long(0)});
+//    }
 
     final net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference lCleaningPhantomReference =
                                                              new net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference(pCleanable,
@@ -101,16 +102,16 @@ public class RessourceCleaner
         if (lReference == null)
           return;
 
-        if (lReference.get() != null) {
-          String key = lReference.get().getClass().getName();
-          if (inOutTracker.containsKey(key)) {
-            inOutTracker.get(key)[0]--;
-          } else {
-            System.out.println("Cleaning something that has never been added: " + lReference);
-          }
-        } else {
-          //System.out.println("Cleaning some nullish thing...");
-        }
+//        if (lReference.get() != null) {
+//          String key = lReference.get().getClass().getName();
+//          if (inOutTracker.containsKey(key)) {
+//            inOutTracker.get(key)[0]--;
+//          } else {
+//            //System.out.println("Cleaning something that has never been added: " + lReference);
+//          }
+//        } else {
+//          //System.out.println("Cleaning some nullish thing...");
+//        }
 
         final Cleaner lCleaner = lReference.getCleaner();
         if (lCleaner != null)
@@ -144,7 +145,7 @@ public class RessourceCleaner
     Runtime.getRuntime().addShutdownHook(new Thread() {
       @Override
       public void run() {
-        System.out.println("SHUTDOWN");
+        //System.out.println("SHUTDOWN");
         mCleaningThread.shutdown();
       }
     });
@@ -169,7 +170,7 @@ public class RessourceCleaner
       final long lPeriodInMillis = mUnit.toMillis(mPeriod);
       while(!runtimeClosing)
       {
-        System.out.println("Cleaning " + getNumberOfRegisteredObjects() + "(" + runtimeClosing + ")");
+        //System.out.println("Cleaning " + getNumberOfRegisteredObjects() + "(" + runtimeClosing + ")");
         clean();
         try
         {
@@ -187,14 +188,14 @@ public class RessourceCleaner
   }
 
   public static void shutdown() {
-    System.out.println("Shutting down");
+    //System.out.println("Shutting down");
     sRessourceCleaner.mCleaningThread.shutdown();
-    System.out.println("Trying to clean the rest");
+    //System.out.println("Trying to clean the rest");
     sRessourceCleaner.clean();
 
-    for (String key : inOutTracker.keySet()) {
-      System.out.println(key + ": " + inOutTracker.get(key)[0]);
-    }
+    //for (String key : inOutTracker.keySet()) {
+    //  System.out.println(key + ": " + inOutTracker.get(key)[0]);
+    //}
 
     //while (getNumberOfRegisteredObjects() > 0) {
     //  System.out.println("Cleaning " + getNumberOfRegisteredObjects());
