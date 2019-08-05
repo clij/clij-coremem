@@ -1,6 +1,7 @@
 package net.haesleinhuepf.clij.coremem.rgc;
 
 import java.lang.ref.ReferenceQueue;
+import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
@@ -22,6 +23,7 @@ public class RessourceCleaner
   private static final Executor sExecutor =
                                           Executors.newSingleThreadExecutor();
 
+  private static HashMap<String, Long[]> inOutTracker = new HashMap<String, Long[]>();
 
   private static RessourceCleaner sRessourceCleaner;
 
@@ -45,6 +47,18 @@ public class RessourceCleaner
    */
   public static final void register(net.haesleinhuepf.clij.coremem.rgc.Cleanable pCleanable)
   {
+    if (pCleanable == null ) {
+      System.out.println("null wanted to register for cleaning");
+      return;
+    }
+
+    String key =  pCleanable.getClass().getName();
+    if (inOutTracker.containsKey(key)) {
+      inOutTracker.get(key)[0]++;
+    } else {
+      inOutTracker.put(key, new Long[]{new Long(0)});
+    }
+
     final net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference lCleaningPhantomReference =
                                                              new net.haesleinhuepf.clij.coremem.rgc.CleaningPhantomReference(pCleanable,
                                                                                           pCleanable.getCleaner(),
@@ -78,6 +92,18 @@ public class RessourceCleaner
         // if the queue is empty we get null...
         if (lReference == null)
           return;
+
+        if (lReference.get() != null) {
+          String key = lReference.get().getClass().getName();
+          if (inOutTracker.containsKey(key)) {
+            inOutTracker.get(key)[0]--;
+          } else {
+            System.out.println("Cleaning something that has never been added: " + lReference);
+          }
+        } else {
+          //System.out.println("Cleaning some nullish thing...");
+        }
+
         final Cleaner lCleaner = lReference.getCleaner();
         if (lCleaner != null)
           sExecutor.execute(lCleaner);
@@ -156,6 +182,11 @@ public class RessourceCleaner
     System.out.println("Shutting down");
     sRessourceCleaner.mCleaningThread.shutdown();
     System.out.println("Trying to clean the rest");
+    sRessourceCleaner.clean();
+
+    for (String key : inOutTracker.keySet()) {
+      System.out.println(key + ": " + inOutTracker.get(key)[0]);
+    }
 
     //while (getNumberOfRegisteredObjects() > 0) {
     //  System.out.println("Cleaning " + getNumberOfRegisteredObjects());
