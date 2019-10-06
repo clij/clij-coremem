@@ -96,3 +96,4 @@ To build and generate an eclipse project, just do:
 
 * Loic Royer (loic.royer -at- czbiohub -point- org)
 * Robert Haase (robert.haase -at- mpi-cbg.de)
+
