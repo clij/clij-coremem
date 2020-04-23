@@ -28,8 +28,7 @@ then
 	export MAVEN_OPTS="$MAVEN_OPTS -Dmaven.test.skip=true -Dorg.slf4j.simpleLogger.log.org.apache.maven.cli.transfer.Slf4jMavenTransferListener=warn" 
 
 	# Populate the settings.xml configuration.
-	mkdir -p "$HOME/.m2"
-	settingsFile="$HOME/.m2/settings.xml"
+	settingsFile="~/.m2/settings.xml"
 	customSettings=.travis/settings.xml
 	if [ -f "$customSettings" ]
 	then
