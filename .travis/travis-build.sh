@@ -113,7 +113,7 @@ EOL
 	then
 		echo
 		echo "== Cutting and deploying release version =="
-		mvn -B -Dmaven.test.skip=true release:perform
+		mvn -X -e -Dmaven.test.skip=true release:perform
 		checkSuccess $?
 	else
 		echo
