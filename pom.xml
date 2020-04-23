@@ -119,23 +119,9 @@
 	</dependencies>
 
 	<repositories>
-   <repository>
-      <id>scijava.public</id>
-      <url>https://maven.scijava.org/content/groups/public</url>
-    </repository>
 		<repository>
-			<id>clij</id>
-			<url>http://dl.bintray.com/haesleinhuepf/clij</url>
+			<id>scijava.public</id>
+			<url>https://maven.scijava.org/content/groups/public</url>
 		</repository>
 	</repositories>
-
-	<distributionManagement>
-
-		<repository>
-			<id>bintray-haesleinhuepf-snapshots</id>
-			<name>bintray-snapshots</name>
-			<url>https://api.bintray.com/maven/haesleinhuepf/clij/clij-coremem/;publish=1</url>
-		</repository>
-
-	</distributionManagement>
 </project>
