@@ -7,8 +7,8 @@ matrix:
       script: if [ "$TRAVIS_OS_NAME" ~= "clij-coremem"] ./gradlew build -x spotlessJava; 
     - os: osx
       osx_image: xcode8
-install: if [ "$TRAVIS_REPO_SLUG" == "clij/clij-coremem"]; then ./gradlew assemble -x spotlessJava --stacktrace fi
-script: if [ "$TRAVIS_REPO_SLUG" == "clij/clij-coremem"]; then ./gradlew build -x spotlessJava fi
+install: if [ "$TRAVIS_REPO_SLUG" ~= "clij-coremem" ]; then ./gradlew assemble -x spotlessJava --stacktrace; fi
+script: if [ "$TRAVIS_REPO_SLUG" ~= "clij-coremem" ]; then ./gradlew build -x spotlessJava; fi
 env:
   global:
   - secure: N10orKqmpTqR4VacEEq2CXb8ydBcq11eVE0HuEQPfPVazj6xXV2fZhHCBVWSF28XcRaxVCgaJwMOILA1aYN7puDHHxzVMuj8F6ZGiPow/RHrEUjqJRuQzxYNgk8hI+pD0HSDQz59+S18dL2w+0KXEZdi8vzBPQnzs1o0ofezPCIr6wcNYTOgQ58yh5oJ1dcr/ZA2p6eOHuzmQYV2t/napvtMdTTl14omyTKRWulHLeuereg8dwVlIY6o6pKWN4u4g4freIxXbJL0JD6oLjKv1nzEWgQFKE8+HZY2Nveyp7Je4OoJ/TDINVxNtqXPqQTtVYHOm0yB602so6nQPFpK7yFW6qJ8nduiruS66mM35fz9mMJ5Nmypkc0X1PRQEjTLIdHDAw/M6vVGC7cEWIWzXRQOL6lvjUQiWshgM1WPIZ1jlgEVtp0FDyjAS001YiZtv9GFCQ24Cv7lmteDbi8TSZMDn36DZpKhqlJZPIlYIuNPQeB2WcptFq9T/XtjboVOFppU1qw8K58a8SmA2Rb/i4zTyXB4onp70nwtcbV1jTdTCdCSAz2PS07nNzbkJpkANlWJMgPQed6BM+cocmcnv5xIW93Q1qIgkLDEXrYXfNeHqyrlras86wd/IIJtoiBusDvt9Glo/Ku1OFrgRBTY7HINbatwykEWXbbU9ipspuo=
