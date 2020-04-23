@@ -4,7 +4,6 @@ matrix:
   include:
     - os: linux
       jdk: openjdk8
-      script: if [ "$TRAVIS_OS_NAME" ~= "clij-coremem"] ./gradlew build -x spotlessJava; 
     - os: osx
       osx_image: xcode8
 install: if [ "$TRAVIS_REPO_SLUG" ~= "clij-coremem" ]; then ./gradlew assemble -x spotlessJava --stacktrace; fi
