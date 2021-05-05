@@ -8,9 +8,9 @@ package net.haesleinhuepf.clij.coremem.recycling;
 public interface RecyclerListenerInterface
 {
   /**
-   * @param pNumberOfLiveObjects
-   * @param pNumberOfAvailableObjects
-   * @param pNumberOfFailedRequest
+   * @param pNumberOfLiveObjects ?
+   * @param pNumberOfAvailableObjects ?
+   * @param pNumberOfFailedRequest ?
    */
   void update(int pNumberOfLiveObjects,
               int pNumberOfAvailableObjects,

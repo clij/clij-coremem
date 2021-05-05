@@ -10,8 +10,8 @@ public class NativeLibResourceHandler
   /**
    * Simple wrapper function to compare contents of two files
    *
-   * @param pCopied
-   * @param pRead
+   * @param pCopied ?
+   * @param pRead ?
    * @return :result of comparison as boolean
    */
   public boolean twoFilesAreSame(File pCopied, File pRead)
@@ -50,10 +50,10 @@ public class NativeLibResourceHandler
   /**
    * Method to copy a .dll resource from a jar into a TempFile
    *
-   * @param pClass
-   * @param pRelativePathToFileInJar
+   * @param pClass ?
+   * @param pRelativePathToFileInJar ?
    * @return lFile :copied resource file
-   * @throws IOException
+   * @throws IOException ?
    */
   public File copyResourceFromJarToTempFile(Class pClass,
                                             String pRelativePathToFileInJar) throws IOException
@@ -86,8 +86,8 @@ public class NativeLibResourceHandler
   /**
    * Method to load a .dll resource from a jar after copying into a TempFile
    *
-   * @param pClass
-   * @param pRelativePathToFileInJar
+   * @param pClass ?
+   * @param pRelativePathToFileInJar ?
    * @return lResultFile :loaded resource file
    */
   public File loadResourceFromJar(Class pClass,

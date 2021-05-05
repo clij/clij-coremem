@@ -51,7 +51,7 @@ public interface RecyclableInterface<R extends RecyclableInterface<R, P>, P exte
    * Sets whether this recyclable object has been released. An object is
    * released when it is not in use anymore and is waiting to be recycled.
    * 
-   * @param pIsReleased
+   * @param pIsReleased ?
    */
   void setReleased(boolean pIsReleased);
 

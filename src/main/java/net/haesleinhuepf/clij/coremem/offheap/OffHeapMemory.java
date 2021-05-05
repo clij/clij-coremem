@@ -85,6 +85,7 @@ public class OffHeapMemory extends MemoryBase implements
    *
    * @param pJNAPointer
    *          JNA pointer
+   * @param pTargetSizeInBytes ?
    * @return off-heap memory object
    */
   public static OffHeapMemory wrapPointer(com.sun.jna.Pointer pJNAPointer,

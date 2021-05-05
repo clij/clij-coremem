@@ -41,7 +41,7 @@ public abstract class MappedMemoryBase extends MemoryBase
   /**
    * Sets the mapped state of this MappableMemory region.
    * 
-   * @param pMapped
+   * @param pMapped ?
    */
   protected void setCurrentlyMapped(boolean pMapped)
   {

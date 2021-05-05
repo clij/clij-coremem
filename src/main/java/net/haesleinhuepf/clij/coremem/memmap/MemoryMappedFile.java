@@ -43,7 +43,7 @@ public class MemoryMappedFile implements AutoCloseable, Cleanable
    * @param pMappedRegionLength
    *          region length
    * @param pExtendIfNeeded
-   *          true -> extend if needed
+   *          true  extend if needed
    */
   public MemoryMappedFile(FileChannel pFileChannel,
                           MemoryMappedFileAccessMode pAccessMode,

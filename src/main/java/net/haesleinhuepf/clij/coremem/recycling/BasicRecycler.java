@@ -79,7 +79,7 @@ public class BasicRecycler<R extends RecyclableInterface<R, P>, P extends Recycl
    * @param pMaximumNumberOfAvailableObjects
    *          maximum number of available objects
    * @param pAutoFree
-   *          true -> free released/cleared objects.
+   *          true  free released/cleared objects.
    */
   public BasicRecycler(final RecyclableFactoryInterface<R, P> pRecyclableFactory,
                        final int pMaximumNumberOfLiveObjects,

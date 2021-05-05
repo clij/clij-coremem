@@ -25,6 +25,7 @@ public class BridJInterop
    *          size in bytes
    * @param pReleaser
    *          releaser
+   * @param <T> ?
    * @return BridJ pointer
    */
   public static <T> Pointer<T> getBridJPointer(Class<T> pTargetClass,

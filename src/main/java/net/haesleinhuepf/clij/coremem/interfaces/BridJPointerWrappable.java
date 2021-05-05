@@ -15,6 +15,7 @@ public interface BridJPointerWrappable
    * 
    * @param pTargetClass
    *          target class
+   * @param <T> ?
    * @return BridJ
    */
   public <T> Pointer<T> getBridJPointer(Class<T> pTargetClass);

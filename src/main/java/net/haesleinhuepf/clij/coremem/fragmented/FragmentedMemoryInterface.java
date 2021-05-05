@@ -48,7 +48,7 @@ public interface FragmentedMemoryInterface extends
   /**
    * Removes a counties fragment from this fragmented memory.
    * 
-   * @param pContiguousMemory
+   * @param pContiguousMemory ?
    */
   void remove(ContiguousMemoryInterface pContiguousMemory);
 
